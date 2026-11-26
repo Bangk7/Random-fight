@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-<title>SLOTBOUND: HI-BIT PIXEL EDITION</title>
+<title>SLOTBOUND: TỘC HỆ • LÕI • TƯ CHẤT (24x24)</title>
 <style>
   :root {
     --bg: #060911;
@@ -44,7 +44,7 @@
   }
 
   .app {
-    max-width: 1140px;
+    max-width: 1180px;
     margin: 0 auto;
     display: flex;
     flex-direction: column;
@@ -189,6 +189,7 @@
     align-items: center;
     justify-content: space-between;
     gap: 8px;
+    flex-wrap: wrap;
   }
 
   .card-title {
@@ -275,6 +276,63 @@
     75% { transform: translateX(5px); }
   }
 
+  .cores-strip {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 5px;
+  }
+
+  .core-slot {
+    background: #09101f;
+    border: 1.5px solid #334873;
+    border-radius: 7px;
+    padding: 5px 4px;
+    font-size: 10px;
+    font-weight: 800;
+    text-align: center;
+    color: #e2e8f0;
+    cursor: pointer;
+    min-height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1.15;
+  }
+
+  .core-slot.filled {
+    background: linear-gradient(180deg, #2a1c4d, #16102b);
+    border-color: var(--purple);
+    color: #f5d0fe;
+  }
+
+  .core-slot.empty {
+    border-style: dashed;
+    color: #64748b;
+  }
+
+  .synergy-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .syn-badge {
+    background: #0b1324;
+    border: 1px solid #2b3f66;
+    border-radius: 6px;
+    padding: 4px 8px;
+    font-size: 11px;
+    font-weight: 800;
+    color: #94a3b8;
+  }
+
+  .syn-badge.active {
+    background: rgba(56, 189, 248, 0.14);
+    border-color: var(--cyan);
+    color: #e0f2fe;
+    box-shadow: 0 0 8px rgba(56, 189, 248, 0.2);
+  }
+
   .battle-wrap {
     position: relative;
     border-radius: 10px;
@@ -287,7 +345,7 @@
 
   #battleCanvas {
     width: 100%;
-    height: 310px;
+    height: 300px;
     display: block;
     cursor: grab;
   }
@@ -341,7 +399,7 @@
 
   .roster-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(235px, 1fr));
     gap: 8px;
   }
 
@@ -382,6 +440,17 @@
   .unit-meta {
     font-size: 11px;
     color: var(--muted);
+  }
+
+  .trait-pill {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 800;
+    padding: 2px 6px;
+    border-radius: 5px;
+    background: rgba(251, 191, 36, 0.12);
+    border: 1px solid rgba(251, 191, 36, 0.45);
+    color: #fde68a;
   }
 
   .awaken-bar {
@@ -488,7 +557,7 @@
     border: 1px solid #1e2c47;
     border-radius: 8px;
     padding: 8px;
-    max-height: 115px;
+    max-height: 110px;
     overflow-y: auto;
     font-size: 11px;
     line-height: 1.45;
@@ -498,7 +567,7 @@
   .modal-backdrop {
     position: fixed;
     inset: 0;
-    background: rgba(2, 6, 15, 0.82);
+    background: rgba(2, 6, 15, 0.84);
     backdrop-filter: blur(2px);
     display: none;
     align-items: center;
@@ -516,7 +585,7 @@
     border: 2px solid var(--gold);
     box-shadow: 0 12px 32px rgba(0,0,0,0.7);
     border-radius: 12px;
-    max-width: 540px;
+    max-width: 560px;
     width: 100%;
     max-height: 88vh;
     overflow-y: auto;
@@ -534,6 +603,17 @@
     display: flex;
     flex-direction: column;
     gap: 8px;
+  }
+
+  .core-pick-card {
+    background: #0b1324;
+    border: 1.5px solid #3b5280;
+    border-radius: 9px;
+    padding: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
   }
 
   table {
@@ -559,14 +639,14 @@
     <div class="brand">
       <canvas id="brandIcon" width="40" height="40" class="pixel-canvas"></canvas>
       <div>
-        <div class="brand-title">SLOTBOUND: HI-BIT PIXEL EDITION</div>
-        <div class="brand-sub">1 MẠNG SINH TỬ • NUỐT CHỌN LÊN CẤP TƯỚNG / ẤN • KÉO THẢ ĐỘI HÌNH</div>
+        <div class="brand-title">SLOTBOUND: TỘC HỆ • LÕI • TƯ CHẤT</div>
+        <div class="brand-sub">LÃI VÀNG MỖI WAVE • 6 Ô LÕI CÔNG NGHỆ • TƯ CHẤT NGẪU NHIÊN • NUỐT CHỌN CẤP TƯỚNG / ẤN</div>
       </div>
     </div>
 
     <div class="stats-row">
       <div class="stat-pill" style="color: var(--rose)">❤️ <span id="statLife">1</span> Mạng</div>
-      <div class="stat-pill" style="color: var(--gold)">🪙 <span id="statGold">250</span></div>
+      <div class="stat-pill" style="color: var(--gold)">🪙 <span id="statGold">250</span> <small id="interestTag" style="color:#fde68a;font-size:10px;">(+2 lãi)</small></div>
       <div class="stat-pill" style="color: var(--emerald)">✦ <span id="statEssence">12</span></div>
       <div class="stat-pill" style="color: var(--cyan)">⚔️ <span id="statCount">0</span>/<span id="statCap">6</span></div>
       <div class="stat-pill" style="color: var(--purple)">🌊 Wave <span id="statWave">1</span></div>
@@ -577,7 +657,7 @@
   </div>
 
   <div class="main-grid">
-    <!-- CỘT TRÁI: MÁY XÈNG -->
+    <!-- CỘT TRÁI: MÁY XÈNG & LÕI CÔNG NGHỆ -->
     <div class="card" id="slotCard">
       <div class="card-header">
         <div class="card-title">🎰 MÁY XÈNG 3x3 (RƠI Ô)</div>
@@ -601,6 +681,12 @@
         <button class="btn btn-blue" id="nudge2">⇅ Cột 3 (<span id="nudgeLeft2">1</span>)</button>
       </div>
 
+      <div class="card-header" style="margin-top:2px;">
+        <div class="card-title" style="font-size: 12px; color: var(--purple);">⚙️ LÕI CÔNG NGHỆ (6 Ô — MỖI 3 WAVE)</div>
+        <button class="chip-btn" id="btnPickCoreNow" style="font-size:10px; padding:3px 7px;">+ Chọn Lõi</button>
+      </div>
+      <div class="cores-strip" id="coresStrip"></div>
+
       <div class="card-title" style="font-size: 12px; color: var(--emerald);">🎒 KHO TRANG BỊ CHƯA ĐEO</div>
       <div class="inv-list" id="inventoryList"></div>
 
@@ -608,10 +694,16 @@
       <div class="log-box" id="logBox"></div>
     </div>
 
-    <!-- CỘT PHẢI: CHIẾN TRƯỜNG & ĐỘI HÌNH -->
+    <!-- CỘT PHẢI: TỘC HỆ, CHIẾN TRƯỜNG & ĐỘI HÌNH -->
     <div class="card">
+      <div class="card-header">
+        <div class="card-title" style="font-size:12px; color: var(--cyan);">💠 CỘNG HƯỞNG TỘC / HỆ</div>
+        <span style="font-size: 11px; color: var(--muted);">Mốc kích hoạt: 2 tướng cùng Tộc/Hệ</span>
+      </div>
+      <div class="synergy-bar" id="synergyBar"></div>
+
       <div class="battle-wrap">
-        <canvas id="battleCanvas" width="740" height="310" class="pixel-canvas"></canvas>
+        <canvas id="battleCanvas" width="740" height="300" class="pixel-canvas"></canvas>
         <div class="battle-hud">
           <div class="hud-tag" id="phaseTag">GIAI ĐOẠN CHUẨN BỊ</div>
           <div class="hud-tag" id="enemyTag">Quái: 0</div>
@@ -633,7 +725,7 @@
 
       <div class="card-header">
         <div class="card-title">🛡️ ĐỘI HÌNH TRÊN SÂN</div>
-        <span style="font-size: 11px; color: var(--muted);">Chạm thẳng vào thẻ Ấn trên tướng để xem mô tả</span>
+        <span style="font-size: 11px; color: var(--muted);">Mỗi tướng có Tư Chất ngẫu nhiên • Chạm Ấn để xem chi tiết</span>
       </div>
 
       <div class="roster-grid" id="rosterGrid"></div>
@@ -693,6 +785,18 @@
   </div>
 </div>
 
+<!-- MODAL CHỌN LÕI CÔNG NGHỆ -->
+<div class="modal-backdrop" id="coreModal">
+  <div class="modal-card">
+    <div class="card-header">
+      <div class="card-title">⚙️ CHỌN LÕI CÔNG NGHỆ</div>
+      <button class="btn btn-rose" onclick="closeModal('coreModal')">✕</button>
+    </div>
+    <div id="coreModalSub" style="font-size: 12px; color: var(--muted);"></div>
+    <div id="coreChoicesList" style="display:flex; flex-direction:column; gap:8px;"></div>
+  </div>
+</div>
+
 <!-- MODAL LỰA CHỌN KHI NUỐT (LÊN CẤP TƯỚNG HOẶC LÊN CẤP ẤN) -->
 <div class="modal-backdrop" id="absorbModal">
   <div class="modal-card">
@@ -702,7 +806,6 @@
     </div>
     <div id="absorbDesc" style="font-size: 12px; color: #cbd5e1; line-height: 1.5;"></div>
 
-    <!-- HƯỚNG 1: LÊN CẤP TƯỚNG -->
     <div class="choice-box" style="border-color: var(--gold);">
       <div style="font-size: 12px; font-weight: 900; color: var(--gold);">
         ⚔️ HƯỚNG 1: DỒN TINH HOA LÊN CẤP TƯỚNG (LV HẤP THỤ)
@@ -713,7 +816,6 @@
       </button>
     </div>
 
-    <!-- HƯỚNG 2: LÊN CẤP ẤN / KHẮC ẤN MỚI -->
     <div class="choice-box" style="border-color: var(--purple);">
       <div style="font-size: 12px; font-weight: 900; color: var(--purple);">
         🔮 HƯỚNG 2: TRUYỀN THỪA HOẶC NÂNG CẤP DẤU ẤN
@@ -768,30 +870,29 @@ const AudioFX = (() => {
 // ================= HI-BIT 24x24 DETAILED PIXEL SPRITES =================
 const PALETTE = {
   '.': null,
-  'K': '#090d16', // Viền đen đậm sắc nét
-  'W': '#ffffff', // Ánh kim / mắt sáng
-  'I': '#cbd5e1', // Thép sáng
-  'M': '#94a3b8', // Thép trung
-  'D': '#475569', // Thép tối / bóng đổ
-  'U': '#1e293b', // Giáp đen sâu
-  'S': '#f5cba7', // Da sáng
-  'T': '#d99b66', // Bóng da
-  'R': '#ef4444', // Đỏ tươi
-  'A': '#991b1b', // Đỏ sẫm / áo choàng
-  'B': '#3b82f6', // Xanh lam sáng
-  'N': '#1d4ed8', // Xanh lam đậm
-  'C': '#38bdf8', // Ngọc lam / băng
-  'G': '#22c55e', // Lục sáng
-  'E': '#15803d', // Lục đậm
-  'Y': '#fde047', // Vàng rực
-  'O': '#d97706', // Vàng đồng / hổ phách
-  'P': '#c084fc', // Tím sáng
-  'V': '#7e22ce', // Tím đậm
-  'H': '#78350f'  // Gỗ / da thuộc
+  'K': '#090d16',
+  'W': '#ffffff',
+  'I': '#cbd5e1',
+  'M': '#94a3b8',
+  'D': '#475569',
+  'U': '#1e293b',
+  'S': '#f5cba7',
+  'T': '#d99b66',
+  'R': '#ef4444',
+  'A': '#991b1b',
+  'B': '#3b82f6',
+  'N': '#1d4ed8',
+  'C': '#38bdf8',
+  'G': '#22c55e',
+  'E': '#15803d',
+  'Y': '#fde047',
+  'O': '#d97706',
+  'P': '#c084fc',
+  'V': '#7e22ce',
+  'H': '#78350f'
 };
 
 const SPRITES = {
-  // CHIẾN BINH HOÀNG GIA (24x24: Mũ trụ lông vũ đỏ, giáp lam viền vàng, khiên & kiếm lớn)
   warrior: [
     '........KKKKKK..........',
     '.......KRRRRRRK.........',
@@ -818,7 +919,6 @@ const SPRITES = {
     '........................',
     '........................'
   ],
-  // XẠ THỦ RỪNG SÂU (24x24: Mũ trùm lục bảo, áo choàng lá, cung dài gỗ sồi dây phát sáng)
   archer: [
     '........KKKKKK..........',
     '......KKGGGGGGKK........',
@@ -845,7 +945,6 @@ const SPRITES = {
     '........................',
     '........................'
   ],
-  // ĐẠI PHÁP SƯ TINH TÚ (24x24: Mũ chóp nhọn viền vàng, râu bạc, trượng ngọc lam rực sáng)
   mage: [
     '.........KKKK...........',
     '........KPPPPK..........',
@@ -872,7 +971,6 @@ const SPRITES = {
     '........................',
     '........................'
   ],
-  // KỴ BINH THÁNH GIÁ (24x24: Mũ sừng vàng, giáp đỏ ánh kim, thương kỵ sĩ dài)
   lancer: [
     '..........KK............',
     '.........KWWK...........',
@@ -899,7 +997,6 @@ const SPRITES = {
     '........................',
     '........................'
   ],
-  // TRIỆU HỒI SƯ CỔ NGỮ (24x24: Vương miện hào quang, áo choàng tím-vàng, quả cầu linh hồn)
   summoner: [
     '.......KK.KK.KK.........',
     '......KYYKYYKYYK........',
@@ -926,7 +1023,6 @@ const SPRITES = {
     '........................',
     '........................'
   ],
-  // RƯƠNG KHO BÁU HOÀNG KIM (24x24)
   chest: [
     '........................',
     '........................',
@@ -953,7 +1049,6 @@ const SPRITES = {
     '........................',
     '........................'
   ],
-  // SLIME TINH THỂ ĐỘC (24x24)
   slime: [
     '........................',
     '........................',
@@ -980,7 +1075,6 @@ const SPRITES = {
     '........................',
     '........................'
   ],
-  // CHIẾN BINH ORC HẮC ÁM (24x24)
   orc: [
     '.......KKKKKKKK.........',
     '.....KKGGGGGGGGKK.......',
@@ -1007,7 +1101,6 @@ const SPRITES = {
     '........................',
     '........................'
   ],
-  // MA VƯƠNG ĐỊA NGỤC BOSS (24x24)
   boss: [
     '..KKK....KKKKKK....KKK..',
     '.KYYYK..KRRRRRRK..KYYYK.',
@@ -1068,14 +1161,46 @@ function renderSpriteToCanvas(canvas, key, scale = 2.4) {
   drawPixelMatrix(ctx, m, ox, oy, scale);
 }
 
-// ================= GAME DATA =================
+// ================= GAME DATA (TỘC HỆ • TƯ CHẤT • LÕI CÔNG NGHỆ) =================
 const SYMBOL_DEFS = [
-  { id: 'warrior', name: 'Chiến Binh', kind: 'hero', weight: 22, hp: 165, atk: 24, spd: 1.0, range: 48, color: '#60a5fa' },
-  { id: 'archer',  name: 'Xạ Thủ',     kind: 'hero', weight: 22, hp: 108, atk: 30, spd: 1.25, range: 195, color: '#34d399' },
-  { id: 'mage',    name: 'Pháp Sư',    kind: 'hero', weight: 20, hp: 102, atk: 34, spd: 0.95, range: 180, color: '#c084fc' },
-  { id: 'lancer',  name: 'Kỵ Binh',    kind: 'hero', weight: 18, hp: 138, atk: 28, spd: 1.35, range: 56, color: '#fbbf24' },
-  { id: 'summoner',name: 'Triệu Hồi',  kind: 'hero', weight: 12, hp: 118, atk: 22, spd: 1.05, range: 165, color: '#f472b6' },
-  { id: 'chest',   name: 'Rương Đồ',   kind: 'gear', weight: 14, color: '#f59e0b' }
+  { id: 'warrior', name: 'Chiến Binh', faction: 'Thiết Giáp', kind: 'hero', weight: 22, hp: 165, atk: 24, spd: 1.0, range: 48, color: '#60a5fa' },
+  { id: 'archer',  name: 'Xạ Thủ',     faction: 'Rừng Sâu',   kind: 'hero', weight: 22, hp: 108, atk: 30, spd: 1.25, range: 195, color: '#34d399' },
+  { id: 'mage',    name: 'Pháp Sư',    faction: 'Tinh Tú',    kind: 'hero', weight: 20, hp: 102, atk: 34, spd: 0.95, range: 180, color: '#c084fc' },
+  { id: 'lancer',  name: 'Kỵ Binh',    faction: 'Thiết Giáp', kind: 'hero', weight: 18, hp: 138, atk: 28, spd: 1.35, range: 56, color: '#fbbf24' },
+  { id: 'summoner',name: 'Triệu Hồi',  faction: 'Tinh Tú',    kind: 'hero', weight: 12, hp: 118, atk: 22, spd: 1.05, range: 165, color: '#f472b6' },
+  { id: 'chest',   name: 'Rương Đồ',   faction: null,         kind: 'gear', weight: 14, color: '#f59e0b' }
+];
+
+const FACTION_DEFS = {
+  'Thiết Giáp': {
+    name: 'Thiết Giáp',
+    desc: '2+ tướng: +18% Công & +45 HP tối đa cho toàn bộ tướng Thiết Giáp.'
+  },
+  'Rừng Sâu': {
+    name: 'Rừng Sâu',
+    desc: '2+ tướng: +0.20 Tốc đánh cho toàn bộ tướng Rừng Sâu.'
+  },
+  'Tinh Tú': {
+    name: 'Tinh Tú',
+    desc: '2+ tướng: Đòn đánh gây thêm +25% sát thương phép/bổ sung.'
+  }
+};
+
+const TRAIT_POOL = [
+  { id: 'titan',   name: 'Khổng Lồ',   hpMult: 1.25, atkMult: 1.0,  spdBonus: 0,    desc: '+25% HP' },
+  { id: 'feral',   name: 'Hung Bạo',   hpMult: 1.0,  atkMult: 1.22, spdBonus: 0,    desc: '+22% Công' },
+  { id: 'swift',   name: 'Tốc Phong',  hpMult: 1.0,  atkMult: 1.0,  spdBonus: 0.20, desc: '+0.20 Tốc đánh' },
+  { id: 'balanced',name: 'Bền Bỉ',     hpMult: 1.12, atkMult: 1.10, spdBonus: 0.06, desc: '+12% HP, +10% Công, +0.06 Tốc' },
+  { id: 'lucky',   name: 'Hào Quang',  hpMult: 1.08, atkMult: 1.14, spdBonus: 0.08, desc: '+8% HP, +14% Công, +0.08 Tốc' }
+];
+
+const CORE_POOL = [
+  { id: 'greed',     name: 'Lõi Lãi Kép',   desc: 'Tăng lãi Vàng cuối mỗi Wave thêm +15 🪙.' },
+  { id: 'discount',  name: 'Lõi Xèng Rẻ',   desc: 'Giảm giá quay xèng 20 🪙 (tối thiểu 40 🪙).' },
+  { id: 'nudge2x',   name: 'Lõi Đẩy Cột +1', desc: 'Mỗi Wave nhận thêm +1 lượt Đẩy Cột mỗi cột.' },
+  { id: 'imprintAmp',name: 'Lõi Cộng Ấn',   desc: 'Tăng hiệu lực Dấu Ấn thêm +1 cấp ảo khi tính chỉ số.' },
+  { id: 'vanguard',  name: 'Lõi Tiên Phong',  desc: '+70 HP và +14 Công cho toàn bộ tướng trên sân.' },
+  { id: 'essence',   name: 'Lõi Tinh Hoa',  desc: 'Nhận ngay +8 ✦ và +4 ✦ mỗi khi qua Wave.' }
 ];
 
 const IMPRINT_DEFS = {
@@ -1156,6 +1281,8 @@ const state = {
   dragOffsetX: 0,
   dragOffsetY: 0,
   pendingAbsorb: null,
+  coreChoices: [],
+  cores: [null, null, null, null, null, null],
   nudges: [1, 1, 1],
   grid: [],
   units: [],
@@ -1180,8 +1307,18 @@ function addLog(msg, color = '#cbd5e1') {
   renderLogs();
 }
 
+function hasCore(coreId) {
+  return state.cores.some(c => c && c.id === coreId);
+}
+
+function getInterestGold() {
+  const baseInterest = Math.min(80, Math.floor(state.gold / 100) * 15 + 10);
+  return baseInterest + (hasCore('greed') ? 15 : 0);
+}
+
 function getSpinCost() {
-  return 100 + state.spinCountInWave * 50;
+  const raw = 100 + state.spinCountInWave * 50 - (hasCore('discount') ? 20 : 0);
+  return Math.max(40, raw);
 }
 
 function getEffectiveWeights() {
@@ -1209,18 +1346,29 @@ function initGrid() {
   state.grid = Array.from({ length: 9 }, () => pickWeightedSymbol(false));
 }
 
+function getFactionCounts() {
+  const counts = { 'Thiết Giáp': 0, 'Rừng Sâu': 0, 'Tinh Tú': 0 };
+  for (const u of state.units) {
+    if (u.faction && counts[u.faction] !== undefined) {
+      counts[u.faction] += 1;
+    }
+  }
+  return counts;
+}
+
 // ================= UNIT & COMBAT =================
 function getDefaultSlotPos(idx) {
   const col = idx % 3;
   const row = Math.floor(idx / 3);
   return {
     x: 68 + col * 92,
-    y: 62 + row * 84
+    y: 62 + row * 82
   };
 }
 
 function createUnit(defId, star = 1) {
   const def = SYMBOL_DEFS.find(d => d.id === defId) || SYMBOL_DEFS[0];
+  const trait = TRAIT_POOL[Math.floor(Math.random() * TRAIT_POOL.length)];
   const mult = star === 1 ? 1 : (star === 2 ? 1.85 : 3.2);
   const startImprints = Array.from({ length: 6 }, (_, i) => {
     if (i === 0) {
@@ -1232,20 +1380,24 @@ function createUnit(defId, star = 1) {
   });
 
   const pos = getDefaultSlotPos(state.units.length);
+  const hpVal = Math.round(def.hp * mult * trait.hpMult);
+  const atkVal = Math.round(def.atk * mult * trait.atkMult);
 
   return {
     id: uid('u'),
     defId: def.id,
     name: def.name,
+    faction: def.faction,
+    traitId: trait.id,
     star,
     absorbLv: 1,
     awakened: [false, false, false],
-    baseHp: Math.round(def.hp * mult),
-    baseAtk: Math.round(def.atk * mult),
-    baseSpd: def.spd,
+    baseHp: hpVal,
+    baseAtk: atkVal,
+    baseSpd: Number((def.spd + trait.spdBonus).toFixed(2)),
     range: def.range,
-    hp: Math.round(def.hp * mult),
-    maxHp: Math.round(def.hp * mult),
+    hp: hpVal,
+    maxHp: hpVal,
     x: pos.x,
     y: pos.y,
     homeX: pos.x,
@@ -1261,9 +1413,20 @@ function createUnit(defId, star = 1) {
 
 function getUnitStats(u) {
   const def = SYMBOL_DEFS.find(d => d.id === u.defId) || SYMBOL_DEFS[0];
-  let bonusHp = (u.absorbLv - 1) * 14;
-  let bonusAtk = (u.absorbLv - 1) * 3.5;
+  const fCounts = getFactionCounts();
+  const coreAmp = hasCore('imprintAmp') ? 1 : 0;
+
+  let bonusHp = (u.absorbLv - 1) * 14 + (hasCore('vanguard') ? 70 : 0);
+  let bonusAtk = (u.absorbLv - 1) * 3.5 + (hasCore('vanguard') ? 14 : 0);
   let bonusSpd = 0;
+
+  if (u.faction === 'Thiết Giáp' && fCounts['Thiết Giáp'] >= 2) {
+    bonusHp += 45;
+    bonusAtk += Math.round(u.baseAtk * 0.18);
+  }
+  if (u.faction === 'Rừng Sâu' && fCounts['Rừng Sâu'] >= 2) {
+    bonusSpd += 0.20;
+  }
 
   if (u.awakened[0]) { bonusHp += 60; bonusAtk += 10; }
   if (u.awakened[1]) { bonusHp += 130; bonusAtk += 22; bonusSpd += 0.15; }
@@ -1281,7 +1444,7 @@ function getUnitStats(u) {
 
   for (const imp of u.imprints) {
     if (imp && imp.id === 'haste') {
-      bonusSpd += 0.12 * imp.lv;
+      bonusSpd += 0.12 * (imp.lv + coreAmp);
     }
   }
 
@@ -1289,6 +1452,11 @@ function getUnitStats(u) {
   const atk = Math.max(5, Math.round(u.baseAtk + bonusAtk));
   const spd = Math.max(0.35, Number((u.baseSpd + bonusSpd).toFixed(2)));
   return { maxHp, atk, spd, range: def.range || 50 };
+}
+
+function getEffectiveImprintLv(u, impId) {
+  const baseLv = u.imprints.reduce((acc, imp) => acc + (imp && imp.id === impId ? imp.lv : 0), 0);
+  return baseLv > 0 ? baseLv + (hasCore('imprintAmp') ? 1 : 0) : 0;
 }
 
 function checkAwakening(u) {
@@ -1334,8 +1502,9 @@ function checkAutoPromote() {
           keeper.absorbLv += extraLv;
           keeper.gears = keptGears;
           const def = SYMBOL_DEFS.find(d => d.id === defId);
-          keeper.baseHp = Math.round(def.hp * (keeper.star === 2 ? 1.85 : 3.2));
-          keeper.baseAtk = Math.round(def.atk * (keeper.star === 2 ? 1.85 : 3.2));
+          const tr = TRAIT_POOL.find(t => t.id === keeper.traitId) || TRAIT_POOL[3];
+          keeper.baseHp = Math.round(def.hp * (keeper.star === 2 ? 1.85 : 3.2) * tr.hpMult);
+          keeper.baseAtk = Math.round(def.atk * (keeper.star === 2 ? 1.85 : 3.2) * tr.atkMult);
           checkAwakening(keeper);
           const st = getUnitStats(keeper);
           keeper.maxHp = st.maxHp;
@@ -1356,9 +1525,10 @@ function summonHero(defId) {
     return;
   }
   const u = createUnit(defId, 1);
+  const tr = TRAIT_POOL.find(t => t.id === u.traitId);
   state.units.push(u);
   if (!state.selectedUnitId) state.selectedUnitId = u.id;
-  addLog(`➕ Triệu hồi ${u.name} 1★ ra trận.`, '#38bdf8');
+  addLog(`➕ Triệu hồi ${u.name} 1★ [${u.faction}] — Tư chất: ${tr ? tr.name : ''}.`, '#38bdf8');
   checkAutoPromote();
 }
 
@@ -1366,6 +1536,62 @@ function grantRandomGear() {
   const gd = GEAR_DEFS[Math.floor(Math.random() * GEAR_DEFS.length)];
   state.inventory.push({ uid: uid('gear'), defId: gd.id });
   addLog(`🎁 Trúng Rương Đồ! Nhận [${gd.name}] (${gd.desc}) vào Kho.`, '#fbbf24');
+}
+
+// ================= CORES =================
+function openCoreModal(autoTriggered = false) {
+  const emptyIdx = state.cores.findIndex(c => c === null);
+  if (emptyIdx === -1) {
+    if (!autoTriggered) addLog('⚙️ Đã đầy đủ 6/6 ô Lõi Công Nghệ!', '#c084fc');
+    return;
+  }
+  const ownedIds = new Set(state.cores.filter(Boolean).map(c => c.id));
+  const pool = CORE_POOL.filter(c => !ownedIds.has(c.id));
+  const shuffled = [...pool].sort(() => Math.random() - 0.5).slice(0, 3);
+  state.coreChoices = shuffled;
+
+  document.getElementById('coreModalSub').textContent =
+    `Lắp vào ô Lõi #${emptyIdx + 1}/6. Chọn 1 Lõi để bẻ cong cơ chế cho toàn đội hình:`;
+
+  const list = document.getElementById('coreChoicesList');
+  list.innerHTML = '';
+  shuffled.forEach(c => {
+    const card = document.createElement('div');
+    card.className = 'core-pick-card';
+    card.innerHTML = `
+      <div>
+        <div style="font-size:13px; font-weight:900; color:var(--purple);">⚙️ ${c.name}</div>
+        <div style="font-size:11px; color:#cbd5e1; margin-top:2px;">${c.desc}</div>
+      </div>
+    `;
+    const btn = document.createElement('button');
+    btn.className = 'btn btn-purple';
+    btn.textContent = 'CHỌN';
+    btn.onclick = () => {
+      const slot = state.cores.findIndex(x => x === null);
+      if (slot !== -1) {
+        state.cores[slot] = { id: c.id, name: c.name, desc: c.desc };
+        if (c.id === 'nudge2x') {
+          state.nudges = state.nudges.map(n => n + 1);
+        }
+        if (c.id === 'essence') {
+          state.essence += 8;
+        }
+        state.units.forEach(u => {
+          const st = getUnitStats(u);
+          u.maxHp = st.maxHp;
+          u.hp = st.maxHp;
+        });
+        addLog(`⚙️ Đã kích hoạt [${c.name}] vào ô Lõi #${slot + 1}!`, '#e879f9');
+      }
+      closeModal('coreModal');
+      updateUI();
+    };
+    card.appendChild(btn);
+    list.appendChild(card);
+  });
+
+  document.getElementById('coreModal').classList.add('open');
 }
 
 // ================= SLOT MACHINE =================
@@ -1507,7 +1733,6 @@ function openAbsorbModal(donor, recipient) {
     `Tướng chủ lực <b>${recipient.name} ${'★'.repeat(recipient.star)}</b> chuẩn bị hấp thụ <b>${donor.name} ${'★'.repeat(donor.star)} (LV ${donor.absorbLv})</b>.<br/>` +
     `Bạn muốn chuyển hóa sức mạnh này theo hướng nào?`;
 
-  // Hướng 1: Lên cấp Tướng
   document.getElementById('absorbHeroOptionDesc').innerHTML =
     `Tăng <b>+${heroGainLv} LV Hấp Thụ</b> cho <b>${recipient.name}</b> (từ LV ${recipient.absorbLv} → <b>LV ${recipient.absorbLv + heroGainLv}</b>), tăng trực tiếp Máu, Công và tiến gần các mốc Thức Tỉnh (30 / 60 / 100). Không gắn/nâng Ấn.`;
 
@@ -1515,7 +1740,6 @@ function openAbsorbModal(donor, recipient) {
   heroBtn.textContent = `⬆️ LÊN CẤP TƯỚNG (+${heroGainLv} LV)`;
   heroBtn.onclick = () => confirmAbsorbHeroLevel(heroGainLv);
 
-  // Hướng 2: Lên cấp Ấn / Gắn Ấn
   document.getElementById('absorbImprintOptionDesc').innerHTML =
     `Truyền Dấu Ấn <b>${impDef.name} (+${impGainLv} cấp)</b> vào 1 trong 6 ô Ấn bên dưới (nếu trùng loại Ấn sẽ cộng dồn lên cấp cao hơn; giữ nguyên LV Hấp Thụ của tướng):`;
 
@@ -1614,18 +1838,19 @@ function openImprintDetail(unit, slotIdx) {
   }
 
   const def = IMPRINT_DEFS[imp.id];
+  const effLv = imp.lv + (hasCore('imprintAmp') ? 1 : 0);
   document.getElementById('imprintModalTitle').textContent = `🔮 ${def.name} — Cấp ${imp.lv} (Ô #${slotIdx + 1})`;
   document.getElementById('imprintModalBody').innerHTML = `
     <div style="display:inline-block; background:#2b1d47; border:1px solid #c084fc; color:#f3e8ff; border-radius:6px; padding:2px 8px; font-size:11px; font-weight:800; margin-bottom:8px;">
-      Hệ Ấn: ${def.tag}
+      Hệ Ấn: ${def.tag} ${hasCore('imprintAmp') ? '• +1 từ Lõi Cộng Ấn' : ''}
     </div>
     <p style="margin:6px 0;"><b>Chủ sở hữu:</b> ${unit.name} ${'★'.repeat(unit.star)} (LV Hấp thụ ${unit.absorbLv})</p>
     <p style="margin:6px 0;"><b>Mô tả kỹ năng:</b> ${def.desc}</p>
     <div style="background:#0b111e; border:1px solid #334155; border-radius:8px; padding:8px 10px; margin:8px 0; color:#fbbf24; font-weight:700;">
-      ✦ Hiệu lực hiện tại (Lv.${imp.lv}): ${def.formula(imp.lv)}
+      ✦ Hiệu lực hiện tại (Lv.${effLv}): ${def.formula(effLv)}
     </div>
     <div style="background:#0b111e; border:1px dashed #334155; border-radius:8px; padding:8px 10px; color:#94a3b8; font-size:12px;">
-      ▲ Cấp tiếp theo (Lv.${imp.lv + 1}): ${def.formula(imp.lv + 1)}
+      ▲ Cấp tiếp theo (Lv.${effLv + 1}): ${def.formula(effLv + 1)}
     </div>
   `;
   document.getElementById('imprintModal').classList.add('open');
@@ -1678,7 +1903,7 @@ function getCanvasCoords(ev) {
 
 function clampHeroPosition(u, nx, ny) {
   u.homeX = Math.max(34, Math.min(355, nx));
-  u.homeY = Math.max(42, Math.min(255, ny));
+  u.homeY = Math.max(42, Math.min(248, ny));
   u.x = u.homeX;
   u.y = u.homeY;
 }
@@ -1764,7 +1989,7 @@ function spawnWaveEnemies(waveNum) {
       spriteKey,
       isBoss,
       x: 575 + (i % 3) * 50,
-      y: 66 + (i % 3) * 80,
+      y: 66 + (i % 3) * 76,
       hp,
       maxHp: hp,
       atk,
@@ -1830,6 +2055,7 @@ function resetGame() {
   state.selectedUnitId = null;
   state.draggingUnitId = null;
   state.pendingAbsorb = null;
+  state.cores = [null, null, null, null, null, null];
   state.nudges = [1, 1, 1];
   state.units = [];
   state.enemies = [];
@@ -1841,7 +2067,7 @@ function resetGame() {
   ];
   state.logs = [];
   initGrid();
-  addLog('🔄 Đã khởi động ván mới (1 Mạng • Lượt quay đầu chắc chắn ra tướng).', '#34d399');
+  addLog('🔄 Đã khởi động ván mới (1 Mạng • Có Lãi Vàng, 6 ô Lõi, Tộc/Hệ & Tư Chất).', '#34d399');
   updateUI();
 }
 
@@ -1850,9 +2076,15 @@ let lastTime = performance.now();
 
 function applyHeroAttack(u, target) {
   const st = getUnitStats(u);
-  const critChance = 0.1 + u.imprints.reduce((acc, imp) => acc + (imp && imp.id === 'crit' ? imp.lv * 0.06 : 0), 0);
+  const fCounts = getFactionCounts();
+  const critLv = getEffectiveImprintLv(u, 'crit');
+  const critChance = 0.1 + critLv * 0.06;
   const isCrit = Math.random() < Math.min(0.85, critChance);
-  const dmg = Math.round(st.atk * (isCrit ? 1.75 : 1));
+  let dmg = Math.round(st.atk * (isCrit ? 1.75 : 1));
+
+  if (u.faction === 'Tinh Tú' && fCounts['Tinh Tú'] >= 2) {
+    dmg = Math.round(dmg * 1.25);
+  }
 
   target.hp -= dmg;
   target.flashTimer = 0.1;
@@ -1866,24 +2098,24 @@ function applyHeroAttack(u, target) {
     life: 0.65
   });
 
-  const lsLv = u.imprints.reduce((acc, imp) => acc + (imp && imp.id === 'lifesteal' ? imp.lv : 0), 0);
+  const lsLv = getEffectiveImprintLv(u, 'lifesteal');
   if (lsLv > 0) {
     const heal = Math.max(2, Math.round(dmg * (0.08 * lsLv)));
     u.hp = Math.min(u.maxHp, u.hp + heal);
   }
 
-  const psLv = u.imprints.reduce((acc, imp) => acc + (imp && imp.id === 'poison' ? imp.lv : 0), 0);
+  const psLv = getEffectiveImprintLv(u, 'poison');
   if (psLv > 0) {
     target.poisonTimer = 3.0;
     target.poisonDps = 8 * psLv;
   }
 
-  const qkLv = u.imprints.reduce((acc, imp) => acc + (imp && imp.id === 'quake' ? imp.lv : 0), 0);
+  const qkLv = getEffectiveImprintLv(u, 'quake');
   if (qkLv > 0 && Math.random() < Math.min(0.65, 0.18 * qkLv)) {
     target.stunTimer = 1.0;
   }
 
-  const chLv = u.imprints.reduce((acc, imp) => acc + (imp && imp.id === 'chain' ? imp.lv : 0), 0);
+  const chLv = getEffectiveImprintLv(u, 'chain');
   if (chLv > 0 && state.enemies.length > 1) {
     const other = state.enemies.find(e => e.id !== target.id && e.hp > 0);
     if (other) {
@@ -2034,13 +2266,15 @@ function updateSimulation(rawDt) {
 
   if (state.enemies.length === 0) {
     state.inCombat = false;
-    const rewardGold = 120 + state.wave * 25;
-    const rewardEss = 6 + Math.floor(state.wave / 2);
+    const interest = getInterestGold();
+    const rewardGold = 110 + state.wave * 20 + interest;
+    const rewardEss = 6 + Math.floor(state.wave / 2) + (hasCore('essence') ? 4 : 0);
     state.gold += rewardGold;
     state.essence += rewardEss;
+    const clearedWave = state.wave;
     state.wave += 1;
     state.spinCountInWave = 0;
-    state.nudges = [1, 1, 1];
+    state.nudges = [1, 1, 1].map(n => n + (hasCore('nudge2x') ? 1 : 0));
     state.units.forEach((u) => {
       u.x = u.homeX;
       u.y = u.homeY;
@@ -2048,8 +2282,11 @@ function updateSimulation(rawDt) {
       u.maxHp = st.maxHp;
       u.hp = st.maxHp;
     });
-    addLog(`🏆 Qua Wave! Nhận +${rewardGold} 🪙 và +${rewardEss} ✦. Giá quay reset về 100 🪙.`, '#34d399');
+    addLog(`🏆 Qua Wave ${clearedWave}! Nhận +${rewardGold} 🪙 (gồm +${interest} 🪙 lãi) và +${rewardEss} ✦.`, '#34d399');
     updateUI();
+    if (clearedWave % 3 === 0 && state.cores.some(c => c === null)) {
+      openCoreModal(true);
+    }
   }
 }
 
@@ -2061,7 +2298,6 @@ function renderBattleCanvas() {
   const h = canvas.height;
   const isBossWave = state.wave % 5 === 0;
 
-  // Nền bầu trời / đấu trường chiều sâu
   const bgGrad = ctx.createLinearGradient(0, 0, 0, h);
   if (isBossWave) {
     bgGrad.addColorStop(0, '#2a0918');
@@ -2073,7 +2309,6 @@ function renderBattleCanvas() {
   ctx.fillStyle = bgGrad;
   ctx.fillRect(0, 0, w, h);
 
-  // Sàn gạch đá cổ điển có viền sáng tối
   const tileSize = 48;
   for (let gx = 24; gx < w; gx += tileSize) {
     for (let gy = 34; gy < h; gy += tileSize) {
@@ -2082,24 +2317,21 @@ function renderBattleCanvas() {
         ? (alt ? '#220d19' : '#190912')
         : (alt ? '#13203b' : '#0e182e');
       ctx.fillRect(gx, gy, tileSize - 2, tileSize - 2);
-
       ctx.fillStyle = 'rgba(255,255,255,0.03)';
       ctx.fillRect(gx, gy, tileSize - 2, 2);
     }
   }
 
-  // Vùng triển khai đội hình của người chơi (bên trái)
   if (!state.inCombat) {
     ctx.fillStyle = 'rgba(56, 189, 248, 0.05)';
-    ctx.fillRect(30, 38, 355, h - 58);
+    ctx.fillRect(30, 38, 355, h - 54);
     ctx.strokeStyle = 'rgba(56, 189, 248, 0.45)';
     ctx.setLineDash([6, 4]);
     ctx.lineWidth = 2;
-    ctx.strokeRect(30, 38, 355, h - 58);
+    ctx.strokeRect(30, 38, 355, h - 54);
     ctx.setLineDash([]);
   }
 
-  // Tường thành & Tháp canh bên trái
   ctx.fillStyle = '#1e293b';
   ctx.fillRect(0, 0, 26, h);
   ctx.fillStyle = '#334155';
@@ -2111,7 +2343,6 @@ function renderBattleCanvas() {
   ctx.fillStyle = '#fde047';
   ctx.fillRect(11, h / 2 - 18, 4, 36);
 
-  // Vẽ Tướng (24x24 chi tiết + bóng đổ + hào quang sao/thức tỉnh)
   for (const u of state.units) {
     const bob = state.draggingUnitId === u.id ? -5 : Math.sin(u.animTick) * 2.5;
     const m = SPRITES[u.defId] || SPRITES.warrior;
@@ -2121,13 +2352,11 @@ function renderBattleCanvas() {
     const cx = u.x + spriteW * 0.5;
     const cy = u.y + spriteH * 0.85;
 
-    // Bóng đổ dưới chân
     ctx.fillStyle = 'rgba(0, 0, 0, 0.48)';
     ctx.beginPath();
     ctx.ellipse(cx, cy, spriteW * 0.42, 7, 0, 0, Math.PI * 2);
     ctx.fill();
 
-    // Hào quang thức tỉnh nếu đã đạt mốc >= 30
     if (u.awakened[0]) {
       ctx.strokeStyle = u.awakened[2] ? 'rgba(251, 191, 36, 0.7)' : 'rgba(192, 132, 252, 0.55)';
       ctx.lineWidth = 2;
@@ -2136,7 +2365,6 @@ function renderBattleCanvas() {
       ctx.stroke();
     }
 
-    // Vòng chọn dưới chân tướng
     if (u.id === state.selectedUnitId) {
       ctx.strokeStyle = state.draggingUnitId === u.id ? '#fbbf24' : '#38bdf8';
       ctx.lineWidth = 2.5;
@@ -2147,7 +2375,6 @@ function renderBattleCanvas() {
 
     drawPixelMatrix(ctx, m, u.x, u.y + bob, sc, false, u.flashTimer > 0);
 
-    // Thanh máu & cấp độ
     const bw = 44;
     const ratio = Math.max(0, Math.min(1, u.hp / u.maxHp));
     ctx.fillStyle = '#090d16';
@@ -2160,7 +2387,6 @@ function renderBattleCanvas() {
     ctx.fillText(`${'★'.repeat(u.star)} L${u.absorbLv}`, u.x, u.y - 12);
   }
 
-  // Vẽ Quái vật (24x24 chi tiết + bóng đổ + hiệu ứng trạng thái)
   for (const e of state.enemies) {
     const bob = Math.cos(e.animTick) * 2.5;
     const m = SPRITES[e.spriteKey] || SPRITES.slime;
@@ -2189,7 +2415,6 @@ function renderBattleCanvas() {
     }
   }
 
-  // Đạn phép & tên bắn có đuôi sáng
   for (const p of state.projectiles) {
     ctx.fillStyle = 'rgba(56, 189, 248, 0.35)';
     ctx.fillRect(p.x - 8, p.y - 3, 12, 6);
@@ -2197,7 +2422,6 @@ function renderBattleCanvas() {
     ctx.fillRect(p.x - 3, p.y - 3, 6, 6);
   }
 
-  // Số sát thương nổi
   for (const fx of state.effects) {
     ctx.fillStyle = '#000000';
     ctx.font = 'bold 12px sans-serif';
@@ -2216,6 +2440,41 @@ function gameLoop(now) {
 }
 
 // ================= UI RENDERING =================
+function renderCoresStrip() {
+  const strip = document.getElementById('coresStrip');
+  strip.innerHTML = '';
+  state.cores.forEach((c, idx) => {
+    const slot = document.createElement('div');
+    slot.className = 'core-slot ' + (c ? 'filled' : 'empty');
+    if (c) {
+      slot.textContent = c.name.replace('Lõi ', '');
+      slot.title = `${c.name}: ${c.desc}`;
+      slot.onclick = () => addLog(`⚙️ ${c.name}: ${c.desc}`, '#e879f9');
+    } else {
+      slot.textContent = `Lõi ${idx + 1}`;
+      slot.title = 'Đạt mỗi 3 Wave hoặc bấm + Chọn Lõi để lắp';
+      slot.onclick = () => openCoreModal(false);
+    }
+    strip.appendChild(slot);
+  });
+}
+
+function renderSynergies() {
+  const bar = document.getElementById('synergyBar');
+  const counts = getFactionCounts();
+  bar.innerHTML = '';
+  Object.keys(FACTION_DEFS).forEach(fName => {
+    const fDef = FACTION_DEFS[fName];
+    const cnt = counts[fName] || 0;
+    const isActive = cnt >= 2;
+    const el = document.createElement('div');
+    el.className = 'syn-badge' + (isActive ? ' active' : '');
+    el.title = fDef.desc;
+    el.textContent = `${isActive ? '✦' : '○'} ${fName} (${cnt}/2+) — ${isActive ? 'KÍCH HOẠT' : fDef.desc.split(':')[1]}`;
+    bar.appendChild(el);
+  });
+}
+
 function renderSlotGrid(matchedSet = new Set(), poppingSet = new Set(), droppingSet = new Set()) {
   const gridEl = document.getElementById('slotGrid');
   gridEl.innerHTML = '';
@@ -2279,10 +2538,12 @@ function renderRoster() {
     renderSpriteToCanvas(cnv, u.defId, 2.0);
 
     const st = getUnitStats(u);
+    const tr = TRAIT_POOL.find(t => t.id === u.traitId);
     const info = document.createElement('div');
     info.innerHTML = `
-      <div class="unit-name" style="color: var(--gold)">${u.name} ${'★'.repeat(u.star)}</div>
+      <div class="unit-name" style="color: var(--gold)">${u.name} ${'★'.repeat(u.star)} <span style="font-size:10px;color:var(--cyan);">[${u.faction}]</span></div>
       <div class="unit-meta">LV Hấp Thụ: <b>${u.absorbLv}</b> • Công ${st.atk} • HP ${st.maxHp}</div>
+      <div class="trait-pill">✦ ${tr ? `${tr.name} (${tr.desc})` : 'Tư chất'}</div>
     `;
 
     top.appendChild(cnv);
@@ -2354,11 +2615,12 @@ function renderInspector() {
   }
 
   const st = getUnitStats(u);
+  const tr = TRAIT_POOL.find(t => t.id === u.traitId);
   let html = `
     <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:6px;">
       <div>
-        <b style="color: var(--cyan); font-size: 13px;">${u.name} ${'★'.repeat(u.star)}</b>
-        <span style="font-size: 11px; color: var(--muted);">— LV Hấp thụ ${u.absorbLv} | Công ${st.atk} | HP ${st.maxHp} | Tốc ${st.spd}</span>
+        <b style="color: var(--cyan); font-size: 13px;">${u.name} ${'★'.repeat(u.star)} [${u.faction}]</b>
+        <span style="font-size: 11px; color: var(--muted);">— Tư chất: ${tr ? tr.name : ''} | LV Hấp thụ ${u.absorbLv} | Công ${st.atk} | HP ${st.maxHp} | Tốc ${st.spd}</span>
       </div>
       <span style="font-size: 11px; color: var(--purple);">Chạm Ấn bên dưới để xem chi tiết</span>
     </div>
@@ -2439,7 +2701,7 @@ function openRatesModal() {
     const pct = ((w.effWeight / total) * 100).toFixed(1);
     return `<tr>
       <td style="color:${w.color}; font-weight:800;">${w.name}</td>
-      <td>${w.kind === 'hero' ? 'Tướng chiến đấu' : 'Rương Trang Bị'}</td>
+      <td>${w.kind === 'hero' ? `Tướng (${w.faction})` : 'Rương Trang Bị'}</td>
       <td><b>${pct}%</b></td>
     </tr>`;
   }).join('');
@@ -2499,6 +2761,7 @@ function closeModal(id) {
 function updateUI() {
   document.getElementById('statLife').textContent = state.life;
   document.getElementById('statGold').textContent = state.gold;
+  document.getElementById('interestTag').textContent = `(+${getInterestGold()} lãi)`;
   document.getElementById('statEssence').textContent = state.essence;
   document.getElementById('statCount').textContent = state.units.length;
   document.getElementById('statCap').textContent = state.cap;
@@ -2512,6 +2775,10 @@ function updateUI() {
   document.getElementById('btnStartWave').disabled = state.inCombat || state.isSpinning || state.gameOver || state.units.length === 0;
   document.getElementById('btnSpeed').textContent = `Tốc độ: x${state.speedMult}`;
   document.getElementById('btnSound').textContent = AudioFX.isEnabled() ? '🔊' : '🔇';
+
+  const coreBtn = document.getElementById('btnPickCoreNow');
+  const hasFreeCore = state.cores.some(c => c === null);
+  coreBtn.disabled = !hasFreeCore || state.inCombat || state.gameOver;
 
   const absorbBtn = document.getElementById('btnAbsorbMode');
   absorbBtn.textContent = state.absorbMode ? '🩸 CHỌN TƯỚNG BỊ NUỐT' : '🩸 NUỐT: TẮT';
@@ -2530,6 +2797,8 @@ function updateUI() {
   document.getElementById('battleHint').style.display = state.inCombat ? 'none' : 'block';
 
   renderSlotGrid();
+  renderCoresStrip();
+  renderSynergies();
   renderRoster();
   renderInspector();
   renderInventory();
@@ -2541,6 +2810,7 @@ document.getElementById('btnSpin').addEventListener('click', handleSpin);
 document.getElementById('nudge0').addEventListener('click', () => handleNudge(0));
 document.getElementById('nudge1').addEventListener('click', () => handleNudge(1));
 document.getElementById('nudge2').addEventListener('click', () => handleNudge(2));
+document.getElementById('btnPickCoreNow').addEventListener('click', () => openCoreModal(false));
 
 document.getElementById('btnAbsorbMode').addEventListener('click', () => {
   if (!state.selectedUnitId && state.units[0]) {
@@ -2574,7 +2844,7 @@ document.getElementById('btnCancelAbsorb').addEventListener('click', () => {
 setupBattleCanvasMovement();
 renderSpriteToCanvas(document.getElementById('brandIcon'), 'warrior', 1.65);
 initGrid();
-addLog('Chào mừng! Phiên bản Hi-Bit 24x24: Nuốt tướng cho phép chọn Lên cấp Tướng hoặc Lên cấp Ấn.', '#fbbf24');
+addLog('Chào mừng! Đã thêm Cộng Hưởng Tộc/Hệ, 6 Ô Lõi Công Nghệ, Lãi Vàng mỗi Wave & Tư Chất ngẫu nhiên.', '#fbbf24');
 updateUI();
 requestAnimationFrame(gameLoop);
 </script>
