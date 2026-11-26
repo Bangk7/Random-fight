@@ -30,50 +30,51 @@
     margin: 0;
     padding: 0;
     width: 100%;
-    height: 100%;
+    min-height: 100%;
     background: var(--bg-main);
     color: var(--text-main);
     font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
-    overflow: hidden;
   }
 
   .app-shell {
-    display: grid;
-    grid-template-rows: 48px 1fr;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
     width: 100%;
-    height: 100%;
   }
 
   /* Control Bar */
   .top-bar {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
     justify-content: space-between;
-    padding: 0 14px;
+    padding: 8px 12px;
     background: var(--bg-panel);
     border-bottom: 1px solid var(--border-ui);
-    gap: 10px;
+    gap: 8px;
   }
 
   .brand-group {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
-    gap: 12px;
+    gap: 8px;
   }
 
   .game-title {
     font-weight: 800;
-    font-size: 16px;
-    letter-spacing: 0.6px;
+    font-size: 15px;
+    letter-spacing: 0.5px;
     color: var(--accent-cyan);
   }
 
   .wave-pill {
     background: var(--bg-panel-2);
     border: 1px solid var(--border-ui);
-    padding: 4px 10px;
+    padding: 3px 8px;
     border-radius: 6px;
-    font-size: 13px;
+    font-size: 12px;
     font-weight: 600;
   }
 
@@ -83,26 +84,28 @@
 
   .stat-strip {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
-    gap: 14px;
-    font-size: 13px;
+    gap: 8px;
+    font-size: 12px;
     font-weight: 600;
   }
 
   .stat-item {
     display: flex;
     align-items: center;
-    gap: 5px;
+    gap: 4px;
     background: var(--bg-panel-2);
-    padding: 4px 10px;
+    padding: 3px 8px;
     border-radius: 6px;
     border: 1px solid var(--border-ui);
   }
 
   .btn-group {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
-    gap: 8px;
+    gap: 6px;
   }
 
   button {
@@ -110,8 +113,8 @@
     color: var(--text-main);
     border: 1px solid var(--border-ui);
     border-radius: 6px;
-    padding: 6px 12px;
-    font-size: 13px;
+    padding: 6px 10px;
+    font-size: 12px;
     font-weight: 600;
     cursor: pointer;
     transition: background 0.15s ease, border-color 0.15s ease, transform 0.1s ease;
@@ -156,11 +159,28 @@
   /* Main Arena Layout */
   .main-grid {
     display: grid;
-    grid-template-columns: 1.35fr 1fr;
-    gap: 12px;
-    padding: 12px;
-    height: calc(100% - 48px);
-    overflow: hidden;
+    grid-template-columns: 1fr;
+    gap: 10px;
+    padding: 10px;
+    flex: 1;
+  }
+
+  @media (min-width: 860px) {
+    html, body {
+      height: 100%;
+      overflow: hidden;
+    }
+    .app-shell {
+      height: 100%;
+      min-height: 0;
+    }
+    .main-grid {
+      grid-template-columns: 1.35fr 1fr;
+      gap: 12px;
+      padding: 12px;
+      min-height: 0;
+      overflow: hidden;
+    }
   }
 
   /* Battlefield Panel */
@@ -176,6 +196,7 @@
 
   .battle-header {
     display: flex;
+    flex-wrap: wrap;
     justify-content: space-between;
     align-items: center;
     padding: 8px 12px;
@@ -183,24 +204,24 @@
     border-bottom: 1px solid var(--border-ui);
     font-size: 12px;
     color: var(--text-muted);
+    gap: 8px;
   }
 
   .wall-mounts {
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 5px;
   }
 
   .wall-slot {
-    width: 30px;
-    height: 30px;
+    width: 28px;
+    height: 28px;
     border-radius: 6px;
     background: var(--bg-slot);
     border: 1px dashed #475569;
     display: grid;
     place-items: center;
-    font-size: 15px;
-    position: relative;
+    font-size: 14px;
   }
 
   .wall-slot.filled {
@@ -211,9 +232,16 @@
 
   .canvas-wrap {
     position: relative;
-    flex: 1;
     width: 100%;
-    min-height: 0;
+    height: 260px;
+  }
+
+  @media (min-width: 860px) {
+    .canvas-wrap {
+      flex: 1;
+      height: auto;
+      min-height: 0;
+    }
   }
 
   canvas#battleCanvas {
@@ -225,13 +253,15 @@
 
   .inspector-bar {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
     justify-content: space-between;
     padding: 8px 12px;
     background: var(--bg-panel-2);
     border-top: 1px solid var(--border-ui);
-    min-height: 54px;
+    min-height: 48px;
     font-size: 12px;
+    gap: 6px;
   }
 
   .inspector-stats {
@@ -250,8 +280,13 @@
     display: flex;
     flex-direction: column;
     gap: 10px;
-    min-height: 0;
-    overflow: hidden;
+  }
+
+  @media (min-width: 860px) {
+    .side-panel {
+      min-height: 0;
+      overflow: hidden;
+    }
   }
 
   .slot-card {
@@ -266,10 +301,12 @@
 
   .slot-header {
     display: flex;
+    flex-wrap: wrap;
     justify-content: space-between;
     align-items: center;
     font-size: 13px;
     font-weight: 700;
+    gap: 4px;
   }
 
   .slot-grid {
@@ -363,7 +400,6 @@
     flex: 1;
   }
 
-  /* Shop & Log Split */
   .shop-card {
     background: var(--bg-panel);
     border: 1px solid var(--border-ui);
@@ -395,13 +431,13 @@
 
   .shop-item button {
     width: 100%;
-    padding: 3px 6px;
+    padding: 4px 6px;
     font-size: 11px;
   }
 
   .log-card {
-    flex: 1;
-    min-height: 72px;
+    min-height: 110px;
+    max-height: 180px;
     background: var(--bg-panel);
     border: 1px solid var(--border-ui);
     border-radius: 10px;
@@ -409,6 +445,14 @@
     display: flex;
     flex-direction: column;
     overflow: hidden;
+  }
+
+  @media (min-width: 860px) {
+    .log-card {
+      flex: 1;
+      max-height: none;
+      min-height: 72px;
+    }
   }
 
   .log-title {
@@ -481,7 +525,7 @@
 
   .core-choices {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
     gap: 10px;
   }
 
@@ -516,7 +560,7 @@
 
   .roster-grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 8px;
     max-height: 300px;
     overflow-y: auto;
@@ -571,7 +615,7 @@
     <!-- Left: Battlefield -->
     <section class="battle-panel">
       <div class="battle-header">
-        <div>Nhấp vào tướng hoặc kẻ địch trên chiến trường để xem chỉ số • Không còn hiệu ứng nhấp nhô trôi nổi</div>
+        <div>Nhấp vào tướng hoặc kẻ địch để xem chỉ số • Đứng yên vững trên sân</div>
         <div class="wall-mounts" title="Tối đa 5 vật phẩm treo tường">
           <span>Treo tường:</span>
           <div class="wall-slot" id="wall0">-</div>
@@ -596,8 +640,8 @@
     <aside class="side-panel">
       <div class="slot-card">
         <div class="slot-header">
-          <span>Máy Xèng 3x3 (Hoạt ảnh quay kéo dài)</span>
-          <span style="font-size:11px; color:var(--text-muted)">Kéo ô vào ô khác để nuốt thăng cấp</span>
+          <span>Máy Xèng 3x3</span>
+          <span style="font-size:11px; color:var(--text-muted)">Kéo ô để nuốt • Nhấp để triệu hồi</span>
         </div>
 
         <div class="slot-grid" id="slotGrid"></div>
@@ -655,9 +699,6 @@
 
 <script>
 (() => {
-  // ==========================================
-  // 1. CLASSES, QUALITIES, ITEMS & CORES
-  // ==========================================
   const CLASSES = {
     knight:  { id: "knight",  name: "Hiệp Sĩ",    role: "Đỡ đòn",    color: "#60a5fa", hp: 150, atk: 20, range: 46,  speed: 62, cd: 1.05 },
     warrior: { id: "warrior", name: "Chiến Binh", role: "Cận chiến", color: "#f87171", hp: 125, atk: 30, range: 50,  speed: 74, cd: 0.90 },
@@ -700,9 +741,6 @@
     { id: "wyrm",    name: "Hắc Long Càn Quét",  color: "#ef4444", hpBase: 260, atkBase: 30, spd: 58, radius: 22 }
   ];
 
-  // ==========================================
-  // 2. PIXEL SPRITE GENERATOR (NO FLOATING/BOBBING)
-  // ==========================================
   function drawPixelUnit(ctx, classId, x, y, size, facingRight = true, hitFlash = 0, attackPose = 0) {
     ctx.save();
     ctx.translate(Math.round(x), Math.round(y));
@@ -719,20 +757,14 @@
 
     const cls = CLASSES[classId] || CLASSES.knight;
 
-    // Grounded feet shadow
     ctx.fillStyle = "rgba(0,0,0,0.42)";
     ctx.beginPath();
     ctx.ellipse(0, Math.round(7.2 * p), Math.max(2, Math.round(6 * p)), Math.max(1, Math.round(2.2 * p)), 0, 0, Math.PI * 2);
     ctx.fill();
 
-    // Boots / Legs
     px(5, 11, 2, 3, "#334155");
     px(9, 11, 2, 3, "#334155");
-
-    // Torso
     px(5, 6, 6, 5, cls.color);
-
-    // Head
     px(5, 2, 6, 4, "#fde68a");
 
     if (classId === "knight") {
@@ -799,13 +831,10 @@
     drawPixelUnit(ctx, unit.classId, canvas.width / 2, canvas.height / 2 + 2, 26, true, 0, 0);
   }
 
-  // ==========================================
-  // 3. GAME STATE & BALANCE CONFIG
-  // ==========================================
   const state = {
     wave: 1,
     maxWave: 18,
-    phase: "prep", // "prep" | "combat" | "core_select" | "victory" | "defeat"
+    phase: "prep",
     essence: 8,
     starlight: 3,
     baseHp: 100,
@@ -969,9 +998,6 @@
     state.enemies = enemies;
   }
 
-  // ==========================================
-  // 4. LOGGING & UI RENDERING
-  // ==========================================
   function addLog(msg, kind = "") {
     const list = document.getElementById("logList");
     const div = document.createElement("div");
@@ -1077,9 +1103,6 @@
     updateHeaderUI();
   }
 
-  // ==========================================
-  // 5. 3x3 SLOT MACHINE & DRAG-SWALLOW
-  // ==========================================
   let draggedReelIndex = null;
 
   function renderSlotGrid() {
@@ -1274,7 +1297,7 @@
     }, tickInterval);
   }
 
-  function deployUnitFromReel(reelIdx) {
+  function deployUnitFromReel(reelIdx, silent = false) {
     const unit = state.reels[reelIdx];
     if (!unit || state.phase !== "prep") return;
 
@@ -1303,7 +1326,9 @@
     state.allies.push(ally);
     state.reels[reelIdx] = null;
     renderSlotGrid();
-    addLog(`Triệu hồi ${ally.className} (Lv.${ally.level}, ${ally.quality}) ra chiến trường.`, "good");
+    if (!silent) {
+      addLog(`Triệu hồi ${ally.className} (Lv.${ally.level}, ${ally.quality}) ra chiến trường.`, "good");
+    }
   }
 
   function deployAllReels() {
@@ -1319,29 +1344,12 @@
     }
   }
 
-  // ==========================================
-  // 6. COMBAT LOOP & COMBAT ANIMATIONS
-  // ==========================================
   function spawnFloatingText(x, y, text, color = "#ffffff") {
-    state.floatingTexts.push({
-      x,
-      y,
-      text,
-      color,
-      life: 0.75,
-      maxLife: 0.75
-    });
+    state.floatingTexts.push({ x, y, text, color, life: 0.75, maxLife: 0.75 });
   }
 
   function spawnSlash(x, y, angle, color = "#38bdf8") {
-    state.slashEffects.push({
-      x,
-      y,
-      angle,
-      color,
-      life: 0.22,
-      maxLife: 0.22
-    });
+    state.slashEffects.push({ x, y, angle, color, life: 0.22, maxLife: 0.22 });
   }
 
   function startWaveCombat() {
@@ -1353,7 +1361,7 @@
     if (state.allies.length === 0) {
       const starter = createUnitData("knight", QUALITIES[0], 1);
       state.reels[4] = starter;
-      deployUnitFromReel(4);
+      deployUnitFromReel(4, true);
     }
 
     spawnWaveEnemies(state.wave);
@@ -1371,7 +1379,6 @@
       state.screenShake = Math.max(0, state.screenShake - dt * 28);
     }
 
-    // Update allies
     for (let i = state.allies.length - 1; i >= 0; i--) {
       const a = state.allies[i];
       if (a.hitFlash > 0) a.hitFlash = Math.max(0, a.hitFlash - dt * 6);
@@ -1435,7 +1442,6 @@
       }
     }
 
-    // Update enemies
     let breachedBase = false;
     for (let i = state.enemies.length - 1; i >= 0; i--) {
       const e = state.enemies[i];
@@ -1485,7 +1491,6 @@
       }
     }
 
-    // Update projectiles
     for (let i = state.projectiles.length - 1; i >= 0; i--) {
       const p = state.projectiles[i];
       p.x += p.vx * dt;
@@ -1534,7 +1539,6 @@
 
     if (state.enemies.length === 0 && state.phase === "combat") {
       if (breachedBase) {
-        // Return remaining allies to prep if wave ended due to breach
         for (const a of state.allies) {
           a.hp = a.maxHp;
           a.x = a.homeX;
@@ -1612,9 +1616,6 @@
     updateHeaderUI();
   }
 
-  // ==========================================
-  // 7. CORE SELECTION MODAL (EVERY 3 WAVES)
-  // ==========================================
   function openCoreModal() {
     const modal = document.getElementById("coreModal");
     const choicesWrap = document.getElementById("coreChoices");
@@ -1653,9 +1654,6 @@
     modal.classList.add("open");
   }
 
-  // ==========================================
-  // 8. BATTLEFIELD CANVAS RENDERING & INSPECTOR
-  // ==========================================
   function renderBattlefield() {
     const canvas = document.getElementById("battleCanvas");
     const ctx = canvas.getContext("2d");
@@ -1696,22 +1694,22 @@
     ctx.stroke();
 
     for (const a of state.allies) {
-      drawPixelUnit(ctx, a.classId, a.x, a.y, 34, true, a.hitFlash, a.attackPose);
+      drawPixelUnit(ctx, a.classId, a.x, a.y, 38, true, a.hitFlash, a.attackPose);
 
       if (state.selectedEntity && state.selectedEntity.uid === a.uid) {
         ctx.strokeStyle = "#38bdf8";
         ctx.lineWidth = 2;
         ctx.beginPath();
-        ctx.arc(a.x, a.y + 4, 20, 0, Math.PI * 2);
+        ctx.arc(a.x, a.y + 4, 22, 0, Math.PI * 2);
         ctx.stroke();
       }
 
-      const bw = 30;
+      const bw = 32;
       const ratio = Math.max(0, a.hp / a.maxHp);
       ctx.fillStyle = "#0f172a";
-      ctx.fillRect(a.x - bw / 2, a.y - 24, bw, 5);
+      ctx.fillRect(a.x - bw / 2, a.y - 26, bw, 5);
       ctx.fillStyle = "#34d399";
-      ctx.fillRect(a.x - bw / 2, a.y - 24, bw * ratio, 5);
+      ctx.fillRect(a.x - bw / 2, a.y - 26, bw * ratio, 5);
     }
 
     for (const e of state.enemies) {
@@ -1811,7 +1809,7 @@
       const cy = (e.clientY - rect.top) * scaleY;
 
       for (const a of state.allies) {
-        if (Math.hypot(a.x - cx, a.y - cy) <= 22) {
+        if (Math.hypot(a.x - cx, a.y - cy) <= 24) {
           state.selectedEntity = a;
           refreshInspector();
           return;
@@ -1827,9 +1825,6 @@
     });
   }
 
-  // ==========================================
-  // 9. TOP BAR MODALS & RESET
-  // ==========================================
   function openInfoModal(title, htmlContent) {
     document.getElementById("infoModalTitle").textContent = title;
     document.getElementById("infoModalBody").innerHTML = htmlContent;
@@ -1860,11 +1855,11 @@
     document.getElementById("btnStartNotice").addEventListener("click", () => {
       openInfoModal("Thông báo cập nhật", `
         <ul style="margin:0; padding-left:18px; display:flex; flex-direction:column; gap:6px;">
-          <li>Đã tăng thời lượng quay máy xèng 3x3 lên 1.65s với nhịp dừng từng cột.</li>
-          <li>Đã tắt hoàn toàn hiệu ứng hít thở trôi nổi của nhân vật trên chiến trường.</li>
-          <li>Đã tăng sức mạnh kẻ địch theo từng đợt và cân bằng số lượng quái để có chiều sâu chiến thuật.</li>
-          <li>Đã bổ sung hoạt ảnh chiến đấu: lao tới tấn công, vệt chém, đạn phép/cung, rung màn hình và chỉ số nổi.</li>
-          <li>Lõi sức mạnh bắt buộc xuất hiện sau mỗi 3 đợt (Đợt 3, 6, 9, 12, 15, 18).</li>
+          <li>Đã khắc phục bố cục màn hình dọc trên điện thoại để thấy đầy đủ nút điều khiển, máy xèng 3x3 và cửa hàng.</li>
+          <li>Máy xèng 3x3 quay kéo dài 1.65s với nhịp dừng từng ô.</li>
+          <li>Tắt hiệu ứng hít thở trôi nổi của nhân vật trên chiến trường.</li>
+          <li>Tăng sức mạnh kẻ địch theo đợt và cân bằng số lượng quái.</li>
+          <li>Thêm hoạt ảnh chiến đấu: lao tới tấn công, vệt chém, đạn phép/cung, rung màn hình và chỉ số nổi.</li>
         </ul>
       `);
     });
@@ -1931,6 +1926,10 @@
       null, null, null, null, null, null
     ];
 
+    deployUnitFromReel(0, true);
+    deployUnitFromReel(1, true);
+    deployUnitFromReel(2, true);
+
     document.getElementById("logList").innerHTML = "";
     document.getElementById("inspectorTitle").textContent = "Chọn một đơn vị trên chiến trường để kiểm tra chỉ số chi tiết.";
     document.getElementById("inspectorStats").innerHTML = "";
@@ -1939,12 +1938,9 @@
     renderWallSlots();
     renderSlotGrid();
     updateHeaderUI();
-    addLog("Bắt đầu ván mới Random-Fight! Triệu hồi hoặc quay máy xèng để chuẩn bị.", "good");
+    addLog("Bắt đầu ván mới Random-Fight! Đội hình khởi đầu đã ra sân.", "good");
   }
 
-  // ==========================================
-  // 10. MAIN LOOP
-  // ==========================================
   let lastTime = performance.now();
   function gameLoop(now) {
     const dt = Math.min(0.05, (now - lastTime) / 1000);
