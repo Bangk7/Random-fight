@@ -3,13 +3,13 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-<title>SLOTBOUND: PIXEL 16-BIT EDITION</title>
+<title>SLOTBOUND: HI-BIT PIXEL EDITION</title>
 <style>
   :root {
-    --bg: #080b12;
-    --panel: #111827;
-    --panel-2: #192236;
-    --border: #2c3a58;
+    --bg: #060911;
+    --panel: #0f1626;
+    --panel-2: #172136;
+    --border: #2c3e61;
     --gold: #fbbf24;
     --gold-2: #f59e0b;
     --cyan: #38bdf8;
@@ -28,7 +28,10 @@
 
   body {
     margin: 0;
-    background: radial-gradient(circle at top, #152036 0%, var(--bg) 70%);
+    background:
+      radial-gradient(circle at 20% 0%, rgba(56, 189, 248, 0.12) 0%, transparent 45%),
+      radial-gradient(circle at 80% 0%, rgba(192, 132, 252, 0.12) 0%, transparent 45%),
+      linear-gradient(180deg, #0b1120 0%, var(--bg) 100%);
     color: var(--text);
     font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     min-height: 100vh;
@@ -41,7 +44,7 @@
   }
 
   .app {
-    max-width: 1120px;
+    max-width: 1140px;
     margin: 0 auto;
     display: flex;
     flex-direction: column;
@@ -49,8 +52,9 @@
   }
 
   .top-bar {
-    background: linear-gradient(180deg, #172238, #0f1726);
+    background: linear-gradient(180deg, #17233b, #0e1627);
     border: 2px solid var(--border);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.08);
     border-radius: 12px;
     padding: 10px 14px;
     display: flex;
@@ -68,9 +72,10 @@
 
   .brand-title {
     font-weight: 900;
-    letter-spacing: 0.6px;
+    letter-spacing: 0.7px;
     color: var(--gold);
     font-size: 16px;
+    text-shadow: 0 2px 6px rgba(251, 191, 36, 0.3);
   }
 
   .brand-sub {
@@ -87,8 +92,8 @@
   }
 
   .stat-pill {
-    background: #0b101b;
-    border: 1.5px solid #2b3a59;
+    background: #080d18;
+    border: 1.5px solid #2b3c5e;
     border-radius: 8px;
     padding: 5px 10px;
     font-size: 13px;
@@ -96,26 +101,28 @@
     display: inline-flex;
     align-items: center;
     gap: 5px;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.4);
   }
 
   .btn {
-    border: 2px solid rgba(255,255,255,0.12);
+    border: 2px solid rgba(255,255,255,0.14);
     border-radius: 8px;
     padding: 7px 11px;
     font-weight: 800;
     font-size: 12px;
     color: #fff;
-    background: #1e293b;
+    background: linear-gradient(180deg, #25334d, #182236);
     cursor: pointer;
-    transition: transform 0.08s ease, filter 0.12s ease;
+    transition: transform 0.08s ease, filter 0.12s ease, box-shadow 0.12s ease;
     display: inline-flex;
     align-items: center;
     justify-content: center;
     gap: 5px;
+    box-shadow: 0 2px 0 rgba(0,0,0,0.45);
   }
 
   .btn:hover:not(:disabled) {
-    filter: brightness(1.12);
+    filter: brightness(1.14);
   }
 
   .btn:active:not(:disabled) {
@@ -128,34 +135,34 @@
   }
 
   .btn-gold {
-    background: linear-gradient(180deg, #fcd34d, #d97706);
+    background: linear-gradient(180deg, #fde047, #d97706);
     color: #111827;
-    border-color: #fde68a;
+    border-color: #fef08a;
   }
 
   .btn-blue {
     background: linear-gradient(180deg, #38bdf8, #0284c7);
-    color: #07131f;
+    color: #05131f;
   }
 
   .btn-emerald {
     background: linear-gradient(180deg, #34d399, #059669);
-    color: #051811;
+    color: #041811;
   }
 
   .btn-rose {
-    background: linear-gradient(180deg, #fb7185, #e11d48);
+    background: linear-gradient(180deg, #fb7185, #be123c);
     color: #fff;
   }
 
   .btn-purple {
-    background: linear-gradient(180deg, #c084fc, #7e22ce);
+    background: linear-gradient(180deg, #c084fc, #6b21a8);
     color: #fff;
   }
 
   .main-grid {
     display: grid;
-    grid-template-columns: 370px 1fr;
+    grid-template-columns: 375px 1fr;
     gap: 12px;
     align-items: start;
   }
@@ -167,8 +174,9 @@
   }
 
   .card {
-    background: linear-gradient(180deg, var(--panel), #0c1220);
+    background: linear-gradient(180deg, var(--panel), #0a101d);
     border: 2px solid var(--border);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.06);
     border-radius: 12px;
     padding: 12px;
     display: flex;
@@ -195,30 +203,31 @@
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 8px;
-    background: #070b14;
-    border: 2px solid #24324d;
+    background: linear-gradient(180deg, #060912, #0b1222);
+    border: 2px solid #2b3d61;
+    box-shadow: inset 0 4px 12px rgba(0,0,0,0.7);
     border-radius: 10px;
     padding: 8px;
   }
 
   .slot-cell {
-    background: linear-gradient(180deg, #162033, #0d1422);
-    border: 2px solid #2d3e61;
-    border-radius: 8px;
+    background: radial-gradient(circle at 50% 35%, #1d2b47 0%, #0e1628 85%);
+    border: 2px solid #32466e;
+    border-radius: 9px;
     padding: 6px 4px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    min-height: 86px;
+    min-height: 94px;
     position: relative;
     transition: transform 0.15s ease, border-color 0.15s ease, opacity 0.2s ease;
   }
 
   .slot-cell.matched {
     border-color: var(--gold);
-    box-shadow: 0 0 12px rgba(251, 191, 36, 0.45);
-    background: linear-gradient(180deg, #33260c, #181308);
+    box-shadow: 0 0 16px rgba(251, 191, 36, 0.55), inset 0 0 10px rgba(251, 191, 36, 0.3);
+    background: radial-gradient(circle at 50% 40%, #45320d 0%, #1a1407 85%);
   }
 
   .slot-cell.popping {
@@ -241,6 +250,7 @@
     margin-top: 3px;
     text-align: center;
     line-height: 1.15;
+    text-shadow: 0 1px 2px #000;
   }
 
   .slot-controls {
@@ -269,14 +279,15 @@
     position: relative;
     border-radius: 10px;
     overflow: hidden;
-    border: 2px solid #2f4063;
-    background: #090e1a;
+    border: 2px solid #354a73;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.55);
+    background: #080d18;
     touch-action: none;
   }
 
   #battleCanvas {
     width: 100%;
-    height: 290px;
+    height: 310px;
     display: block;
     cursor: grab;
   }
@@ -306,15 +317,15 @@
     pointer-events: none;
     font-size: 11px;
     font-weight: 700;
-    color: rgba(248, 250, 252, 0.85);
-    text-shadow: 0 1px 3px #000;
+    color: rgba(248, 250, 252, 0.9);
+    text-shadow: 0 1px 4px #000;
   }
 
   .hud-tag {
-    background: rgba(8, 12, 22, 0.82);
-    border: 1px solid rgba(148, 163, 184, 0.35);
+    background: rgba(8, 13, 24, 0.85);
+    border: 1px solid rgba(148, 163, 184, 0.4);
     border-radius: 6px;
-    padding: 3px 8px;
+    padding: 3px 9px;
     font-size: 11px;
     font-weight: 800;
     color: #f1f5f9;
@@ -330,30 +341,31 @@
 
   .roster-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
     gap: 8px;
   }
 
   .unit-card {
-    background: #0d1424;
-    border: 2px solid #263654;
+    background: linear-gradient(180deg, #111a2e, #0b111f);
+    border: 2px solid #293b5e;
     border-radius: 10px;
     padding: 8px;
     display: flex;
     flex-direction: column;
     gap: 6px;
     cursor: pointer;
-    transition: border-color 0.12s ease, transform 0.1s ease;
+    transition: border-color 0.12s ease, transform 0.1s ease, box-shadow 0.12s ease;
   }
 
   .unit-card.selected {
     border-color: var(--cyan);
-    box-shadow: 0 0 0 1px var(--cyan);
+    box-shadow: 0 0 12px rgba(56, 189, 248, 0.25);
   }
 
   .unit-card.absorb-target {
     border-color: var(--rose);
-    background: #1b101b;
+    background: linear-gradient(180deg, #241122, #140a14);
+    box-shadow: 0 0 12px rgba(251, 113, 133, 0.28);
   }
 
   .unit-top {
@@ -392,8 +404,8 @@
   }
 
   .mini-gear {
-    background: #141e33;
-    border: 1px dashed #3a4f78;
+    background: #141f36;
+    border: 1px dashed #3d5480;
     border-radius: 5px;
     padding: 3px 4px;
     font-size: 10px;
@@ -412,8 +424,8 @@
   }
 
   .imprint-chip {
-    background: #1d1836;
-    border: 1px solid #5b4699;
+    background: #221a42;
+    border: 1px solid #6b4fb8;
     border-radius: 5px;
     padding: 4px 2px;
     font-size: 9px;
@@ -428,19 +440,19 @@
   }
 
   .imprint-chip:hover {
-    background: #31235c;
+    background: #37276b;
     border-color: var(--gold);
   }
 
   .imprint-chip.empty {
-    background: #121726;
-    border-color: #28334d;
+    background: #111726;
+    border-color: #293652;
     color: #64748b;
   }
 
   .inspector {
-    background: #0b111e;
-    border: 1.5px solid #283857;
+    background: #0a101d;
+    border: 1.5px solid #2b3d61;
     border-radius: 10px;
     padding: 10px;
     display: flex;
@@ -449,8 +461,8 @@
   }
 
   .chip-btn {
-    background: #182238;
-    border: 1px solid #354970;
+    background: #18233b;
+    border: 1px solid #384e78;
     color: #e2e8f0;
     border-radius: 6px;
     padding: 5px 9px;
@@ -460,7 +472,7 @@
   }
 
   .chip-btn.active {
-    background: #2b1d47;
+    background: #2e1f4f;
     border-color: var(--purple);
     color: #f3e8ff;
   }
@@ -472,11 +484,11 @@
   }
 
   .log-box {
-    background: #070b13;
-    border: 1px solid #1e2a42;
+    background: #060a12;
+    border: 1px solid #1e2c47;
     border-radius: 8px;
     padding: 8px;
-    max-height: 110px;
+    max-height: 115px;
     overflow-y: auto;
     font-size: 11px;
     line-height: 1.45;
@@ -486,7 +498,8 @@
   .modal-backdrop {
     position: fixed;
     inset: 0;
-    background: rgba(2, 6, 15, 0.78);
+    background: rgba(2, 6, 15, 0.82);
+    backdrop-filter: blur(2px);
     display: none;
     align-items: center;
     justify-content: center;
@@ -499,17 +512,28 @@
   }
 
   .modal-card {
-    background: #111827;
+    background: linear-gradient(180deg, #131c30, #0c1220);
     border: 2px solid var(--gold);
+    box-shadow: 0 12px 32px rgba(0,0,0,0.7);
     border-radius: 12px;
-    max-width: 520px;
+    max-width: 540px;
     width: 100%;
-    max-height: 85vh;
+    max-height: 88vh;
     overflow-y: auto;
     padding: 14px;
     display: flex;
     flex-direction: column;
     gap: 10px;
+  }
+
+  .choice-box {
+    background: #0b1221;
+    border: 1.5px solid #32466e;
+    border-radius: 10px;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
   }
 
   table {
@@ -533,10 +557,10 @@
 <div class="app" id="appRoot">
   <div class="top-bar">
     <div class="brand">
-      <canvas id="brandIcon" width="32" height="32" class="pixel-canvas"></canvas>
+      <canvas id="brandIcon" width="40" height="40" class="pixel-canvas"></canvas>
       <div>
-        <div class="brand-title">SLOTBOUND: PIXEL EDITION</div>
-        <div class="brand-sub">1 MẠNG SINH TỬ • KÉO THẢ ĐỘI HÌNH • CHẠM ẤN XEM CHI TIẾT</div>
+        <div class="brand-title">SLOTBOUND: HI-BIT PIXEL EDITION</div>
+        <div class="brand-sub">1 MẠNG SINH TỬ • NUỐT CHỌN LÊN CẤP TƯỚNG / ẤN • KÉO THẢ ĐỘI HÌNH</div>
       </div>
     </div>
 
@@ -587,7 +611,7 @@
     <!-- CỘT PHẢI: CHIẾN TRƯỜNG & ĐỘI HÌNH -->
     <div class="card">
       <div class="battle-wrap">
-        <canvas id="battleCanvas" width="720" height="290" class="pixel-canvas"></canvas>
+        <canvas id="battleCanvas" width="740" height="310" class="pixel-canvas"></canvas>
         <div class="battle-hud">
           <div class="hud-tag" id="phaseTag">GIAI ĐOẠN CHUẨN BỊ</div>
           <div class="hud-tag" id="enemyTag">Quái: 0</div>
@@ -669,15 +693,34 @@
   </div>
 </div>
 
-<!-- MODAL CHỌN Ô ẤN KHI HẤP THỤ -->
+<!-- MODAL LỰA CHỌN KHI NUỐT (LÊN CẤP TƯỚNG HOẶC LÊN CẤP ẤN) -->
 <div class="modal-backdrop" id="absorbModal">
   <div class="modal-card">
     <div class="card-header">
-      <div class="card-title">🩸 CHỌN Ô ẤN ĐỂ GẮN / THAY THẾ</div>
+      <div class="card-title">🩸 CHỌN HƯỚNG CƯỜNG HÓA KHI NUỐT</div>
       <button class="btn btn-rose" id="btnCancelAbsorb">✕</button>
     </div>
-    <div id="absorbDesc" style="font-size: 12px; color: var(--muted);"></div>
-    <div id="absorbSlotsContainer" style="display:grid; grid-template-columns: repeat(2, 1fr); gap:8px;"></div>
+    <div id="absorbDesc" style="font-size: 12px; color: #cbd5e1; line-height: 1.5;"></div>
+
+    <!-- HƯỚNG 1: LÊN CẤP TƯỚNG -->
+    <div class="choice-box" style="border-color: var(--gold);">
+      <div style="font-size: 12px; font-weight: 900; color: var(--gold);">
+        ⚔️ HƯỚNG 1: DỒN TINH HOA LÊN CẤP TƯỚNG (LV HẤP THỤ)
+      </div>
+      <div id="absorbHeroOptionDesc" style="font-size: 11px; color: var(--muted);"></div>
+      <button class="btn btn-gold" id="btnAbsorbHeroLevel" style="padding: 9px;">
+        ⬆️ CHỌN LÊN CẤP TƯỚNG
+      </button>
+    </div>
+
+    <!-- HƯỚNG 2: LÊN CẤP ẤN / KHẮC ẤN MỚI -->
+    <div class="choice-box" style="border-color: var(--purple);">
+      <div style="font-size: 12px; font-weight: 900; color: var(--purple);">
+        🔮 HƯỚNG 2: TRUYỀN THỪA HOẶC NÂNG CẤP DẤU ẤN
+      </div>
+      <div id="absorbImprintOptionDesc" style="font-size: 11px; color: var(--muted);"></div>
+      <div id="absorbSlotsContainer" style="display:grid; grid-template-columns: repeat(2, 1fr); gap:7px;"></div>
+    </div>
   </div>
 </div>
 
@@ -722,185 +765,274 @@ const AudioFX = (() => {
   };
 })();
 
-// ================= PIXEL SPRITE ENGINE =================
+// ================= HI-BIT 24x24 DETAILED PIXEL SPRITES =================
 const PALETTE = {
   '.': null,
-  'K': '#0f172a',
-  'W': '#f8fafc',
-  'S': '#f1c27d',
-  'R': '#ef4444',
-  'B': '#3b82f6',
-  'C': '#38bdf8',
-  'G': '#22c55e',
-  'Y': '#fbbf24',
-  'P': '#a855f7',
-  'O': '#f97316',
-  'M': '#94a3b8',
-  'D': '#475569'
+  'K': '#090d16', // Viền đen đậm sắc nét
+  'W': '#ffffff', // Ánh kim / mắt sáng
+  'I': '#cbd5e1', // Thép sáng
+  'M': '#94a3b8', // Thép trung
+  'D': '#475569', // Thép tối / bóng đổ
+  'U': '#1e293b', // Giáp đen sâu
+  'S': '#f5cba7', // Da sáng
+  'T': '#d99b66', // Bóng da
+  'R': '#ef4444', // Đỏ tươi
+  'A': '#991b1b', // Đỏ sẫm / áo choàng
+  'B': '#3b82f6', // Xanh lam sáng
+  'N': '#1d4ed8', // Xanh lam đậm
+  'C': '#38bdf8', // Ngọc lam / băng
+  'G': '#22c55e', // Lục sáng
+  'E': '#15803d', // Lục đậm
+  'Y': '#fde047', // Vàng rực
+  'O': '#d97706', // Vàng đồng / hổ phách
+  'P': '#c084fc', // Tím sáng
+  'V': '#7e22ce', // Tím đậm
+  'H': '#78350f'  // Gỗ / da thuộc
 };
 
 const SPRITES = {
+  // CHIẾN BINH HOÀNG GIA (24x24: Mũ trụ lông vũ đỏ, giáp lam viền vàng, khiên & kiếm lớn)
   warrior: [
-    '....KKKKKK......',
-    '...KMMMMMMK.....',
-    '..KMMWWWWMMK....',
-    '..KDDDDDDDDK....',
-    '...KSSSSSSK.....',
-    '...KKKRRKKK.....',
-    '..KBBKRRKBBK.KK.',
-    '.KBBKRRRRKBBKMMK',
-    '.KBBKRRRRKBBKMMK',
-    '..KKKRRRRKKK.KK.',
-    '...KBBKKBBK.....',
-    '...KBBKKBBK.....',
-    '...KDDKKDDK.....',
-    '..KDDK..KDDK....',
-    '..KKKK..KKKK....',
-    '................'
+    '........KKKKKK..........',
+    '.......KRRRRRRK.........',
+    '......KRRYYYYRRK........',
+    '.....KKKIIIIIIKKK.......',
+    '....KIIWWWWWWWWIIK......',
+    '....KIMDDDDDDDDMIK......',
+    '....KIDKKKKKKKKDIK......',
+    '.....KISSSSSSSSIK.......',
+    '.....KISTTTTTTSIK.......',
+    '...KKKYYYYYYYYYYKKK.....',
+    '..KBBBYBBBBBBBBYBBBK.KK.',
+    '.KBBBBYBBYYYYBBYBBBBKWWK',
+    '.KBBNNYBYRRRRBYBYNNBKIIK',
+    '.KBBNNYBYRRRRBYBYNNBKIIK',
+    '.KYYNNYBBYYYYBBYNNYYKIIK',
+    '..KKKKKBBBBBBBBKKKKK.YYK',
+    '....KBBBBKKKKBBBBK...HHK',
+    '....KNNBBK..KBBNNK...KK.',
+    '....KIIKK....KKIIK......',
+    '...KIIIIK....KIIIIK.....',
+    '...KDDDDK....KDDDDK.....',
+    '...KKKKKK....KKKKKK.....',
+    '........................',
+    '........................'
   ],
+  // XẠ THỦ RỪNG SÂU (24x24: Mũ trùm lục bảo, áo choàng lá, cung dài gỗ sồi dây phát sáng)
   archer: [
-    '.....KKKK.......',
-    '....KGGGGK......',
-    '...KGGGGGGK.....',
-    '...KSSSSSSK.....',
-    '...KWWKKWWK.....',
-    '....KSSSSK......',
-    '..KKKGGGGKKK..KK',
-    '.KGGKGGGGKGGK.KK',
-    '.KGGKGGGGKGGK.KK',
-    '..KKKGGGGKKK..KK',
-    '....KDDKKDDK....',
-    '...KDDK..KDDK...',
-    '...KDDK..KDDK...',
-    '...KKKK..KKKK...',
-    '................',
-    '................'
+    '........KKKKKK..........',
+    '......KKGGGGGGKK........',
+    '.....KGGGGYYYYGGK.......',
+    '....KGGEEEEEEEEGGK......',
+    '....KGKSSSSSSSSKGK......',
+    '....KGKSWWKKWWSKGK......',
+    '.....KKSSTTTTSKK........',
+    '....KKKHHHHHHHHKKK..KK..',
+    '...KGGGHHHHHHHHGGGK.KHK.',
+    '..KGGGGYHHHHHHYGGGGKKHHK',
+    '..KGGEEYHHHHHHYEEGGKCHHK',
+    '..KGGEEYHHHHHHYEEGGKCHHK',
+    '...KKKKHHHHHHHHKKKK.CHHK',
+    '.....KGGGGKKGGGGK...KHK.',
+    '.....KEEEGK.KGEEEK..KK..',
+    '....KHHHHK...KHHHHK.....',
+    '....KHHHHK...KHHHHK.....',
+    '....KDDDDK...KDDDDK.....',
+    '...KKKKKK.....KKKKKK....',
+    '........................',
+    '........................',
+    '........................',
+    '........................',
+    '........................'
   ],
+  // ĐẠI PHÁP SƯ TINH TÚ (24x24: Mũ chóp nhọn viền vàng, râu bạc, trượng ngọc lam rực sáng)
   mage: [
-    '.....KKKK.......',
-    '....KPPPPK......',
-    '...KPPPPPPK.....',
-    '..KPPPPPPPPK....',
-    '.KKKKPPPPKKKK...',
-    '...KSSSSSSK.....',
-    '...KCCKKCCK..KK.',
-    '..KPPKCCKPPK.YYK',
-    '..KPPKCCKPPK.KK.',
-    '...KPPKCCKPPK...',
-    '....KPPPPK......',
-    '...KPPKKPPK.....',
-    '...KDDKKDDK.....',
-    '...KKKKKKKK.....',
-    '................',
-    '................'
+    '.........KKKK...........',
+    '........KPPPPK..........',
+    '.......KPPYYPPK.........',
+    '......KPPPPPPPPK........',
+    '.....KPPVVVVVVPPK.......',
+    '...KKKYYYYYYYYYYKKK.....',
+    '..KPPPPPPPPPPPPPPPPK....',
+    '...KKKKSSSSSSSSKKKK.....',
+    '.....KSCCHHHCCSK....KKK.',
+    '.....KSWWWWWWWWSK..KCCCK',
+    '....KKKWWWWWWWWWKKKCWWWK',
+    '...KPPPVWWWWWWWVPPPKCCCK',
+    '..KPPPPPVWWWWWVPPPPKYYK.',
+    '..KPPVVVPVWWWVPVVVPKHHK.',
+    '..KPPVVVPPVWVPPVVVPKHHK.',
+    '...KKKKKPPPPPPKKKKK.HHK.',
+    '.....KPPPPKKPPPPK...HHK.',
+    '....KVVVPK..KPVVVK..KK..',
+    '....KYYYYK..KYYYYK......',
+    '....KKKKKK..KKKKKK......',
+    '........................',
+    '........................',
+    '........................',
+    '........................'
   ],
+  // KỴ BINH THÁNH GIÁ (24x24: Mũ sừng vàng, giáp đỏ ánh kim, thương kỵ sĩ dài)
   lancer: [
-    '.......KK.......',
-    '......KYYK......',
-    '.....KMMMMK.....',
-    '....KSSSSSSK....',
-    '....KRRKKRRK....',
-    '..KKKRRRRKKK....',
-    '.KYYKRRRRKYYK...',
-    '.KYYKRRRRKYYK...',
-    '..KKKRRRRKKK....',
-    '...KDDKKKKDDK...',
-    '..KDDK.KK.KDDK..',
-    '..KDDK....KDDK..',
-    '..KKKK....KKKK..',
-    '................',
-    '................',
-    '................'
+    '..........KK............',
+    '.........KWWK...........',
+    '........KIIIIK..........',
+    '.......KYYYYYYK.........',
+    '......KYYRRRRYYK........',
+    '.....KIIWWWWWWIIK.......',
+    '.....KIDDDDDDDDIK.......',
+    '......KSSSSSSSSK........',
+    '....KKKYYYYYYYYKKK......',
+    '...KRRRYRRRRRRYRRRK.....',
+    '..KRRRRYRYYYYRYRRRRK....',
+    '..KRAAAYRYWWYRYAAARK....',
+    '..KRAAAYRYYYYRYAAARK....',
+    '...KKKKYYYYYYYYKKKK.....',
+    '....KRRRRKKKKRRRRK......',
+    '...KAAAARK..KRAAAAK.....',
+    '...KYYYYK....KYYYYK.....',
+    '..KIIIIK......KIIIIK....',
+    '..KDDDDK......KDDDDK....',
+    '..KKKKKK......KKKKKK....',
+    '........................',
+    '........................',
+    '........................',
+    '........................'
   ],
+  // TRIỆU HỒI SƯ CỔ NGỮ (24x24: Vương miện hào quang, áo choàng tím-vàng, quả cầu linh hồn)
   summoner: [
-    '.....KKKK.......',
-    '....KYYYYK......',
-    '...KYYWWWWK.....',
-    '...KSSSSSSK.....',
-    '..KKKPPPPKKK....',
-    '.KPPKPPPPKPPK.YY',
-    '.KPPKPPPPKPPK.KK',
-    '..KKKPPPPKKK..KK',
-    '....KPPPPK......',
-    '...KPPKKPPK.....',
-    '...KDDKKDDK.....',
-    '...KKKKKKKK.....',
-    '................',
-    '................',
-    '................',
-    '................'
+    '.......KK.KK.KK.........',
+    '......KYYKYYKYYK........',
+    '.....KYYYYYYYYYYK.......',
+    '.....KPPWWWWWWPPK.......',
+    '.....KPSSSSSSSSPK.......',
+    '.....KPSPPKKPPSPK.......',
+    '......KSSSSSSSSK........',
+    '...KKKKYYYYYYYYKKKK.....',
+    '..KPPPPYYYYYYYYPPPPK.KK.',
+    '.KPPPPPVVYYYYVVPPPPPKPPK',
+    '.KPPVVVVVYYYYVVVVVPPKWWK',
+    '.KPPVVVVVYYYYVVVVVPPKPPK',
+    '..KKKKKVVYYYYVVKKKKK.KK.',
+    '....KPPPPYYYYPPPPK......',
+    '....KVVVVKKKKVVVVK......',
+    '...KVVVVK....KVVVVK.....',
+    '...KYYYYK....KYYYYK.....',
+    '...KKKKKK....KKKKKK.....',
+    '........................',
+    '........................',
+    '........................',
+    '........................',
+    '........................',
+    '........................'
   ],
+  // RƯƠNG KHO BÁU HOÀNG KIM (24x24)
   chest: [
-    '................',
-    '..KKKKKKKKKKKK..',
-    '.KYYYYYYYYYYYYK.',
-    '.KYKDDDDDDDDKYK.',
-    '.KYYYYYYYYYYYYK.',
-    '.KKKKKKKKKKKKKK.',
-    '.KDDDDDDDDDDDDK.',
-    '.KDDDDKYYKDDDDK.',
-    '.KDDDDKYYKDDDDK.',
-    '.KDDDDKKKKDDDDK.',
-    '.KDDDDDDDDDDDDK.',
-    '.KKKKKKKKKKKKKK.',
-    '................',
-    '................',
-    '................',
-    '................'
+    '........................',
+    '........................',
+    '....KKKKKKKKKKKKKKKK....',
+    '...KYYYYYYYYYYYYYYYYK...',
+    '..KYOOOOOOOOOOOOOOOOYK..',
+    '..KYOHHHHHHHHHHHHHHOYK..',
+    '..KYOHHHHHHHHHHHHHHOYK..',
+    '..KYYYYYYYYYYYYYYYYYYK..',
+    '..KKKKKKKKKKKKKKKKKKKK..',
+    '..KHHHHHHHHKYYKHHHHHHK..',
+    '..KHHHHHHHHKWWKHHHHHHK..',
+    '..KHHHHHHHHKYYKHHHHHHK..',
+    '..KHHHHHHHHKKKKHHHHHHK..',
+    '..KHHHHHHHHHHHHHHHHHHK..',
+    '..KOOOOOOOOOOOOOOOOOOK..',
+    '...KKKKKKKKKKKKKKKKKK...',
+    '........................',
+    '........................',
+    '........................',
+    '........................',
+    '........................',
+    '........................',
+    '........................',
+    '........................'
   ],
+  // SLIME TINH THỂ ĐỘC (24x24)
   slime: [
-    '................',
-    '....KKKKKKKK....',
-    '..KKGGGGGGGGKK..',
-    '.KGGGGGGGGGGGGK.',
-    '.KGGWWGGGGWWGGK.',
-    '.KGGKKGGGGKKGGK.',
-    'KGGGGGGGGGGGGGGK',
-    'KGGGRRRRRRRRGGG.',
-    'KGGGGGGGGGGGGGGK',
-    '.KKKKKKKKKKKKKK.',
-    '................',
-    '................',
-    '................',
-    '................',
-    '................',
-    '................'
+    '........................',
+    '........................',
+    '........................',
+    '........KKKKKKKK........',
+    '......KKGGGGGGGGKK......',
+    '....KKGGGGWWWWGGGGKK....',
+    '...KGGGGWWGGGGGGGGGGK...',
+    '..KGGGGGGGGGGGGGGGGGGK..',
+    '..KGGGWWGGGGGGGGWWGGGK..',
+    '.KGGGGKKGGGGGGGGKKGGGGK.',
+    '.KGGGGGGGGGGGGGGGGGGGGK.',
+    '.KGGGEEEEGGGGGGGGEEEEGK.',
+    '.KGGEEERRRRRRRRRRREEEGK.',
+    '.KGGEEEEGGGGGGGGEEEEGGK.',
+    '..KGGGGGGGGGGGGGGGGGGK..',
+    '...KKKKKKKKKKKKKKKKKK...',
+    '........................',
+    '........................',
+    '........................',
+    '........................',
+    '........................',
+    '........................',
+    '........................',
+    '........................'
   ],
+  // CHIẾN BINH ORC HẮC ÁM (24x24)
   orc: [
-    '....KKKKKKKK....',
-    '...KGGGGGGGGK...',
-    '..KGGGGGGGGGGK..',
-    '..KGGWWGGWWGGK..',
-    '..KGGKKGGKKGGK..',
-    '...KGGGGGGGGK...',
-    '..KKKRRRRRRKKK..',
-    '.KGGKRRRRRRKGGK.',
-    '.KGGKRRRRRRKGGK.',
-    '..KKKRRRRRRKKK..',
-    '...KGGKKKKGGK...',
-    '...KDDK..KDDK...',
-    '...KKKK..KKKK...',
-    '................',
-    '................',
-    '................'
+    '.......KKKKKKKK.........',
+    '.....KKGGGGGGGGKK.......',
+    '....KGGGGGGGGGGGGK......',
+    '....KGGWWGGGGWWGGK......',
+    '....KGGKKGGGGKKGGK......',
+    '....KGGGGGGGGGGGGK......',
+    '....KWWGGGGGGGGWWK......',
+    '...KKKRRRRRRRRRRKKK.....',
+    '..KGGGRRDDDDDDRRGGGK....',
+    '.KGGGGRRDYYYYDRRGGGGK...',
+    '.KGGEEGRRDDDDDRRGEEGK...',
+    '.KGGEEGRRRRRRRRGEEGK....',
+    '..KKKKGGGGKKKKGGGGK.....',
+    '.....KGGGGK..KGGGGK.....',
+    '....KHHHHK....KHHHHK....',
+    '....KDDDDK....KDDDDK....',
+    '...KKKKKK......KKKKKK...',
+    '........................',
+    '........................',
+    '........................',
+    '........................',
+    '........................',
+    '........................',
+    '........................'
   ],
+  // MA VƯƠNG ĐỊA NGỤC BOSS (24x24)
   boss: [
-    '..KK..KKKK..KK..',
-    '.KYYK.KRRK.KYYK.',
-    '..KRRRRRRRRRRK..',
-    '.KRRRRRRRRRRRRK.',
-    '.KRRYYRRRRYYRRK.',
-    '.KRRKKRRRRKKRRK.',
-    '.KRRRRRRRRRRRRK.',
-    'KKKRRRRRRRRRRKKK',
-    'KPPKRRRRRRRRKPPK',
-    'KPPKRRRRRRRRKPPK',
-    'KKKRRRRRRRRRRKKK',
-    '..KDDKRRRRKDDK..',
-    '..KDDK.KK.KDDK..',
-    '..KKKK....KKKK..',
-    '................',
-    '................'
+    '..KKK....KKKKKK....KKK..',
+    '.KYYYK..KRRRRRRK..KYYYK.',
+    '.KYYYKKKRRRRRRRRKKKYYYK.',
+    '..KRRRRRRRRRRRRRRRRRRK..',
+    '..KRRRYYRRRRRRRRYYRRRK..',
+    '..KRRRKKRRRRRRRRKKRRRK..',
+    '..KRRRRRRRRRRRRRRRRRRK..',
+    '.KKKRRRRWWWWWWWWRRRRKKK.',
+    'KPPPRRRRRRRRRRRRRRRRPPPK',
+    'KPPVVRRRRYYYYYYRRRRVVPPK',
+    'KPPVVRRRRYWWWWYRRRRVVPPK',
+    'KPPVVRRRRYYYYYYRRRRVVPPK',
+    '.KKKRRRRRRRRRRRRRRRRKKK.',
+    '...KRRRRRRKKKKRRRRRRK...',
+    '..KRRRRRRK....KRRRRRRK..',
+    '..KDDDDDK......KDDDDDK..',
+    '.KUUUUUK........KUUUUUK.',
+    '.KKKKKK..........KKKKKK.',
+    '........................',
+    '........................',
+    '........................',
+    '........................',
+    '........................',
+    '........................'
   ]
 };
 
@@ -924,7 +1056,7 @@ function drawPixelMatrix(ctx, matrix, dx, dy, scale, flipX = false, flashWhite =
   }
 }
 
-function renderSpriteToCanvas(canvas, key, scale = 3) {
+function renderSpriteToCanvas(canvas, key, scale = 2.4) {
   if (!canvas) return;
   const ctx = canvas.getContext('2d');
   ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -938,11 +1070,11 @@ function renderSpriteToCanvas(canvas, key, scale = 3) {
 
 // ================= GAME DATA =================
 const SYMBOL_DEFS = [
-  { id: 'warrior', name: 'Chiến Binh', kind: 'hero', weight: 22, hp: 160, atk: 24, spd: 1.0, range: 46, color: '#60a5fa' },
-  { id: 'archer',  name: 'Xạ Thủ',     kind: 'hero', weight: 22, hp: 105, atk: 30, spd: 1.25, range: 190, color: '#34d399' },
-  { id: 'mage',    name: 'Pháp Sư',    kind: 'hero', weight: 20, hp: 100, atk: 34, spd: 0.95, range: 175, color: '#c084fc' },
-  { id: 'lancer',  name: 'Kỵ Binh',    kind: 'hero', weight: 18, hp: 135, atk: 28, spd: 1.35, range: 54, color: '#fbbf24' },
-  { id: 'summoner',name: 'Triệu Hồi',  kind: 'hero', weight: 12, hp: 115, atk: 22, spd: 1.05, range: 160, color: '#f472b6' },
+  { id: 'warrior', name: 'Chiến Binh', kind: 'hero', weight: 22, hp: 165, atk: 24, spd: 1.0, range: 48, color: '#60a5fa' },
+  { id: 'archer',  name: 'Xạ Thủ',     kind: 'hero', weight: 22, hp: 108, atk: 30, spd: 1.25, range: 195, color: '#34d399' },
+  { id: 'mage',    name: 'Pháp Sư',    kind: 'hero', weight: 20, hp: 102, atk: 34, spd: 0.95, range: 180, color: '#c084fc' },
+  { id: 'lancer',  name: 'Kỵ Binh',    kind: 'hero', weight: 18, hp: 138, atk: 28, spd: 1.35, range: 56, color: '#fbbf24' },
+  { id: 'summoner',name: 'Triệu Hồi',  kind: 'hero', weight: 12, hp: 118, atk: 22, spd: 1.05, range: 165, color: '#f472b6' },
   { id: 'chest',   name: 'Rương Đồ',   kind: 'gear', weight: 14, color: '#f59e0b' }
 ];
 
@@ -1082,8 +1214,8 @@ function getDefaultSlotPos(idx) {
   const col = idx % 3;
   const row = Math.floor(idx / 3);
   return {
-    x: 64 + col * 86,
-    y: 56 + row * 78
+    x: 68 + col * 92,
+    y: 62 + row * 84
   };
 }
 
@@ -1362,14 +1494,30 @@ async function handleNudge(col) {
   }
 }
 
-// ================= ABSORB & IMPRINT =================
+// ================= ABSORB: CHOOSE HERO LEVEL OR IMPRINT LEVEL =================
 function openAbsorbModal(donor, recipient) {
   state.pendingAbsorb = { donorId: donor.id, recipientId: recipient.id };
   const imp = donor.imprints.find(Boolean) || { id: 'crit', lv: 1 };
   const impDef = IMPRINT_DEFS[imp.id];
+
+  const heroGainLv = Math.max(1, donor.absorbLv) + (donor.star - 1) * 2;
+  const impGainLv = Math.max(1, imp.lv) + (donor.star - 1);
+
   document.getElementById('absorbDesc').innerHTML =
-    `<b>${donor.name} ${donor.star}★ (LV ${donor.absorbLv})</b> sẽ bị nuốt để tăng <b>+${Math.max(1, donor.absorbLv)} LV Hấp Thụ</b> cho <b>${recipient.name} ${recipient.star}★</b>.<br/>` +
-    `Chọn 1 trong 6 ô Ấn của tướng chủ lực để gắn/cập nhật Ấn <b>${impDef.name} (Lv.${imp.lv})</b>:`;
+    `Tướng chủ lực <b>${recipient.name} ${'★'.repeat(recipient.star)}</b> chuẩn bị hấp thụ <b>${donor.name} ${'★'.repeat(donor.star)} (LV ${donor.absorbLv})</b>.<br/>` +
+    `Bạn muốn chuyển hóa sức mạnh này theo hướng nào?`;
+
+  // Hướng 1: Lên cấp Tướng
+  document.getElementById('absorbHeroOptionDesc').innerHTML =
+    `Tăng <b>+${heroGainLv} LV Hấp Thụ</b> cho <b>${recipient.name}</b> (từ LV ${recipient.absorbLv} → <b>LV ${recipient.absorbLv + heroGainLv}</b>), tăng trực tiếp Máu, Công và tiến gần các mốc Thức Tỉnh (30 / 60 / 100). Không gắn/nâng Ấn.`;
+
+  const heroBtn = document.getElementById('btnAbsorbHeroLevel');
+  heroBtn.textContent = `⬆️ LÊN CẤP TƯỚNG (+${heroGainLv} LV)`;
+  heroBtn.onclick = () => confirmAbsorbHeroLevel(heroGainLv);
+
+  // Hướng 2: Lên cấp Ấn / Gắn Ấn
+  document.getElementById('absorbImprintOptionDesc').innerHTML =
+    `Truyền Dấu Ấn <b>${impDef.name} (+${impGainLv} cấp)</b> vào 1 trong 6 ô Ấn bên dưới (nếu trùng loại Ấn sẽ cộng dồn lên cấp cao hơn; giữ nguyên LV Hấp Thụ của tướng):`;
 
   const wrap = document.getElementById('absorbSlotsContainer');
   wrap.innerHTML = '';
@@ -1379,18 +1527,45 @@ function openAbsorbModal(donor, recipient) {
     btn.style.flexDirection = 'column';
     btn.style.alignItems = 'flex-start';
     btn.style.padding = '8px';
-    const label = slotImp
-      ? `Ô #${idx + 1}: ${IMPRINT_DEFS[slotImp.id].name} (Lv.${slotImp.lv})`
-      : `Ô #${idx + 1}: [Trống]`;
-    btn.innerHTML = `<span>${label}</span><span style="font-size:10px;opacity:0.85;">Bấm để chọn</span>`;
-    btn.onclick = () => confirmAbsorb(idx, imp);
+
+    let titleTxt = '';
+    let subTxt = '';
+    if (slotImp && slotImp.id === imp.id) {
+      titleTxt = `Ô #${idx + 1}: ${IMPRINT_DEFS[slotImp.id].name} (Lv.${slotImp.lv} → Lv.${slotImp.lv + impGainLv})`;
+      subTxt = 'Cộng dồn nâng cấp Ấn!';
+    } else if (slotImp) {
+      titleTxt = `Ô #${idx + 1}: ${IMPRINT_DEFS[slotImp.id].name} (Lv.${slotImp.lv})`;
+      subTxt = `Thay thế bằng ${impDef.name} Lv.${impGainLv}`;
+    } else {
+      titleTxt = `Ô #${idx + 1}: [Trống]`;
+      subTxt = `Khắc mới ${impDef.name} Lv.${impGainLv}`;
+    }
+
+    btn.innerHTML = `<span style="font-size:11px;">${titleTxt}</span><span style="font-size:10px;opacity:0.85;">${subTxt}</span>`;
+    btn.onclick = () => confirmAbsorbImprintLevel(idx, { id: imp.id, lv: impGainLv });
     wrap.appendChild(btn);
   });
 
   document.getElementById('absorbModal').classList.add('open');
 }
 
-function confirmAbsorb(slotIdx, incomingImp) {
+function finalizeDonorConsumption(donor, recipient) {
+  donor.gears.forEach(g => {
+    if (g) state.inventory.push(g);
+  });
+  state.units = state.units.filter(u => u.id !== donor.id);
+  state.absorbMode = false;
+  state.selectedUnitId = recipient.id;
+  checkAwakening(recipient);
+  const st = getUnitStats(recipient);
+  recipient.maxHp = st.maxHp;
+  recipient.hp = st.maxHp;
+  AudioFX.absorb();
+  checkAutoPromote();
+  updateUI();
+}
+
+function confirmAbsorbHeroLevel(gainLv) {
   const pend = state.pendingAbsorb;
   if (!pend) return;
   const donor = state.units.find(u => u.id === pend.donorId);
@@ -1399,30 +1574,30 @@ function confirmAbsorb(slotIdx, incomingImp) {
   state.pendingAbsorb = null;
   if (!donor || !rec) return;
 
-  donor.gears.forEach(g => {
-    if (g) state.inventory.push(g);
-  });
+  rec.absorbLv += gainLv;
+  addLog(`⬆️ ${rec.name} nuốt ${donor.name} để LÊN CẤP TƯỚNG (+${gainLv} LV → LV ${rec.absorbLv})!`, '#fbbf24');
+  finalizeDonorConsumption(donor, rec);
+}
 
-  rec.absorbLv += Math.max(1, donor.absorbLv);
+function confirmAbsorbImprintLevel(slotIdx, incomingImp) {
+  const pend = state.pendingAbsorb;
+  if (!pend) return;
+  const donor = state.units.find(u => u.id === pend.donorId);
+  const rec = state.units.find(u => u.id === pend.recipientId);
+  closeModal('absorbModal');
+  state.pendingAbsorb = null;
+  if (!donor || !rec) return;
+
   const existing = rec.imprints[slotIdx];
+  const impName = IMPRINT_DEFS[incomingImp.id].name;
   if (existing && existing.id === incomingImp.id) {
     existing.lv += incomingImp.lv;
+    addLog(`🔮 ${rec.name} nuốt ${donor.name} để NÂNG CẤP ẤN [${impName}] lên Lv.${existing.lv} (Ô #${slotIdx + 1})!`, '#e879f9');
   } else {
     rec.imprints[slotIdx] = { id: incomingImp.id, lv: incomingImp.lv };
+    addLog(`🔮 ${rec.name} nuốt ${donor.name} để KHẮC ẤN [${impName} Lv.${incomingImp.lv}] vào Ô #${slotIdx + 1}!`, '#e879f9');
   }
-
-  state.units = state.units.filter(u => u.id !== donor.id);
-  state.absorbMode = false;
-  state.selectedUnitId = rec.id;
-  checkAwakening(rec);
-  const st = getUnitStats(rec);
-  rec.maxHp = st.maxHp;
-  rec.hp = st.maxHp;
-
-  AudioFX.absorb();
-  addLog(`🩸 ${rec.name} đã nuốt ${donor.name}, lên LV ${rec.absorbLv} và gắn Ấn [${IMPRINT_DEFS[incomingImp.id].name}] vào ô #${slotIdx + 1}!`, '#e879f9');
-  checkAutoPromote();
-  updateUI();
+  finalizeDonorConsumption(donor, rec);
 }
 
 function openImprintDetail(unit, slotIdx) {
@@ -1432,7 +1607,7 @@ function openImprintDetail(unit, slotIdx) {
     document.getElementById('imprintModalTitle').textContent = `🔮 Ô DẤU ẤN #${slotIdx + 1} (TRỐNG)`;
     document.getElementById('imprintModalBody').innerHTML = `
       <p><b>Tướng:</b> ${unit.name} ${'★'.repeat(unit.star)}</p>
-      <p style="color: var(--muted);">Ô Ấn này hiện chưa có sức mạnh. Hãy bật chế độ <b>🩸 NUỐT</b> để hấp thụ một tướng khác và truyền Dấu Ấn vào ô #${slotIdx + 1}.</p>
+      <p style="color: var(--muted);">Ô Ấn này hiện chưa có sức mạnh. Hãy bật chế độ <b>🩸 NUỐT</b>, chọn một tướng khác và chọn hướng <b>Lên cấp Dấu Ấn</b> để truyền ấn vào ô #${slotIdx + 1}.</p>
     `;
     document.getElementById('imprintModal').classList.add('open');
     return;
@@ -1502,8 +1677,8 @@ function getCanvasCoords(ev) {
 }
 
 function clampHeroPosition(u, nx, ny) {
-  u.homeX = Math.max(30, Math.min(345, nx));
-  u.homeY = Math.max(38, Math.min(245, ny));
+  u.homeX = Math.max(34, Math.min(355, nx));
+  u.homeY = Math.max(42, Math.min(255, ny));
   u.x = u.homeX;
   u.y = u.homeY;
 }
@@ -1515,11 +1690,10 @@ function setupBattleCanvasMovement() {
     if (state.inCombat || state.gameOver) return;
     const pt = getCanvasCoords(ev);
 
-    // Tìm tướng tại điểm chạm (ưu tiên tướng vẽ sau cùng)
     let hitUnit = null;
     for (let i = state.units.length - 1; i >= 0; i--) {
       const u = state.units[i];
-      if (pt.x >= u.x - 10 && pt.x <= u.x + 52 && pt.y >= u.y - 16 && pt.y <= u.y + 52) {
+      if (pt.x >= u.x - 10 && pt.x <= u.x + 58 && pt.y >= u.y - 18 && pt.y <= u.y + 58) {
         hitUnit = u;
         break;
       }
@@ -1540,11 +1714,10 @@ function setupBattleCanvasMovement() {
       return;
     }
 
-    // Nếu chạm vào vùng sân bên trái khi đang chọn 1 tướng -> di chuyển nhanh tướng tới điểm chạm
-    if (state.selectedUnitId && pt.x <= 360) {
+    if (state.selectedUnitId && pt.x <= 370) {
       const sel = state.units.find(u => u.id === state.selectedUnitId);
       if (sel) {
-        clampHeroPosition(sel, pt.x - 20, pt.y - 20);
+        clampHeroPosition(sel, pt.x - 24, pt.y - 24);
         AudioFX.place();
       }
     }
@@ -1583,15 +1756,15 @@ function spawnWaveEnemies(waveNum) {
   for (let i = 0; i < count; i++) {
     const isBoss = isBossWave && i === count - 1;
     const spriteKey = isBoss ? 'boss' : (waveNum >= 3 && i % 2 === 0 ? 'orc' : 'slime');
-    const hp = Math.round((isBoss ? 260 : 65) * (1 + (waveNum - 1) * 0.28));
+    const hp = Math.round((isBoss ? 270 : 68) * (1 + (waveNum - 1) * 0.28));
     const atk = Math.round((isBoss ? 22 : 10) * (1 + (waveNum - 1) * 0.16));
     list.push({
       id: uid('en'),
       name: isBoss ? `Boss Wave ${waveNum}` : (spriteKey === 'orc' ? 'Quái Orc' : 'Slime Độc'),
       spriteKey,
       isBoss,
-      x: 560 + (i % 3) * 48,
-      y: 66 + (i % 3) * 76,
+      x: 575 + (i % 3) * 50,
+      y: 66 + (i % 3) * 80,
       hp,
       maxHp: hp,
       atk,
@@ -1622,7 +1795,6 @@ function startWave() {
     const st = getUnitStats(u);
     u.maxHp = st.maxHp;
     u.hp = st.maxHp;
-    // Giữ nguyên vị trí người chơi đã sắp xếp (homeX, homeY)
     u.x = u.homeX;
     u.y = u.homeY;
     u.atkCooldown = 0.25;
@@ -1687,7 +1859,7 @@ function applyHeroAttack(u, target) {
   AudioFX.hit();
 
   state.effects.push({
-    x: target.x + 16,
+    x: target.x + 18,
     y: target.y + 8,
     text: isCrit ? `-${dmg}!` : `-${dmg}`,
     color: isCrit ? '#fbbf24' : '#ffffff',
@@ -1776,12 +1948,12 @@ function updateSimulation(rawDt) {
       u.atkCooldown = 1 / st.spd;
       if (st.range > 90) {
         state.projectiles.push({
-          x: u.x + 20,
-          y: u.y + 16,
+          x: u.x + 24,
+          y: u.y + 20,
           targetId: nearest.id,
           unitId: u.id,
           color: '#38bdf8',
-          speed: 320
+          speed: 330
         });
       } else {
         applyHeroAttack(u, nearest);
@@ -1796,12 +1968,12 @@ function updateSimulation(rawDt) {
       p.done = true;
       continue;
     }
-    const tx = target.x + 16;
-    const ty = target.y + 16;
+    const tx = target.x + 20;
+    const ty = target.y + 20;
     const dx = tx - p.x;
     const dy = ty - p.y;
     const dist = Math.hypot(dx, dy);
-    if (dist < 14) {
+    if (dist < 15) {
       applyHeroAttack(shooter, target);
       p.done = true;
     } else {
@@ -1823,7 +1995,7 @@ function updateSimulation(rawDt) {
         const d = Math.hypot(au.x - e.x, au.y - e.y);
         if (d < bestD) { bestD = d; targetU = au; }
       }
-      if (bestD > 42) {
+      if (bestD > 44) {
         e.x -= ((e.x - targetU.x) / (bestD || 1)) * e.spd * dt;
         e.y -= ((e.y - targetU.y) / (bestD || 1)) * e.spd * dt;
       } else {
@@ -1832,7 +2004,7 @@ function updateSimulation(rawDt) {
           e.atkCd = 1.15;
           targetU.hp -= e.atk;
           targetU.flashTimer = 0.1;
-          state.effects.push({ x: targetU.x + 12, y: targetU.y + 6, text: `-${e.atk}`, color: '#fb7185', life: 0.6 });
+          state.effects.push({ x: targetU.x + 14, y: targetU.y + 6, text: `-${e.atk}`, color: '#fb7185', life: 0.6 });
         }
       }
     } else {
@@ -1870,7 +2042,6 @@ function updateSimulation(rawDt) {
     state.spinCountInWave = 0;
     state.nudges = [1, 1, 1];
     state.units.forEach((u) => {
-      // Đưa tướng về đúng vị trí đội hình người chơi đã đặt
       u.x = u.homeX;
       u.y = u.homeY;
       const st = getUnitStats(u);
@@ -1882,91 +2053,156 @@ function updateSimulation(rawDt) {
   }
 }
 
+// ================= UPGRADED ARENA GRAPHICS =================
 function renderBattleCanvas() {
   const canvas = document.getElementById('battleCanvas');
   const ctx = canvas.getContext('2d');
   const w = canvas.width;
   const h = canvas.height;
+  const isBossWave = state.wave % 5 === 0;
 
-  ctx.fillStyle = state.wave % 5 === 0 ? '#240b15' : '#0b1222';
+  // Nền bầu trời / đấu trường chiều sâu
+  const bgGrad = ctx.createLinearGradient(0, 0, 0, h);
+  if (isBossWave) {
+    bgGrad.addColorStop(0, '#2a0918');
+    bgGrad.addColorStop(1, '#12060d');
+  } else {
+    bgGrad.addColorStop(0, '#0f1b33');
+    bgGrad.addColorStop(1, '#080e1c');
+  }
+  ctx.fillStyle = bgGrad;
   ctx.fillRect(0, 0, w, h);
 
-  ctx.fillStyle = '#131d33';
-  for (let gx = 0; gx < w; gx += 48) {
-    for (let gy = 36; gy < h; gy += 48) {
-      if (((gx + gy) / 48) % 2 === 0) {
-        ctx.fillRect(gx, gy, 46, 46);
-      }
+  // Sàn gạch đá cổ điển có viền sáng tối
+  const tileSize = 48;
+  for (let gx = 24; gx < w; gx += tileSize) {
+    for (let gy = 34; gy < h; gy += tileSize) {
+      const alt = ((Math.floor(gx / tileSize) + Math.floor(gy / tileSize)) % 2) === 0;
+      ctx.fillStyle = isBossWave
+        ? (alt ? '#220d19' : '#190912')
+        : (alt ? '#13203b' : '#0e182e');
+      ctx.fillRect(gx, gy, tileSize - 2, tileSize - 2);
+
+      ctx.fillStyle = 'rgba(255,255,255,0.03)';
+      ctx.fillRect(gx, gy, tileSize - 2, 2);
     }
   }
 
   // Vùng triển khai đội hình của người chơi (bên trái)
   if (!state.inCombat) {
-    ctx.strokeStyle = 'rgba(56, 189, 248, 0.35)';
+    ctx.fillStyle = 'rgba(56, 189, 248, 0.05)';
+    ctx.fillRect(30, 38, 355, h - 58);
+    ctx.strokeStyle = 'rgba(56, 189, 248, 0.45)';
     ctx.setLineDash([6, 4]);
     ctx.lineWidth = 2;
-    ctx.strokeRect(28, 34, 340, h - 54);
+    ctx.strokeRect(30, 38, 355, h - 58);
     ctx.setLineDash([]);
   }
 
-  // Cổng thành bên trái
+  // Tường thành & Tháp canh bên trái
+  ctx.fillStyle = '#1e293b';
+  ctx.fillRect(0, 0, 26, h);
   ctx.fillStyle = '#334155';
-  ctx.fillRect(0, 0, 22, h);
+  for (let by = 8; by < h; by += 28) {
+    ctx.fillRect(2, by, 20, 18);
+  }
   ctx.fillStyle = '#fb7185';
-  ctx.fillRect(6, h / 2 - 20, 8, 40);
+  ctx.fillRect(8, h / 2 - 26, 10, 52);
+  ctx.fillStyle = '#fde047';
+  ctx.fillRect(11, h / 2 - 18, 4, 36);
 
-  // Vẽ tướng
+  // Vẽ Tướng (24x24 chi tiết + bóng đổ + hào quang sao/thức tỉnh)
   for (const u of state.units) {
-    const bob = state.draggingUnitId === u.id ? -4 : Math.sin(u.animTick) * 3;
+    const bob = state.draggingUnitId === u.id ? -5 : Math.sin(u.animTick) * 2.5;
     const m = SPRITES[u.defId] || SPRITES.warrior;
-    const sc = u.star >= 3 ? 3.2 : (u.star === 2 ? 2.8 : 2.5);
+    const sc = u.star >= 3 ? 2.4 : (u.star === 2 ? 2.15 : 1.95);
+    const spriteW = 24 * sc;
+    const spriteH = 24 * sc;
+    const cx = u.x + spriteW * 0.5;
+    const cy = u.y + spriteH * 0.85;
 
-    // Vòng chọn dưới chân tướng đang chọn
-    if (u.id === state.selectedUnitId) {
-      ctx.strokeStyle = state.draggingUnitId === u.id ? '#fbbf24' : '#38bdf8';
+    // Bóng đổ dưới chân
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.48)';
+    ctx.beginPath();
+    ctx.ellipse(cx, cy, spriteW * 0.42, 7, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Hào quang thức tỉnh nếu đã đạt mốc >= 30
+    if (u.awakened[0]) {
+      ctx.strokeStyle = u.awakened[2] ? 'rgba(251, 191, 36, 0.7)' : 'rgba(192, 132, 252, 0.55)';
       ctx.lineWidth = 2;
       ctx.beginPath();
-      ctx.ellipse(u.x + 20, u.y + 38, 18, 7, 0, 0, Math.PI * 2);
+      ctx.ellipse(cx, cy, spriteW * 0.48, 9, 0, 0, Math.PI * 2);
+      ctx.stroke();
+    }
+
+    // Vòng chọn dưới chân tướng
+    if (u.id === state.selectedUnitId) {
+      ctx.strokeStyle = state.draggingUnitId === u.id ? '#fbbf24' : '#38bdf8';
+      ctx.lineWidth = 2.5;
+      ctx.beginPath();
+      ctx.ellipse(cx, cy, spriteW * 0.54, 10, 0, 0, Math.PI * 2);
       ctx.stroke();
     }
 
     drawPixelMatrix(ctx, m, u.x, u.y + bob, sc, false, u.flashTimer > 0);
 
-    const bw = 38;
+    // Thanh máu & cấp độ
+    const bw = 44;
     const ratio = Math.max(0, Math.min(1, u.hp / u.maxHp));
-    ctx.fillStyle = '#1e293b';
-    ctx.fillRect(u.x, u.y - 8, bw, 5);
+    ctx.fillStyle = '#090d16';
+    ctx.fillRect(u.x, u.y - 9, bw, 6);
     ctx.fillStyle = '#34d399';
-    ctx.fillRect(u.x, u.y - 8, bw * ratio, 5);
+    ctx.fillRect(u.x + 1, u.y - 8, (bw - 2) * ratio, 4);
 
-    ctx.fillStyle = '#fbbf24';
+    ctx.fillStyle = '#fde047';
     ctx.font = 'bold 10px sans-serif';
-    ctx.fillText(`${'★'.repeat(u.star)} L${u.absorbLv}`, u.x, u.y - 11);
+    ctx.fillText(`${'★'.repeat(u.star)} L${u.absorbLv}`, u.x, u.y - 12);
   }
 
-  // Vẽ quái
+  // Vẽ Quái vật (24x24 chi tiết + bóng đổ + hiệu ứng trạng thái)
   for (const e of state.enemies) {
-    const bob = Math.cos(e.animTick) * 3;
+    const bob = Math.cos(e.animTick) * 2.5;
     const m = SPRITES[e.spriteKey] || SPRITES.slime;
-    const sc = e.isBoss ? 3.6 : 2.6;
+    const sc = e.isBoss ? 2.75 : 2.0;
+    const spriteW = 24 * sc;
+    const spriteH = 24 * sc;
+
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
+    ctx.beginPath();
+    ctx.ellipse(e.x + spriteW * 0.5, e.y + spriteH * 0.85, spriteW * 0.44, 7, 0, 0, Math.PI * 2);
+    ctx.fill();
+
     drawPixelMatrix(ctx, m, e.x, e.y + bob, sc, true, e.flashTimer > 0);
 
-    const bw = e.isBoss ? 52 : 36;
+    const bw = e.isBoss ? 58 : 42;
     const ratio = Math.max(0, Math.min(1, e.hp / e.maxHp));
-    ctx.fillStyle = '#1e293b';
-    ctx.fillRect(e.x, e.y - 8, bw, 5);
-    ctx.fillStyle = '#fb7185';
-    ctx.fillRect(e.x, e.y - 8, bw * ratio, 5);
+    ctx.fillStyle = '#090d16';
+    ctx.fillRect(e.x, e.y - 9, bw, 6);
+    ctx.fillStyle = e.poisonTimer > 0 ? '#a3e635' : '#fb7185';
+    ctx.fillRect(e.x + 1, e.y - 8, (bw - 2) * ratio, 4);
+
+    if (e.stunTimer > 0) {
+      ctx.fillStyle = '#fde047';
+      ctx.font = 'bold 10px sans-serif';
+      ctx.fillText('⚡CHOÁNG', e.x, e.y - 12);
+    }
   }
 
+  // Đạn phép & tên bắn có đuôi sáng
   for (const p of state.projectiles) {
-    ctx.fillStyle = p.color;
-    ctx.fillRect(p.x - 4, p.y - 4, 8, 8);
+    ctx.fillStyle = 'rgba(56, 189, 248, 0.35)';
+    ctx.fillRect(p.x - 8, p.y - 3, 12, 6);
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(p.x - 3, p.y - 3, 6, 6);
   }
 
+  // Số sát thương nổi
   for (const fx of state.effects) {
-    ctx.fillStyle = fx.color;
+    ctx.fillStyle = '#000000';
     ctx.font = 'bold 12px sans-serif';
+    ctx.fillText(fx.text, fx.x + 1, fx.y + 1);
+    ctx.fillStyle = fx.color;
     ctx.fillText(fx.text, fx.x, fx.y);
   }
 }
@@ -1992,10 +2228,10 @@ function renderSlotGrid(matchedSet = new Set(), poppingSet = new Set(), dropping
     if (droppingSet.has(idx)) cell.classList.add('dropping');
 
     const cnv = document.createElement('canvas');
-    cnv.width = 48;
-    cnv.height = 48;
+    cnv.width = 58;
+    cnv.height = 58;
     cnv.className = 'pixel-canvas';
-    renderSpriteToCanvas(cnv, def.kind === 'gear' ? 'chest' : def.id, 3);
+    renderSpriteToCanvas(cnv, def.kind === 'gear' ? 'chest' : def.id, 2.4);
 
     const lbl = document.createElement('div');
     lbl.className = 'slot-label';
@@ -2037,10 +2273,10 @@ function renderRoster() {
     top.className = 'unit-top';
 
     const cnv = document.createElement('canvas');
-    cnv.width = 40;
-    cnv.height = 40;
+    cnv.width = 48;
+    cnv.height = 48;
     cnv.className = 'pixel-canvas';
-    renderSpriteToCanvas(cnv, u.defId, 2.5);
+    renderSpriteToCanvas(cnv, u.defId, 2.0);
 
     const st = getUnitStats(u);
     const info = document.createElement('div');
@@ -2081,7 +2317,6 @@ function renderRoster() {
       gearRow.appendChild(box);
     });
 
-    // Dải 6 ô Ấn — chạm trực tiếp vào từng ô Ấn để xem chi tiết!
     const impRow = document.createElement('div');
     impRow.className = 'imprint-strip';
     u.imprints.forEach((imp, idx) => {
@@ -2313,7 +2548,7 @@ document.getElementById('btnAbsorbMode').addEventListener('click', () => {
   }
   state.absorbMode = !state.absorbMode;
   if (state.absorbMode) {
-    addLog('🩸 Đã bật chế độ Nuốt: bấm vào một tướng khác trên sân để nuốt.', '#f472b6');
+    addLog('🩸 Đã bật chế độ Nuốt: chạm vào một tướng khác để chọn Lên cấp Tướng hoặc Lên cấp Ấn.', '#f472b6');
   }
   updateUI();
 });
@@ -2337,9 +2572,9 @@ document.getElementById('btnCancelAbsorb').addEventListener('click', () => {
 
 // Init
 setupBattleCanvasMovement();
-renderSpriteToCanvas(document.getElementById('brandIcon'), 'warrior', 2);
+renderSpriteToCanvas(document.getElementById('brandIcon'), 'warrior', 1.65);
 initGrid();
-addLog('Chào mừng! Kéo thả tướng trên sân để xếp đội hình, chạm trực tiếp vào Ấn để xem chi tiết.', '#fbbf24');
+addLog('Chào mừng! Phiên bản Hi-Bit 24x24: Nuốt tướng cho phép chọn Lên cấp Tướng hoặc Lên cấp Ấn.', '#fbbf24');
 updateUI();
 requestAnimationFrame(gameLoop);
 </script>
