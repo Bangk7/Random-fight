@@ -582,12 +582,12 @@
         </div>
       </div>
 
-      <div class="canvas-wrap">
+      <div class="canvas-wrap" id="canvasWrap">
         <canvas id="battleCanvas" width="760" height="460"></canvas>
       </div>
 
       <div class="inspector-bar" id="inspectorBar">
-        <div>Chọn một đơn vị trên chiến trường để kiểm tra chỉ số chi tiết.</div>
+        <div id="inspectorTitle">Chọn một đơn vị trên chiến trường để kiểm tra chỉ số chi tiết.</div>
         <div class="inspector-stats" id="inspectorStats"></div>
       </div>
     </section>
@@ -659,33 +659,33 @@
   // 1. CLASSES, QUALITIES, ITEMS & CORES
   // ==========================================
   const CLASSES = {
-    knight:  { id: "knight",  name: "Hiệp Sĩ",  role: "Đỡ đòn",  color: "#60a5fa", accent: "#dbeafe", hp: 150, atk: 20, range: 46, speed: 62, cd: 1.05 },
-    warrior: { id: "warrior", name: "Chiến Binh", role: "Cận chiến", color: "#f87171", accent: "#fee2e2", hp: 125, atk: 30, range: 50, speed: 74, cd: 0.90 },
-    archer:  { id: "archer",  name: "Cung Thủ", role: "Tầm xa",  color: "#34d399", accent: "#d1fae5", hp: 85,  atk: 26, range: 215, speed: 68, cd: 0.95 },
-    mage:    { id: "mage",    name: "Pháp Sư",  role: "Phép",    color: "#c084fc", accent: "#f3e8ff", hp: 80,  atk: 34, range: 195, speed: 64, cd: 1.15 },
-    priest:  { id: "priest",  name: "Mục Sư",  role: "Hỗ trợ",  color: "#f8fafc", accent: "#fbbf24", hp: 95,  atk: 18, range: 175, speed: 66, cd: 1.10 }
+    knight:  { id: "knight",  name: "Hiệp Sĩ",    role: "Đỡ đòn",    color: "#60a5fa", hp: 150, atk: 20, range: 46,  speed: 62, cd: 1.05 },
+    warrior: { id: "warrior", name: "Chiến Binh", role: "Cận chiến", color: "#f87171", hp: 125, atk: 30, range: 50,  speed: 74, cd: 0.90 },
+    archer:  { id: "archer",  name: "Cung Thủ",   role: "Tầm xa",    color: "#34d399", hp: 85,  atk: 26, range: 215, speed: 68, cd: 0.95 },
+    mage:    { id: "mage",    name: "Pháp Sư",    role: "Phép",      color: "#c084fc", hp: 80,  atk: 34, range: 195, speed: 64, cd: 1.15 },
+    priest:  { id: "priest",  name: "Mục Sư",     role: "Hỗ trợ",    color: "#f8fafc", hp: 95,  atk: 18, range: 175, speed: 66, cd: 1.10 }
   };
 
   const CLASS_KEYS = Object.keys(CLASSES);
 
   const QUALITIES = [
-    { name: "Thường", mult: 1.0,  color: "#cbd5e1", weight: 52 },
-    { name: "Hiếm",   mult: 1.25, color: "#38bdf8", weight: 26 },
-    { name: "Sử Thi", mult: 1.55, color: "#c084fc", weight: 14 },
+    { name: "Thường",       mult: 1.0,  color: "#cbd5e1", weight: 52 },
+    { name: "Hiếm",         mult: 1.25, color: "#38bdf8", weight: 26 },
+    { name: "Sử Thi",       mult: 1.55, color: "#c084fc", weight: 14 },
     { name: "Truyền Thuyết", mult: 1.95, color: "#fbbf24", weight: 8 }
   ];
 
   const WALL_ITEM_POOL = [
-    { id: "whetstone", name: "Đá Mài Bén", icon: "🗡️", desc: "+18% Sát thương toàn đội", atkPct: 0.18, hpPct: 0, spdPct: 0, cost: 2 },
-    { id: "aegis",     name: "Khiên Cổ Ngữ", icon: "🛡️", desc: "+22% Máu tối đa toàn đội", atkPct: 0, hpPct: 0.22, spdPct: 0, cost: 2 },
-    { id: "quicksilver",name: "Linh Thạch Tốc", icon: "⚡", desc: "+16% Tốc đánh & di chuyển", atkPct: 0, hpPct: 0, spdPct: 0.16, cost: 2 },
-    { id: "sun_prism", name: "Lăng Kính Sao", icon: "🔮", desc: "+12% ATK và +12% HP", atkPct: 0.12, hpPct: 0.12, spdPct: 0, cost: 3 },
-    { id: "war_horn",  name: "Tù Và Chiến Trận", icon: "📯", desc: "+15% ATK và +10% Tốc độ", atkPct: 0.15, hpPct: 0, spdPct: 0.10, cost: 3 }
+    { id: "whetstone",   name: "Đá Mài Bén",       icon: "🗡️", desc: "+18% Sát thương toàn đội", atkPct: 0.18, hpPct: 0,    spdPct: 0,    cost: 2 },
+    { id: "aegis",       name: "Khiên Cổ Ngữ",     icon: "🛡️", desc: "+22% Máu tối đa toàn đội", atkPct: 0,    hpPct: 0.22, spdPct: 0,    cost: 2 },
+    { id: "quicksilver", name: "Linh Thạch Tốc",   icon: "⚡", desc: "+16% Tốc đánh & di chuyển", atkPct: 0,    hpPct: 0,    spdPct: 0.16, cost: 2 },
+    { id: "sun_prism",   name: "Lăng Kính Sao",    icon: "🔮", desc: "+12% ATK và +12% HP",      atkPct: 0.12, hpPct: 0.12, spdPct: 0,    cost: 3 },
+    { id: "war_horn",    name: "Tù Và Chiến Trận", icon: "📯", desc: "+15% ATK và +10% Tốc độ",  atkPct: 0.15, hpPct: 0,    spdPct: 0.10, cost: 3 }
   ];
 
   const CORE_POOL = [
-    { id: "iron_vanguard", name: "Tiên Phong Thép", desc: "Tướng cận chiến nhận +35% HP và +20% ATK." },
-    { id: "arcane_volley", name: "Loạt Đạn Ma Pháp", desc: "Đòn đánh tầm xa/phép tăng +28% sát thương và +15% tốc đánh." },
+    { id: "iron_vanguard", name: "Tiên Phong Thép",   desc: "Tướng cận chiến nhận +35% HP và +20% ATK." },
+    { id: "arcane_volley", name: "Loạt Đạn Ma Pháp", desc: "Toàn đội tăng +28% sát thương và +15% tốc độ." },
     { id: "star_harvest",  name: "Thu Hoạch Tinh Tú", desc: "Nhận thêm +2 Tinh hoa và +1 Sao sáng sau mỗi đợt." },
     { id: "gluttony_soul", name: "Hồn Nuốt Tiến Hóa", desc: "Nuốt tướng tăng thêm +25% chỉ số cộng dồn." },
     { id: "fortress_ward", name: "Hộ Thành Kim Cương", desc: "Căn cứ hồi +25 HP và kẻ địch chịu thêm +15% sát thương." },
@@ -693,11 +693,11 @@
   ];
 
   const MONSTER_ARCHETYPES = [
-    { id: "goblin",  name: "Yêu Tinh Cọc",   color: "#4ade80", hpBase: 68,  atkBase: 11, spd: 66, radius: 14 },
+    { id: "goblin",  name: "Yêu Tinh Cọc",       color: "#4ade80", hpBase: 68,  atkBase: 11, spd: 66, radius: 14 },
     { id: "orc",     name: "Quỷ Thú Thiết Giáp", color: "#fb923c", hpBase: 115, atkBase: 16, spd: 52, radius: 17 },
-    { id: "stalker", name: "Bóng Ma Đột Kích", color: "#f472b6", hpBase: 78,  atkBase: 20, spd: 84, radius: 14 },
+    { id: "stalker", name: "Bóng Ma Đột Kích",   color: "#f472b6", hpBase: 78,  atkBase: 20, spd: 84, radius: 14 },
     { id: "golem",   name: "Khổng Lồ Thạch Khối", color: "#94a3b8", hpBase: 185, atkBase: 22, spd: 40, radius: 20 },
-    { id: "wyrm",    name: "Hắc Long Càn Quét", color: "#ef4444", hpBase: 260, atkBase: 30, spd: 58, radius: 22 }
+    { id: "wyrm",    name: "Hắc Long Càn Quét",  color: "#ef4444", hpBase: 260, atkBase: 30, spd: 58, radius: 22 }
   ];
 
   // ==========================================
@@ -708,22 +708,21 @@
     ctx.translate(Math.round(x), Math.round(y));
     if (!facingRight) ctx.scale(-1, 1);
 
-    // Attack lunge forward (explicit combat action, not idle bobbing)
     const lunge = attackPose > 0 ? Math.sin(attackPose * Math.PI) * 8 : 0;
     ctx.translate(lunge, 0);
 
-    const p = size / 16; // 16x16 pixel grid
+    const p = size / 16;
     const px = (gx, gy, gw, gh, color) => {
       ctx.fillStyle = hitFlash > 0 ? "#ffffff" : color;
-      ctx.fillRect(Math.round((gx - 8) * p), Math.round((gy - 8) * p), Math.round(gw * p), Math.round(gh * p));
+      ctx.fillRect(Math.round((gx - 8) * p), Math.round((gy - 8) * p), Math.max(1, Math.round(gw * p)), Math.max(1, Math.round(gh * p)));
     };
 
     const cls = CLASSES[classId] || CLASSES.knight;
 
-    // Grounded feet shadow (stationary on ground)
+    // Grounded feet shadow
     ctx.fillStyle = "rgba(0,0,0,0.42)";
     ctx.beginPath();
-    ctx.ellipse(0, Math.round(7.2 * p), Math.round(6 * p), Math.round(2.2 * p), 0, 0, Math.PI * 2);
+    ctx.ellipse(0, Math.round(7.2 * p), Math.max(2, Math.round(6 * p)), Math.max(1, Math.round(2.2 * p)), 0, 0, Math.PI * 2);
     ctx.fill();
 
     // Boots / Legs
@@ -736,38 +735,32 @@
     // Head
     px(5, 2, 6, 4, "#fde68a");
 
-    // Class-specific silhouette & gear
     if (classId === "knight") {
-      // Helmet & shield & sword
       px(4, 1, 8, 3, "#93c5fd");
       px(6, 3, 4, 1, "#1e293b");
-      px(2, 6, 3, 5, "#60a5fa"); // shield
-      px(11, 5, 2, 6, "#e2e8f0"); // blade
+      px(2, 6, 3, 5, "#60a5fa");
+      px(11, 5, 2, 6, "#e2e8f0");
     } else if (classId === "warrior") {
-      // Horned helm & heavy axe
       px(4, 1, 2, 2, "#fbbf24");
       px(10, 1, 2, 2, "#fbbf24");
       px(5, 1, 6, 2, "#dc2626");
       px(11, 3, 2, 9, "#cbd5e1");
       px(12, 3, 3, 4, "#f87171");
     } else if (classId === "archer") {
-      // Hood & bow
       px(5, 1, 6, 2, "#059669");
       px(11, 4, 2, 7, "#a16207");
       px(12, 5, 1, 5, "#fef08a");
     } else if (classId === "mage") {
-      // Pointed hat & staff
       px(6, 0, 4, 1, "#a855f7");
       px(4, 1, 8, 2, "#9333ea");
       px(11, 3, 1, 10, "#92400e");
       px(10, 2, 3, 2, "#38bdf8");
     } else if (classId === "priest") {
-      // Pure white robe & gold trim
       px(4, 6, 8, 6, "#ffffff");
       px(5, 1, 6, 2, "#ffffff");
-      px(5, 2, 6, 1, "#fbbf24"); // gold trim
-      px(7, 7, 2, 3, "#fbbf24"); // gold emblem
-      px(11, 3, 1, 10, "#fbbf24"); // gold staff
+      px(5, 2, 6, 1, "#fbbf24");
+      px(7, 7, 2, 3, "#fbbf24");
+      px(11, 3, 1, 10, "#fbbf24");
       px(10, 2, 3, 2, "#fef08a");
     }
 
@@ -780,22 +773,18 @@
     ctx.translate(Math.round(monster.x + lunge), Math.round(monster.y));
 
     const r = monster.radius;
-    // Ground shadow
     ctx.fillStyle = "rgba(0,0,0,0.45)";
     ctx.beginPath();
     ctx.ellipse(0, r * 0.85, r * 0.9, r * 0.28, 0, 0, Math.PI * 2);
     ctx.fill();
 
-    // Body block
     ctx.fillStyle = hitFlash > 0 ? "#ffffff" : monster.color;
     ctx.fillRect(-r * 0.75, -r * 0.75, r * 1.5, r * 1.5);
 
-    // Eyes
     ctx.fillStyle = "#0f172a";
     ctx.fillRect(-r * 0.45, -r * 0.3, r * 0.28, r * 0.28);
     ctx.fillRect(-r * 0.05, -r * 0.3, r * 0.28, r * 0.28);
 
-    // Horns / spikes
     ctx.fillStyle = "#fef08a";
     ctx.fillRect(-r * 0.65, -r * 1.05, r * 0.25, r * 0.35);
     ctx.fillRect(r * 0.35, -r * 1.05, r * 0.25, r * 0.35);
@@ -822,6 +811,7 @@
     baseHp: 100,
     maxBaseHp: 100,
     isSpinning: false,
+    spinIntervalId: null,
     reels: Array.from({ length: 9 }, () => null),
     allies: [],
     enemies: [],
@@ -856,6 +846,9 @@
     const qual = qualityObj || pickQuality();
     const base = CLASSES[cid];
     const lvlScale = 1 + (level - 1) * 0.22;
+    const baseMaxHp = Math.round(base.hp * qual.mult * lvlScale);
+    const baseAtk = Math.round(base.atk * qual.mult * lvlScale);
+
     return {
       uid: "u_" + Math.random().toString(36).slice(2, 9),
       classId: cid,
@@ -864,20 +857,23 @@
       quality: qual.name,
       qualityColor: qual.color,
       level,
-      maxHp: Math.round(base.hp * qual.mult * lvlScale),
-      hp: Math.round(base.hp * qual.mult * lvlScale),
-      atk: Math.round(base.atk * qual.mult * lvlScale),
+      baseMaxHp,
+      baseAtk,
+      baseSpeed: base.speed,
+      maxHp: baseMaxHp,
+      hp: baseMaxHp,
+      atk: baseAtk,
       range: base.range,
       speed: base.speed,
       cd: base.cd,
       atkTimer: 0,
       x: 110,
       y: 220,
+      homeX: 110,
+      homeY: 220,
       radius: 15,
       hitFlash: 0,
-      attackPose: 0,
-      swallowBonusHp: 0,
-      swallowBonusAtk: 0
+      attackPose: 0
     };
   }
 
@@ -885,7 +881,7 @@
     return state.cores.some(c => c.id === id);
   }
 
-  function getTeamModifiers() {
+  function getTeamModifiers(classId = null) {
     let hpMult = 1;
     let atkMult = 1;
     let spdMult = 1;
@@ -903,29 +899,41 @@
     if (hasCore("fortress_ward")) {
       atkMult += 0.15;
     }
+    if ((classId === "knight" || classId === "warrior") && hasCore("iron_vanguard")) {
+      hpMult += 0.35;
+      atkMult += 0.20;
+    }
 
     return { hpMult, atkMult, spdMult };
   }
 
-  // Balanced wave scaling: stronger enemies & tuned counts as wave advances (1..18)
+  function recalculateDeployedAllies() {
+    for (const a of state.allies) {
+      const mods = getTeamModifiers(a.classId);
+      const hpRatio = a.maxHp > 0 ? a.hp / a.maxHp : 1;
+      a.maxHp = Math.max(1, Math.round(a.baseMaxHp * mods.hpMult));
+      a.atk = Math.max(1, Math.round(a.baseAtk * mods.atkMult));
+      a.speed = a.baseSpeed * mods.spdMult;
+      a.hp = Math.max(1, Math.min(a.maxHp, Math.round(a.maxHp * hpRatio)));
+    }
+  }
+
   function spawnWaveEnemies(waveNum) {
     const canvas = document.getElementById("battleCanvas");
     const w = canvas.width;
     const h = canvas.height;
 
-    // Controlled count curve: starts small, rises steadily with tactical pacing (never overcrowded)
     const count = Math.min(14, 3 + Math.floor(waveNum * 0.62));
-    // Strong exponential + linear escalation so later waves demand upgrades, cores & wall items
     const hpScale = Math.pow(1.16, waveNum - 1) * (1 + (waveNum - 1) * 0.08);
     const atkScale = Math.pow(1.13, waveNum - 1) * (1 + (waveNum - 1) * 0.06);
 
     const enemies = [];
     for (let i = 0; i < count; i++) {
       let archIndex = 0;
-      if (waveNum >= 14 && i % 4 === 0) archIndex = 4; // Wyrm in late waves
-      else if (waveNum >= 9 && i % 3 === 0) archIndex = 3; // Golem
-      else if (waveNum >= 5 && i % 3 === 1) archIndex = 2; // Stalker
-      else if (waveNum >= 2 && i % 2 === 1) archIndex = 1; // Orc
+      if (waveNum >= 14 && i % 4 === 0) archIndex = 4;
+      else if (waveNum >= 9 && i % 3 === 0) archIndex = 3;
+      else if (waveNum >= 5 && i % 3 === 1) archIndex = 2;
+      else if (waveNum >= 2 && i % 2 === 1) archIndex = 1;
 
       const arch = MONSTER_ARCHETYPES[archIndex];
       const isElite = waveNum % 3 === 0 && i === count - 1;
@@ -934,7 +942,6 @@
       const maxHp = Math.round(arch.hpBase * hpScale * eliteMult);
       const atk = Math.round(arch.atkBase * atkScale * eliteMult);
 
-      // Staggered spawn positions along right side so units don't overlap identically
       const laneRow = i % 4;
       const baseY = 85 + laneRow * 88 + ((i * 19) % 24) - 12;
       const spawnX = w - 55 - Math.floor(i / 4) * 46 - ((i * 13) % 18);
@@ -1024,7 +1031,7 @@
     state.shopOffers.forEach((item, idx) => {
       const card = document.createElement("div");
       card.className = "shop-item";
-      const canBuy = state.starlight >= item.cost && state.wallItems.length < 5 && state.phase === "prep";
+      const canBuy = state.starlight >= item.cost && state.wallItems.length < 5 && state.phase === "prep" && !state.isSpinning;
       card.innerHTML = `
         <div style="font-size:16px">${item.icon}</div>
         <div style="font-weight:700">${item.name}</div>
@@ -1049,6 +1056,7 @@
     }
     state.starlight -= item.cost;
     state.wallItems.push({ ...item });
+    recalculateDeployedAllies();
     addLog(`Đã treo vật phẩm "${item.name}" lên tường.`, "good");
     renderWallSlots();
     renderShop();
@@ -1062,6 +1070,7 @@
     }
     const removed = state.wallItems.pop();
     state.starlight += 1;
+    recalculateDeployedAllies();
     addLog(`Đã tháo "${removed.name}" (+1 Sao sáng).`, "warn");
     renderWallSlots();
     renderShop();
@@ -1069,7 +1078,7 @@
   }
 
   // ==========================================
-  // 5. 3x3 SLOT MACHINE (LONGER SPIN DURATION) & DRAG-SWALLOW
+  // 5. 3x3 SLOT MACHINE & DRAG-SWALLOW
   // ==========================================
   let draggedReelIndex = null;
 
@@ -1103,7 +1112,6 @@
       cell.appendChild(label);
       cell.appendChild(sub);
 
-      // Drag events for swapping or swallowing
       cell.addEventListener("dragstart", () => {
         if (!unit || state.isSpinning) return;
         draggedReelIndex = idx;
@@ -1134,7 +1142,6 @@
         handleReelDropOnReel(draggedReelIndex, idx);
       });
 
-      // Click to deploy single unit to battlefield
       cell.addEventListener("click", () => {
         if (state.isSpinning || state.phase !== "prep" || !unit) return;
         deployUnitFromReel(idx);
@@ -1149,12 +1156,10 @@
     const target = state.reels[toIdx];
     if (!source) return;
 
-    // If same class, merge/swallow into target
     if (target && target.classId === source.classId) {
       swallowUnits(source, target);
       state.reels[fromIdx] = null;
     } else {
-      // Swap positions
       state.reels[toIdx] = source;
       state.reels[fromIdx] = target;
     }
@@ -1167,10 +1172,12 @@
     const bonusHp = Math.round((24 + donor.level * 12) * soulMult);
 
     recipient.level += 1;
-    recipient.swallowBonusAtk += bonusAtk;
-    recipient.swallowBonusHp += bonusHp;
-    recipient.atk += bonusAtk;
-    recipient.maxHp += bonusHp;
+    recipient.baseAtk += bonusAtk;
+    recipient.baseMaxHp += bonusHp;
+
+    const mods = getTeamModifiers(recipient.classId);
+    recipient.atk = Math.round(recipient.baseAtk * mods.atkMult);
+    recipient.maxHp = Math.round(recipient.baseMaxHp * mods.hpMult);
     recipient.hp = recipient.maxHp;
 
     state.account.totalSwallows += 1;
@@ -1193,15 +1200,15 @@
       const donor = state.reels[draggedReelIndex];
       if (!donor) return;
 
-      // Find another unit on reels to swallow into, or empower a deployed ally
       const otherIdx = state.reels.findIndex((u, i) => i !== draggedReelIndex && u !== null);
       if (otherIdx !== -1) {
         swallowUnits(donor, state.reels[otherIdx]);
       } else if (state.allies.length > 0) {
         swallowUnits(donor, state.allies[state.allies.length - 1]);
+        recalculateDeployedAllies();
       } else {
-        addLog(`Đã giải phóng ${donor.className} nhận +1 Tinh hoa.`, "good");
         state.essence += 1;
+        addLog(`Đã giải phóng ${donor.className} nhận +1 Tinh hoa.`, "good");
       }
 
       state.reels[draggedReelIndex] = null;
@@ -1211,30 +1218,43 @@
     });
   }
 
-  // Increased spin duration (~1650ms total with staggered reel stops)
   function spinSlotMachine() {
     if (state.isSpinning || state.phase !== "prep" || state.essence < 2) return;
+    if (state.spinIntervalId) {
+      clearInterval(state.spinIntervalId);
+      state.spinIntervalId = null;
+    }
+
     state.essence -= 2;
     state.isSpinning = true;
     updateHeaderUI();
+    renderShop();
     addLog("Đang quay máy xèng 3x3...", "");
 
     const totalDuration = 1650;
     const tickInterval = 75;
     const reelStopTimes = [950, 1120, 1280, 1180, 1360, 1480, 1380, 1550, 1650];
 
-    const finalUnits = state.reels.map((existing, idx) => {
-      // Keep deployed or locked units? Fill empty or spin new ones with bias toward wave progression
+    const finalUnits = state.reels.map(() => {
       const biasQuality = state.wave >= 10 && Math.random() < 0.25 ? QUALITIES[1] : null;
       return createUnitData(null, biasQuality, 1);
     });
 
-    const intervalId = setInterval(() => {
+    const spinStart = performance.now();
+
+    state.spinIntervalId = setInterval(() => {
       const elapsed = performance.now() - spinStart;
       for (let i = 0; i < 9; i++) {
         if (elapsed < reelStopTimes[i]) {
           const previewClass = CLASS_KEYS[Math.floor(Math.random() * CLASS_KEYS.length)];
-          state.reels[i] = createUnitData(previewClass, QUALITIES[0], 1);
+          state.reels[i] = {
+            classId: previewClass,
+            className: CLASSES[previewClass].name,
+            quality: QUALITIES[0].name,
+            qualityColor: QUALITIES[0].color,
+            level: 1,
+            atk: CLASSES[previewClass].atk
+          };
         } else {
           state.reels[i] = finalUnits[i];
         }
@@ -1242,41 +1262,39 @@
       renderSlotGrid();
 
       if (elapsed >= totalDuration) {
-        clearInterval(intervalId);
+        clearInterval(state.spinIntervalId);
+        state.spinIntervalId = null;
         state.reels = finalUnits;
         state.isSpinning = false;
         renderSlotGrid();
+        renderShop();
         updateHeaderUI();
         addLog("Máy xèng đã dừng! Kéo tướng để nuốt hoặc nhấp để triệu hồi.", "good");
       }
     }, tickInterval);
-
-    const spinStart = performance.now();
   }
 
   function deployUnitFromReel(reelIdx) {
     const unit = state.reels[reelIdx];
     if (!unit || state.phase !== "prep") return;
 
-    const canvas = document.getElementById("battleCanvas");
-    const mods = getTeamModifiers();
-    const classBonusHp = (unit.classId === "knight" || unit.classId === "warrior") && hasCore("iron_vanguard") ? 1.35 : 1.0;
-    const classBonusAtk = (unit.classId === "knight" || unit.classId === "warrior") && hasCore("iron_vanguard") ? 1.20 : 1.0;
-
+    const mods = getTeamModifiers(unit.classId);
     const slotCount = state.allies.length;
     const col = slotCount % 3;
     const row = Math.floor(slotCount / 3) % 4;
+    const homeX = 105 + col * 58;
+    const homeY = 95 + row * 85;
 
     const ally = {
       ...unit,
-      maxHp: Math.round(unit.maxHp * mods.hpMult * classBonusHp),
-      hp: Math.round(unit.maxHp * mods.hpMult * classBonusHp),
-      atk: Math.round(unit.atk * mods.atkMult * classBonusAtk),
-      speed: unit.speed * mods.spdMult,
-      x: 105 + col * 58,
-      y: 95 + row * 85,
-      homeX: 105 + col * 58,
-      homeY: 95 + row * 85,
+      maxHp: Math.max(1, Math.round(unit.baseMaxHp * mods.hpMult)),
+      hp: Math.max(1, Math.round(unit.baseMaxHp * mods.hpMult)),
+      atk: Math.max(1, Math.round(unit.baseAtk * mods.atkMult)),
+      speed: unit.baseSpeed * mods.spdMult,
+      x: homeX,
+      y: homeY,
+      homeX,
+      homeY,
       atkTimer: 0.2,
       hitFlash: 0,
       attackPose: 0
@@ -1329,12 +1347,10 @@
   function startWaveCombat() {
     if (state.isSpinning || state.phase !== "prep") return;
 
-    // Auto-deploy if player has 0 allies on field and has units in reels
     if (state.allies.length === 0) {
       deployAllReels();
     }
     if (state.allies.length === 0) {
-      // Give a starter knight if completely empty so player isn't stuck
       const starter = createUnitData("knight", QUALITIES[0], 1);
       state.reels[4] = starter;
       deployUnitFromReel(4);
@@ -1343,6 +1359,7 @@
     spawnWaveEnemies(state.wave);
     state.phase = "combat";
     updateHeaderUI();
+    renderShop();
     addLog(`Bắt đầu Đợt ${state.wave}! Kẻ địch đang tiến công (${state.enemies.length} mục tiêu).`, "warn");
   }
 
@@ -1362,7 +1379,6 @@
       a.atkTimer -= dt;
 
       if (a.classId === "priest") {
-        // Priest heals lowest-HP ally or attacks enemy if no injured ally
         const injured = state.allies.filter(u => u.hp < u.maxHp).sort((x, y) => (x.hp / x.maxHp) - (y.hp / y.maxHp))[0];
         if (injured && a.atkTimer <= 0) {
           a.atkTimer = a.cd;
@@ -1373,7 +1389,6 @@
         }
       }
 
-      // Find nearest enemy
       let nearest = null;
       let bestDist = Infinity;
       for (const e of state.enemies) {
@@ -1405,7 +1420,6 @@
               life: 1.2
             });
           } else {
-            // Melee slash animation + impact
             spawnSlash(nearest.x, nearest.y, angle, CLASSES[a.classId].color);
             damageEnemy(nearest, a.atk);
             if (a.classId === "warrior" || a.classId === "knight") {
@@ -1422,13 +1436,13 @@
     }
 
     // Update enemies
+    let breachedBase = false;
     for (let i = state.enemies.length - 1; i >= 0; i--) {
       const e = state.enemies[i];
       if (e.hitFlash > 0) e.hitFlash = Math.max(0, e.hitFlash - dt * 6);
       if (e.attackPose > 0) e.attackPose = Math.max(0, e.attackPose - dt * 4.2);
       e.atkTimer -= dt;
 
-      // Find nearest ally
       let targetAlly = null;
       let bestDist = Infinity;
       for (const a of state.allies) {
@@ -1453,10 +1467,10 @@
           spawnFloatingText(targetAlly.x, targetAlly.y - 20, `-${e.atk}`, "#fb7185");
         }
       } else {
-        // March left toward base defense line
         e.x -= e.speed * dt;
         if (e.x <= 42) {
           state.baseHp -= e.atk;
+          breachedBase = true;
           state.screenShake = Math.max(state.screenShake, 6);
           spawnFloatingText(50, e.y, `Căn cứ -${e.atk}`, "#f43f5e");
           addLog(`${e.name} tấn công căn cứ (-${e.atk} HP)!`, "danger");
@@ -1493,7 +1507,6 @@
       }
     }
 
-    // Update slash effects
     for (let i = state.slashEffects.length - 1; i >= 0; i--) {
       state.slashEffects[i].life -= dt;
       if (state.slashEffects[i].life <= 0) {
@@ -1501,7 +1514,6 @@
       }
     }
 
-    // Update floating texts
     for (let i = state.floatingTexts.length - 1; i >= 0; i--) {
       const ft = state.floatingTexts[i];
       ft.y -= 28 * dt;
@@ -1511,35 +1523,54 @@
       }
     }
 
-    // Check defeat or wave clear
     if (state.baseHp <= 0) {
       state.baseHp = 0;
       state.phase = "defeat";
       updateHeaderUI();
+      renderShop();
       addLog("Căn cứ đã thất thủ! Nhấn Chơi lại để thử sức.", "danger");
       return;
     }
 
     if (state.enemies.length === 0 && state.phase === "combat") {
-      onWaveCleared();
+      if (breachedBase) {
+        // Return remaining allies to prep if wave ended due to breach
+        for (const a of state.allies) {
+          a.hp = a.maxHp;
+          a.x = a.homeX;
+          a.y = a.homeY;
+          a.atkTimer = 0.2;
+          a.attackPose = 0;
+        }
+        if (state.wave < state.maxWave) {
+          state.wave += 1;
+          state.phase = "prep";
+          renderShop();
+          updateHeaderUI();
+        } else {
+          state.phase = "defeat";
+          updateHeaderUI();
+        }
+      } else {
+        onWaveCleared();
+      }
     }
   }
 
   function damageEnemy(enemy, rawDmg) {
     const wardMult = hasCore("fortress_ward") ? 1.15 : 1.0;
     const dmg = Math.round(rawDmg * wardMult);
-    enemy.hp -= dmg;
+    enemy.hp = Math.max(0, enemy.hp - dmg);
     enemy.hitFlash = 1;
     spawnFloatingText(enemy.x, enemy.y - enemy.radius - 6, `-${dmg}`, "#fde047");
 
-    if (hasCore("blade_storm") && Math.random() < 0.25) {
-      enemy.hp -= 16;
+    if (enemy.hp > 0 && hasCore("blade_storm") && Math.random() < 0.25) {
+      enemy.hp = Math.max(0, enemy.hp - 16);
       spawnFloatingText(enemy.x + 8, enemy.y - enemy.radius - 20, `-16 chuẩn`, "#38bdf8");
     }
   }
 
   function onWaveCleared() {
-    // Lowered/balanced wave essence reward so economy stays strategic
     const baseEssence = state.wave <= 6 ? 3 : 4;
     const harvestBonus = hasCore("star_harvest") ? 2 : 0;
     const starBonus = (state.wave % 2 === 0 ? 1 : 0) + (hasCore("star_harvest") ? 1 : 0);
@@ -1550,7 +1581,6 @@
 
     addLog(`Hoàn thành Đợt ${state.wave}! Nhận +${baseEssence + harvestBonus} Tinh hoa${starBonus ? ` và +${starBonus} Sao sáng` : ""}.`, "good");
 
-    // Return surviving allies back to prep formation with full HP
     for (const a of state.allies) {
       a.hp = a.maxHp;
       a.x = a.homeX;
@@ -1563,11 +1593,11 @@
       state.phase = "victory";
       state.account.wins += 1;
       updateHeaderUI();
+      renderShop();
       addLog("CHÚC MỪNG! Bạn đã chinh phục toàn bộ 18 đợt của Random-Fight!", "good");
       return;
     }
 
-    // Mandatory core selection every 3 waves (3, 6, 9, 12, 15, 18)
     if (state.wave % 3 === 0) {
       state.wave += 1;
       state.phase = "core_select";
@@ -1611,6 +1641,7 @@
         if (core.id === "fortress_ward") {
           state.baseHp = Math.min(state.maxBaseHp, state.baseHp + 25);
         }
+        recalculateDeployedAllies();
         modal.classList.remove("open");
         state.phase = "prep";
         renderShop();
@@ -1638,11 +1669,9 @@
       ctx.translate(sx, sy);
     }
 
-    // Clean tactical arena background (no floating idle animations)
     ctx.fillStyle = "#121a24";
     ctx.fillRect(0, 0, w, h);
 
-    // Subtle grid lines
     ctx.strokeStyle = "rgba(148, 163, 184, 0.08)";
     ctx.lineWidth = 1;
     for (let gx = 40; gx < w; gx += 48) {
@@ -1658,7 +1687,6 @@
       ctx.stroke();
     }
 
-    // Base defense zone on left
     ctx.fillStyle = "rgba(56, 189, 248, 0.08)";
     ctx.fillRect(0, 0, 42, h);
     ctx.strokeStyle = "rgba(56, 189, 248, 0.35)";
@@ -1667,11 +1695,9 @@
     ctx.lineTo(42, h);
     ctx.stroke();
 
-    // Draw allies (grounded, no idle bobbing)
     for (const a of state.allies) {
       drawPixelUnit(ctx, a.classId, a.x, a.y, 34, true, a.hitFlash, a.attackPose);
 
-      // Selection ring
       if (state.selectedEntity && state.selectedEntity.uid === a.uid) {
         ctx.strokeStyle = "#38bdf8";
         ctx.lineWidth = 2;
@@ -1680,7 +1706,6 @@
         ctx.stroke();
       }
 
-      // HP bar
       const bw = 30;
       const ratio = Math.max(0, a.hp / a.maxHp);
       ctx.fillStyle = "#0f172a";
@@ -1689,7 +1714,6 @@
       ctx.fillRect(a.x - bw / 2, a.y - 24, bw * ratio, 5);
     }
 
-    // Draw enemies
     for (const e of state.enemies) {
       drawMonsterSprite(ctx, e, e.hitFlash, e.attackPose);
 
@@ -1709,7 +1733,6 @@
       ctx.fillRect(e.x - bw / 2, e.y - e.radius - 13, bw * ratio, 5);
     }
 
-    // Draw projectiles
     for (const p of state.projectiles) {
       ctx.fillStyle = p.color;
       ctx.beginPath();
@@ -1717,7 +1740,6 @@
       ctx.fill();
     }
 
-    // Draw combat slash arcs
     for (const s of state.slashEffects) {
       const alpha = Math.max(0, s.life / s.maxLife);
       ctx.save();
@@ -1732,7 +1754,6 @@
       ctx.restore();
     }
 
-    // Draw floating damage/heal numbers
     for (const ft of state.floatingTexts) {
       ctx.save();
       ctx.globalAlpha = Math.max(0, ft.life / ft.maxLife);
@@ -1748,30 +1769,30 @@
   }
 
   function refreshInspector() {
-    const bar = document.getElementById("inspectorBar");
-    const stats = document.getElementById("inspectorStats");
+    const titleEl = document.getElementById("inspectorTitle");
+    const statsEl = document.getElementById("inspectorStats");
     const ent = state.selectedEntity;
     if (!ent) return;
 
     const isAlive = state.allies.some(a => a.uid === ent.uid) || state.enemies.some(e => e.uid === ent.uid);
     if (!isAlive) {
       state.selectedEntity = null;
-      bar.firstElementChild.textContent = "Đơn vị đã rời trận. Nhấp vào đơn vị khác để xem.";
-      stats.innerHTML = "";
+      titleEl.textContent = "Đơn vị đã rời trận. Nhấp vào đơn vị khác để xem.";
+      statsEl.innerHTML = "";
       return;
     }
 
     if (ent.classId) {
-      bar.firstElementChild.innerHTML = `<b style="color:${ent.qualityColor}">${ent.className}</b> • ${ent.role} • ${ent.quality} (Lv.${ent.level})`;
-      stats.innerHTML = `
+      titleEl.innerHTML = `<b style="color:${ent.qualityColor}">${ent.className}</b> • ${ent.role} • ${ent.quality} (Lv.${ent.level})`;
+      statsEl.innerHTML = `
         <span>HP: <b>${Math.max(0, Math.round(ent.hp))}/${ent.maxHp}</b></span>
         <span>ATK: <b>${ent.atk}</b></span>
         <span>Tầm đánh: <b>${ent.range}</b></span>
         <span>Tốc độ: <b>${Math.round(ent.speed)}</b></span>
       `;
     } else {
-      bar.firstElementChild.innerHTML = `<b style="color:#fb7185">${ent.name}</b> • Kẻ địch Đợt ${state.wave}`;
-      stats.innerHTML = `
+      titleEl.innerHTML = `<b style="color:#fb7185">${ent.name}</b> • Kẻ địch Đợt ${state.wave}`;
+      statsEl.innerHTML = `
         <span>HP: <b>${Math.max(0, Math.round(ent.hp))}/${ent.maxHp}</b></span>
         <span>ATK: <b>${ent.atk}</b></span>
         <span>Tốc độ: <b>${Math.round(ent.speed)}</b></span>
@@ -1783,6 +1804,7 @@
     const canvas = document.getElementById("battleCanvas");
     canvas.addEventListener("click", (e) => {
       const rect = canvas.getBoundingClientRect();
+      if (!rect.width || !rect.height) return;
       const scaleX = canvas.width / rect.width;
       const scaleY = canvas.height / rect.height;
       const cx = (e.clientX - rect.left) * scaleX;
@@ -1880,6 +1902,12 @@
   }
 
   function restartGame() {
+    if (state.spinIntervalId) {
+      clearInterval(state.spinIntervalId);
+      state.spinIntervalId = null;
+    }
+    document.getElementById("coreModal").classList.remove("open");
+
     state.wave = 1;
     state.phase = "prep";
     state.essence = 8;
@@ -1904,6 +1932,9 @@
     ];
 
     document.getElementById("logList").innerHTML = "";
+    document.getElementById("inspectorTitle").textContent = "Chọn một đơn vị trên chiến trường để kiểm tra chỉ số chi tiết.";
+    document.getElementById("inspectorStats").innerHTML = "";
+
     generateShopOffers();
     renderWallSlots();
     renderSlotGrid();
@@ -1927,7 +1958,6 @@
     requestAnimationFrame(gameLoop);
   }
 
-  // Init
   setupTopButtons();
   setupSwallowZone();
   setupCanvasClick();
