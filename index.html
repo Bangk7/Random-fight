@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>RANDOM-FIGHT! • TỰ ĐỘNG CHIẾN ĐẤU</title>
+  <title>RANDOM-FIGHT! • VƯƠNG QUỐC TRUNG CỔ • TỐI ƯU TOÀN DIỆN</title>
   <style>
     :root {
       --bg: #0b1120;
@@ -406,7 +406,7 @@
       <canvas id="brandIcon" width="46" height="46" class="pixel-canvas"></canvas>
       <div>
         <div class="brand-title">RANDOM-FIGHT! • VƯƠNG QUỐC TRUNG CỔ</div>
-        <div class="brand-sub">SKIN TƯỚNG VÀNG NÂU • AI &amp; CHIẾN THUẬT CHIẾN TRƯỜNG • KÉO THẢ NUỐT • LÕI MỖI 3 VÒNG (ĐẾN VÒNG 18)</div>
+        <div class="brand-sub">KỶ LỤC: <span id="bestWaveLabel">VÒNG 1</span> • TỐI ƯU HIỆU NĂNG &amp; LƯU TỰ ĐỘNG • LÕI MỖI 3 VÒNG (ĐẾN VÒNG 18)</div>
       </div>
     </div>
     <div class="stats-row">
@@ -693,7 +693,7 @@ const AudioFX = (() => {
   };
 })();
 
-// ================= NEWLY DESIGNED CHARACTER MODELS (VÀNG NÂU SKIN PALETTE) =================
+// ================= CHARACTER MODELS (VÀNG NÂU SKIN PALETTE + OFFSCREEN SPRITE CACHE) =================
 const HERO_SKIN_PALETTE = {
   '.': null,
   'O': '#1f1206',
@@ -1061,39 +1061,49 @@ const HERO_MODELS_32 = {
   ]
 };
 
-function drawCharacterModel(ctx, key, dx, dy, scale, flipX = false, flashWhite = false) {
-  const isEnemy = key === 'bandit' || key === 'blackguard' || key === 'warlock' || key === 'boss';
+const SPRITE_CACHE = new Map();
+
+function getCachedSpriteCanvas(key, flipX = false, flashWhite = false) {
+  const cacheKey = `${key}|${flipX ? 1 : 0}|${flashWhite ? 1 : 0}`;
+  if (SPRITE_CACHE.has(cacheKey)) return SPRITE_CACHE.get(cacheKey);
   const matrix = HERO_MODELS_32[key] || HERO_MODELS_32.warrior;
+  const isEnemy = key === 'bandit' || key === 'blackguard' || key === 'warlock' || key === 'boss';
   const pal = isEnemy ? ENEMY_PALETTE : HERO_SKIN_PALETTE;
   const h = matrix.length;
   const w = matrix[0].length;
+  const off = document.createElement('canvas');
+  off.width = w;
+  off.height = h;
+  const octx = off.getContext('2d');
   for (let y = 0; y < h; y++) {
     const row = matrix[y];
     for (let x = 0; x < w; x++) {
       const ch = row[flipX ? (w - 1 - x) : x];
       const col = pal[ch];
       if (!col) continue;
-      ctx.fillStyle = flashWhite ? '#ffffff' : col;
-      ctx.fillRect(
-        Math.round(dx + x * scale),
-        Math.round(dy + y * scale),
-        Math.ceil(scale),
-        Math.ceil(scale)
-      );
+      octx.fillStyle = flashWhite ? '#ffffff' : col;
+      octx.fillRect(x, y, 1, 1);
     }
   }
+  SPRITE_CACHE.set(cacheKey, off);
+  return off;
+}
+
+function drawCharacterModel(ctx, key, dx, dy, scale, flipX = false, flashWhite = false) {
+  const off = getCachedSpriteCanvas(key, flipX, flashWhite);
+  ctx.drawImage(off, Math.round(dx), Math.round(dy), Math.round(off.width * scale), Math.round(off.height * scale));
 }
 
 function renderSpriteToCanvas(canvas, key, scale = 1.85) {
   if (!canvas) return;
   const ctx = canvas.getContext('2d');
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-  const m = HERO_MODELS_32[key] || HERO_MODELS_32.warrior;
-  const pxW = m[0].length * scale;
-  const pxH = m.length * scale;
+  const off = getCachedSpriteCanvas(key, false, false);
+  const pxW = off.width * scale;
+  const pxH = off.height * scale;
   const ox = Math.floor((canvas.width - pxW) / 2);
   const oy = Math.floor((canvas.height - pxH) / 2);
-  drawCharacterModel(ctx, key, ox, oy, scale);
+  ctx.drawImage(off, ox, oy, Math.round(pxW), Math.round(pxH));
 }
 
 // ================= GAME DATA & CLASS SIGNATURE SKILLS =================
@@ -1192,6 +1202,9 @@ const PAYLINES = [
 
 const MAX_WALL_GEARS = 5;
 const MAX_CORE_WAVE = 18;
+const MAX_PARTICLES = 140;
+const MAX_EFFECTS = 70;
+const SAVE_KEY = 'random_fight_save_v1';
 
 // ================= STATE =================
 const state = {
@@ -1200,6 +1213,7 @@ const state = {
   essence: 10,
   cap: 6,
   wave: 1,
+  bestWave: 1,
   spinCountInWave: 0,
   firstSpinDone: false,
   isSpinning: false,
@@ -1245,9 +1259,74 @@ function addLog(msg, color = '#cbd5e1') {
   renderLogs();
 }
 
+function saveProgress() {
+  try {
+    if (state.wave > state.bestWave) state.bestWave = state.wave;
+    const payload = {
+      life: state.life,
+      gold: state.gold,
+      essence: state.essence,
+      cap: state.cap,
+      wave: state.wave,
+      bestWave: state.bestWave,
+      spinCountInWave: state.spinCountInWave,
+      firstSpinDone: state.firstSpinDone,
+      gameOver: state.gameOver,
+      speedMult: state.speedMult,
+      selectedUnitId: state.selectedUnitId,
+      cores: state.cores,
+      nudges: state.nudges,
+      grid: state.grid,
+      units: state.units,
+      wallGears: state.wallGears,
+      inventory: state.inventory,
+      lastWaveSummary: state.lastWaveSummary,
+      logs: state.logs.slice(0, 20),
+      nextId: state.nextId
+    };
+    localStorage.setItem(SAVE_KEY, JSON.stringify(payload));
+  } catch (_) {}
+}
+
+function loadProgress() {
+  try {
+    const raw = localStorage.getItem(SAVE_KEY);
+    if (!raw) return false;
+    const d = JSON.parse(raw);
+    if (!d || typeof d.wave !== 'number') return false;
+    state.life = d.life ?? 1;
+    state.gold = d.gold ?? 250;
+    state.essence = d.essence ?? 10;
+    state.cap = d.cap ?? 6;
+    state.wave = d.wave ?? 1;
+    state.bestWave = Math.max(d.bestWave ?? 1, state.wave);
+    state.spinCountInWave = d.spinCountInWave ?? 0;
+    state.firstSpinDone = !!d.firstSpinDone;
+    state.gameOver = !!d.gameOver;
+    state.speedMult = d.speedMult ?? 1;
+    state.selectedUnitId = d.selectedUnitId ?? null;
+    state.cores = Array.isArray(d.cores) && d.cores.length === 6 ? d.cores : [null, null, null, null, null, null];
+    state.nudges = Array.isArray(d.nudges) && d.nudges.length === 3 ? d.nudges : [1, 1, 1];
+    state.grid = Array.isArray(d.grid) && d.grid.length === 9 ? d.grid : [];
+    state.units = Array.isArray(d.units) ? d.units : [];
+    state.wallGears = Array.isArray(d.wallGears) ? d.wallGears : [];
+    state.inventory = Array.isArray(d.inventory) ? d.inventory : [];
+    state.lastWaveSummary = d.lastWaveSummary ?? null;
+    state.logs = Array.isArray(d.logs) ? d.logs : [];
+    state.nextId = d.nextId ?? 100;
+    refreshAllUnitsStats();
+    return true;
+  } catch (_) {
+    return false;
+  }
+}
+
 function spawnParticles(x, y, color, count = 10, speed = 75) {
-  for (let i = 0; i < count; i++) {
-    const ang = (Math.PI * 2 * i) / count + (Math.random() - 0.5) * 0.4;
+  const space = MAX_PARTICLES - state.particles.length;
+  if (space <= 0) return;
+  const actual = Math.min(count, space);
+  for (let i = 0; i < actual; i++) {
+    const ang = (Math.PI * 2 * i) / actual + (Math.random() - 0.5) * 0.4;
     const spd = speed * (0.45 + Math.random() * 0.75);
     state.particles.push({
       x, y,
@@ -1259,6 +1338,11 @@ function spawnParticles(x, y, color, count = 10, speed = 75) {
       maxLife: 0.6
     });
   }
+}
+
+function pushEffect(fx) {
+  if (state.effects.length >= MAX_EFFECTS) state.effects.shift();
+  state.effects.push(fx);
 }
 
 function hasCore(coreId) {
@@ -1658,7 +1742,7 @@ function openCoreModal(clearedWaveNum) {
         addLog(`⚙️ Đã lắp bắt buộc [${c.name}] vào ô Lõi #${slot + 1}!`, '#38bdf8');
       }
       closeModal('coreModal');
-      updateUI();
+      updateUI(true);
     };
     card.appendChild(btn);
     list.appendChild(card);
@@ -1737,7 +1821,7 @@ async function handleSpin() {
   slotCard.classList.remove('shake');
   void slotCard.offsetWidth;
   slotCard.classList.add('shake');
-  updateUI();
+  updateUI(false);
 
   try {
     for (let t = 0; t < 6; t++) {
@@ -1758,7 +1842,7 @@ async function handleSpin() {
     await resolveMatchesAndCascade();
   } finally {
     state.isSpinning = false;
-    updateUI();
+    updateUI(true);
   }
 }
 
@@ -1780,7 +1864,7 @@ async function handleNudge(col) {
     await resolveMatchesAndCascade();
   } finally {
     state.isSpinning = false;
-    updateUI();
+    updateUI(true);
   }
 }
 
@@ -1911,7 +1995,7 @@ function finalizeDonorConsumption(donor, recipient) {
   spawnParticles(recipient.x + 22, recipient.y + 22, '#facc15', 18, 90);
   AudioFX.absorb();
   checkAutoPromote();
-  updateUI();
+  updateUI(true);
 }
 
 function confirmAbsorbHeroLevel(gainLv) {
@@ -2005,7 +2089,7 @@ function equipGearToUnit(gearUid, unitId, slotIdx) {
   u.maxHp = st.maxHp;
   u.hp = Math.min(u.maxHp, u.hp + 25);
   addLog(`🛡️ Đã trang bị [${GEAR_DEFS.find(d => d.id === gearObj.defId).name}] cho ${u.name} (ô #${slotIdx + 1}).`, '#38bdf8');
-  updateUI();
+  updateUI(true);
 }
 
 function unequipGearFromUnit(unitId, slotIdx) {
@@ -2018,7 +2102,7 @@ function unequipGearFromUnit(unitId, slotIdx) {
   u.maxHp = st.maxHp;
   u.hp = Math.min(u.maxHp, u.hp);
   addLog(`👜 Đã tháo [${GEAR_DEFS.find(d => d.id === removed.defId).name}] của ${u.name} về Balo.`, '#94a3b8');
-  updateUI();
+  updateUI(true);
 }
 
 function hangGearOnWall(gearUid) {
@@ -2034,7 +2118,7 @@ function hangGearOnWall(gearUid) {
   const gd = GEAR_DEFS.find(x => x.id === item.defId);
   refreshAllUnitsStats();
   addLog(`🏰 Đã treo [${gd.name}] lên thành (${state.wallGears.length}/${MAX_WALL_GEARS}).`, '#fde047');
-  updateUI();
+  updateUI(true);
 }
 
 function removeWallGear(wallIdx) {
@@ -2044,7 +2128,7 @@ function removeWallGear(wallIdx) {
   state.wallGears.splice(wallIdx, 1);
   refreshAllUnitsStats();
   addLog(`🗑️ Đã loại bỏ [${gd ? gd.name : 'Trang bị'}] khỏi thành (${state.wallGears.length}/${MAX_WALL_GEARS}).`, '#94a3b8');
-  updateUI();
+  updateUI(true);
   if (document.getElementById('shopModal').classList.contains('open')) openShopModal();
 }
 
@@ -2079,7 +2163,7 @@ function openSwapWallModal(wallIdx) {
       refreshAllUnitsStats();
       addLog(`🔄 Đổi thành công [${currentDef.name}] → [${gd.name}] trên thành (tốn 4 ✦).`, '#38bdf8');
       closeModal('swapWallModal');
-      updateUI();
+      updateUI(true);
       if (document.getElementById('shopModal').classList.contains('open')) openShopModal();
     };
     row.appendChild(btn);
@@ -2133,7 +2217,7 @@ function setupBattleCanvasMovement() {
       state.hoverAbsorbTargetId = null;
       state.dragOffsetX = pt.x - hitUnit.x;
       state.dragOffsetY = pt.y - hitUnit.y;
-      updateUI();
+      updateUI(false);
       if (ev.cancelable) ev.preventDefault();
     }
   }
@@ -2174,7 +2258,7 @@ function setupBattleCanvasMovement() {
       clampHeroPosition(donor, donor.x, donor.y);
       AudioFX.place();
     }
-    updateUI();
+    updateUI(true);
   }
 
   canvas.addEventListener('mousedown', onPointerDown);
@@ -2301,7 +2385,7 @@ function startWave() {
   });
   resolveEntityCollisions();
   addLog(`⚔️ Xuất trận Vòng ${state.wave}! Quân địch tiến công thành lũy!`, '#38bdf8');
-  updateUI();
+  updateUI(false);
 }
 
 function triggerGameOver(reason) {
@@ -2311,15 +2395,17 @@ function triggerGameOver(reason) {
   state.gameOver = true;
   AudioFX.lose();
   addLog(`💀 THẤT BẠI (1 Mạng): ${reason} Bấm CHƠI LẠI để bắt đầu ván mới.`, '#fb7185');
-  updateUI();
+  updateUI(true);
 }
 
 function resetGame() {
+  const prevBest = state.bestWave;
   state.life = 1;
   state.gold = 250;
   state.essence = 10;
   state.cap = 6;
   state.wave = 1;
+  state.bestWave = prevBest;
   state.spinCountInWave = 0;
   state.firstSpinDone = false;
   state.isSpinning = false;
@@ -2348,26 +2434,23 @@ function resetGame() {
   ];
   state.logs = [];
   initGrid();
-  addLog('🔄 Đã khởi tạo lại RANDOM-FIGHT! với nâng cấp AI & chiến thuật chiến trường.', '#fde047');
-  updateUI();
+  addLog('🔄 Đã khởi tạo lại RANDOM-FIGHT! Tối ưu sprite cache, vòng lặp chiến đấu & lưu tiến trình.', '#fde047');
+  updateUI(true);
 }
 
 // ================= CLASS-SPECIFIC AI TARGETING & SIGNATURE SKILLS =================
 function selectHeroTarget(u, aliveEnemies) {
   if (u.defId === 'archer' || u.defId === 'mage') {
-    // Ưu tiên mục tiêu tầm xa (Tà Pháp Sư) hoặc địch có máu cao nhất trong vùng
     const rangedOrTank = aliveEnemies.find(e => e.isRanged || e.isBoss);
     if (rangedOrTank) return rangedOrTank;
   }
   if (u.defId === 'lancer') {
-    // Kỵ Binh ưu tiên mục tiêu thấp HP nhất để xuyên phá
     let lowest = aliveEnemies[0];
     for (const e of aliveEnemies) {
       if (e.hp < lowest.hp) lowest = e;
     }
     return lowest;
   }
-  // Mặc định: mục tiêu gần nhất
   let nearest = aliveEnemies[0];
   let bestDist = Math.hypot(nearest.x - u.x, nearest.y - u.y);
   for (const e of aliveEnemies) {
@@ -2397,7 +2480,7 @@ function castClassSkill(u, nearestEnemy, aliveEnemies) {
   u.skillCooldown = sk.cooldown;
   AudioFX.skill();
 
-  state.effects.push({
+  pushEffect({
     x: u.x + 12,
     y: u.y - 22,
     text: `✦ ${sk.name}!`,
@@ -2409,7 +2492,7 @@ function castClassSkill(u, nearestEnemy, aliveEnemies) {
     const radius = 115;
     const dmg = Math.round(st.atk * 1.65);
     spawnParticles(u.x + 22, u.y + 22, '#facc15', 16, 85);
-    state.effects.push({
+    pushEffect({
       kind: 'ring', x: u.x + 22, y: u.y + 22,
       radius: 14, maxRadius: radius, color: '#facc15', life: 0.35, maxLife: 0.35
     });
@@ -2421,7 +2504,7 @@ function castClassSkill(u, nearestEnemy, aliveEnemies) {
         e.stunTimer = Math.max(e.stunTimer, 1.1);
         e.flashTimer = 0.14;
         spawnParticles(e.x + 20, e.y + 20, '#facc15', 7, 65);
-        state.effects.push({ x: e.x + 16, y: e.y + 4, text: `-${dmg}⚡`, color: '#fde047', life: 0.7 });
+        pushEffect({ x: e.x + 16, y: e.y + 4, text: `-${dmg}⚡`, color: '#fde047', life: 0.7 });
       }
     });
   } else if (u.defId === 'archer') {
@@ -2441,7 +2524,7 @@ function castClassSkill(u, nearestEnemy, aliveEnemies) {
     const radius = 95;
     const dmg = Math.round(st.atk * 1.8);
     spawnParticles(tx, ty, '#c084fc', 20, 95);
-    state.effects.push({
+    pushEffect({
       kind: 'ring', x: tx, y: ty,
       radius: 10, maxRadius: radius, color: '#c084fc', life: 0.4, maxLife: 0.4
     });
@@ -2451,7 +2534,7 @@ function castClassSkill(u, nearestEnemy, aliveEnemies) {
         e.hp -= dmg;
         state.combatStats.dmgDealt += dmg;
         e.flashTimer = 0.14;
-        state.effects.push({ x: e.x + 14, y: e.y, text: `-${dmg}✦`, color: '#e9d5ff', life: 0.72 });
+        pushEffect({ x: e.x + 14, y: e.y, text: `-${dmg}✦`, color: '#e9d5ff', life: 0.72 });
       }
     });
   } else if (u.defId === 'lancer') {
@@ -2462,7 +2545,7 @@ function castClassSkill(u, nearestEnemy, aliveEnemies) {
     u.x = dashPos.x;
     u.y = dashPos.y;
     spawnParticles(u.x + 20, u.y + 20, '#38bdf8', 14, 80);
-    state.effects.push({
+    pushEffect({
       kind: 'beam', x1: prevX + 20, y1: prevY + 20, x2: u.x + 20, y2: u.y + 20,
       color: '#38bdf8', life: 0.28, maxLife: 0.28
     });
@@ -2470,7 +2553,7 @@ function castClassSkill(u, nearestEnemy, aliveEnemies) {
     state.combatStats.dmgDealt += dmg;
     nearestEnemy.flashTimer = 0.14;
     u.atkCooldown = 0.15;
-    state.effects.push({ x: nearestEnemy.x + 14, y: nearestEnemy.y + 4, text: `-${dmg}⚔️`, color: '#7dd3fc', life: 0.7 });
+    pushEffect({ x: nearestEnemy.x + 14, y: nearestEnemy.y + 4, text: `-${dmg}⚔️`, color: '#7dd3fc', life: 0.7 });
   } else if (u.defId === 'summoner') {
     const aliveAllies = state.units.filter(a => a.hp > 0);
     let lowest = u;
@@ -2484,11 +2567,11 @@ function castClassSkill(u, nearestEnemy, aliveEnemies) {
     lowest.hp = Math.min(lowest.maxHp, lowest.hp + healAmt);
     state.combatStats.healed += Math.max(0, actualHeal);
     spawnParticles(lowest.x + 22, lowest.y + 22, '#34d399', 14, 65);
-    state.effects.push({
+    pushEffect({
       kind: 'ring', x: lowest.x + 22, y: lowest.y + 22,
       radius: 10, maxRadius: 68, color: '#34d399', life: 0.38, maxLife: 0.38
     });
-    state.effects.push({ x: lowest.x + 10, y: lowest.y - 6, text: `+${healAmt}💚`, color: '#6ee7b7', life: 0.75 });
+    pushEffect({ x: lowest.x + 10, y: lowest.y - 6, text: `+${healAmt}💚`, color: '#6ee7b7', life: 0.75 });
   }
 }
 
@@ -2510,7 +2593,7 @@ function applyHeroAttack(u, target, forcedDmg = null) {
   target.flashTimer = 0.1;
   AudioFX.hit();
   spawnParticles(target.x + 20, target.y + 20, isCrit ? '#facc15' : '#f8fafc', isCrit ? 9 : 5, 65);
-  state.effects.push({
+  pushEffect({
     x: target.x + 18,
     y: target.y + 8,
     text: isCrit && forcedDmg === null ? `-${dmg}!` : `-${dmg}`,
@@ -2542,7 +2625,7 @@ function applyHeroAttack(u, target, forcedDmg = null) {
       other.hp -= chainDmg;
       state.combatStats.dmgDealt += chainDmg;
       other.flashTimer = 0.1;
-      state.effects.push({
+      pushEffect({
         kind: 'beam', x1: target.x + 20, y1: target.y + 20, x2: other.x + 20, y2: other.y + 20,
         color: '#38bdf8', life: 0.22, maxLife: 0.22
       });
@@ -2569,24 +2652,30 @@ function updateSimulation(rawDt) {
     }
   });
 
-  state.particles.forEach(pt => {
-    pt.x += pt.vx * dt;
-    pt.y += pt.vy * dt;
-    pt.vy += 120 * dt;
-    pt.life -= dt;
-  });
-  state.particles = state.particles.filter(pt => pt.life > 0);
-
-  state.effects.forEach(fx => {
-    if (fx.kind === 'ring') {
-      const progress = 1 - Math.max(0, fx.life / fx.maxLife);
-      fx.radius = 12 + (fx.maxRadius - 12) * progress;
-    } else if (!fx.kind) {
-      fx.y -= 24 * dt;
+  if (state.particles.length > 0) {
+    for (let i = state.particles.length - 1; i >= 0; i--) {
+      const pt = state.particles[i];
+      pt.x += pt.vx * dt;
+      pt.y += pt.vy * dt;
+      pt.vy += 120 * dt;
+      pt.life -= dt;
+      if (pt.life <= 0) state.particles.splice(i, 1);
     }
-    fx.life -= dt;
-  });
-  state.effects = state.effects.filter(fx => fx.life > 0);
+  }
+
+  if (state.effects.length > 0) {
+    for (let i = state.effects.length - 1; i >= 0; i--) {
+      const fx = state.effects[i];
+      if (fx.kind === 'ring') {
+        const progress = 1 - Math.max(0, fx.life / fx.maxLife);
+        fx.radius = 12 + (fx.maxRadius - 12) * progress;
+      } else if (!fx.kind) {
+        fx.y -= 24 * dt;
+      }
+      fx.life -= dt;
+      if (fx.life <= 0) state.effects.splice(i, 1);
+    }
+  }
 
   if (!state.inCombat) {
     if (!state.draggingUnitId) {
@@ -2614,7 +2703,6 @@ function updateSimulation(rawDt) {
     const minKiteDist = isBackliner && dist < 85 && u.x > 65;
 
     if (minKiteDist) {
-      // Tướng tầm xa/hỗ trợ chủ động lùi nhẹ giữ khoảng cách an toàn khi địch áp sát
       u.x = Math.max(45, u.x - 42 * st.spd * dt);
     } else if (dist > st.range) {
       const speedPx = 68 * st.spd;
@@ -2638,10 +2726,15 @@ function updateSimulation(rawDt) {
     }
   }
 
-  for (const p of state.projectiles) {
+  for (let i = state.projectiles.length - 1; i >= 0; i--) {
+    const p = state.projectiles[i];
+    if (p.fromEnemy) continue;
     const target = state.enemies.find(e => e.id === p.targetId && e.hp > 0);
     const shooter = state.units.find(u => u.id === p.unitId);
-    if (!target || !shooter) { p.done = true; continue; }
+    if (!target || !shooter) {
+      state.projectiles.splice(i, 1);
+      continue;
+    }
     const tx = target.x + 20;
     const ty = target.y + 20;
     const dx = tx - p.x;
@@ -2649,13 +2742,12 @@ function updateSimulation(rawDt) {
     const dist = Math.hypot(dx, dy);
     if (dist < 15) {
       applyHeroAttack(shooter, target, p.customDmg ?? null);
-      p.done = true;
+      state.projectiles.splice(i, 1);
     } else {
       p.x += (dx / dist) * p.speed * dt;
       p.y += (dy / dist) * p.speed * dt;
     }
   }
-  state.projectiles = state.projectiles.filter(p => !p.done);
 
   const aliveUnits = state.units.filter(u => u.hp > 0);
   for (const e of state.enemies) {
@@ -2668,7 +2760,7 @@ function updateSimulation(rawDt) {
         e.bossCd = 3.6;
         const slamRadius = 110;
         const slamDmg = Math.round(e.atk * 1.45);
-        state.effects.push({
+        pushEffect({
           kind: 'ring', x: e.x + 24, y: e.y + 24,
           radius: 14, maxRadius: slamRadius, color: '#fb7185', life: 0.36, maxLife: 0.36
         });
@@ -2677,7 +2769,7 @@ function updateSimulation(rawDt) {
           if (Math.hypot((au.x + 20) - (e.x + 24), (au.y + 20) - (e.y + 24)) <= slamRadius) {
             au.hp -= slamDmg;
             au.flashTimer = 0.14;
-            state.effects.push({ x: au.x + 12, y: au.y - 6, text: `-${slamDmg}💥`, color: '#fda4af', life: 0.7 });
+            pushEffect({ x: au.x + 12, y: au.y - 6, text: `-${slamDmg}💥`, color: '#fda4af', life: 0.7 });
           }
         });
       }
@@ -2709,7 +2801,7 @@ function updateSimulation(rawDt) {
           } else {
             targetU.hp -= e.atk;
             targetU.flashTimer = 0.1;
-            state.effects.push({
+            pushEffect({
               x: targetU.x + 14, y: targetU.y + 6,
               text: `-${e.atk}`, color: '#fb7185', life: 0.6
             });
@@ -2725,10 +2817,14 @@ function updateSimulation(rawDt) {
     }
   }
 
-  for (const p of state.projectiles) {
-    if (!p.fromEnemy || p.done) continue;
+  for (let i = state.projectiles.length - 1; i >= 0; i--) {
+    const p = state.projectiles[i];
+    if (!p.fromEnemy) continue;
     const targetU = state.units.find(u => u.id === p.targetUnitId && u.hp > 0);
-    if (!targetU) { p.done = true; continue; }
+    if (!targetU) {
+      state.projectiles.splice(i, 1);
+      continue;
+    }
     const tx = targetU.x + 20;
     const ty = targetU.y + 20;
     const dx = tx - p.x;
@@ -2737,14 +2833,13 @@ function updateSimulation(rawDt) {
     if (dist < 14) {
       targetU.hp -= p.dmg;
       targetU.flashTimer = 0.1;
-      state.effects.push({ x: targetU.x + 14, y: targetU.y + 6, text: `-${p.dmg}`, color: '#fb7185', life: 0.6 });
-      p.done = true;
+      pushEffect({ x: targetU.x + 14, y: targetU.y + 6, text: `-${p.dmg}`, color: '#fb7185', life: 0.6 });
+      state.projectiles.splice(i, 1);
     } else {
       p.x += (dx / dist) * p.speed * dt;
       p.y += (dy / dist) * p.speed * dt;
     }
   }
-  state.projectiles = state.projectiles.filter(p => !p.done);
 
   resolveEntityCollisions();
 
@@ -2783,6 +2878,7 @@ function updateSimulation(rawDt) {
       essenceEarned: rewardEss + state.combatStats.kills * 2
     };
     state.wave += 1;
+    if (state.wave > state.bestWave) state.bestWave = state.wave;
     state.spinCountInWave = 0;
     state.nudges = [1, 1, 1].map(n => n + (hasCore('nudge2x') ? 1 : 0));
     state.units.forEach((u) => {
@@ -2794,7 +2890,7 @@ function updateSimulation(rawDt) {
     });
     resolveEntityCollisions();
     addLog(`🏆 Chiến thắng Vòng ${clearedWave}! Nhận +${rewardGold} 🪙 (gồm +${interest} 🪙 lãi) và +${rewardEss} ✦ Tinh Tú.`, '#34d399');
-    updateUI();
+    updateUI(true);
 
     if (isCoreEligibleWave(clearedWave) && state.cores.some(c => c === null)) {
       openCoreModal(clearedWave);
@@ -2802,13 +2898,20 @@ function updateSimulation(rawDt) {
   }
 }
 
-// ================= ORIGINAL DARK SLATE/NAVY ARENA + NEW CHARACTER MODELS =================
-function renderBattleCanvas() {
-  const canvas = document.getElementById('battleCanvas');
-  const ctx = canvas.getContext('2d');
-  const w = canvas.width;
-  const h = canvas.height;
-  const isBossWave = state.wave % 5 === 0;
+// ================= CACHED ARENA BACKGROUND + CHARACTER MODELS =================
+let cachedArenaCanvas = null;
+let cachedArenaBossState = null;
+
+function getArenaBackgroundCanvas(isBossWave) {
+  if (cachedArenaCanvas && cachedArenaBossState === isBossWave) {
+    return cachedArenaCanvas;
+  }
+  const c = document.createElement('canvas');
+  c.width = 760;
+  c.height = 330;
+  const ctx = c.getContext('2d');
+  const w = c.width;
+  const h = c.height;
 
   const bgGrad = ctx.createLinearGradient(0, 0, 0, h);
   if (isBossWave) {
@@ -2851,17 +2954,6 @@ function renderBattleCanvas() {
     }
   }
 
-  if (!state.inCombat) {
-    ctx.fillStyle = 'rgba(56, 189, 248, 0.06)';
-    ctx.fillRect(32, 40, 355, h - 54);
-    ctx.strokeStyle = 'rgba(56, 189, 248, 0.42)';
-    ctx.setLineDash([6, 4]);
-    ctx.lineWidth = 2;
-    ctx.strokeRect(32, 40, 355, h - 54);
-    ctx.setLineDash([]);
-  }
-
-  // Thành lũy đá xanh xám bên trái
   ctx.fillStyle = '#1e293b';
   ctx.fillRect(0, 0, 28, h);
   ctx.fillStyle = '#334155';
@@ -2875,7 +2967,32 @@ function renderBattleCanvas() {
   ctx.fillRect(6, h / 2 - 30, 16, 60);
   ctx.fillStyle = '#38bdf8';
   ctx.fillRect(10, h / 2 - 22, 8, 44);
-  const flicker = Math.sin(performance.now() * 0.015) * 2;
+
+  cachedArenaCanvas = c;
+  cachedArenaBossState = isBossWave;
+  return c;
+}
+
+function renderBattleCanvas(nowMs = performance.now()) {
+  const canvas = document.getElementById('battleCanvas');
+  const ctx = canvas.getContext('2d');
+  const w = canvas.width;
+  const h = canvas.height;
+  const isBossWave = state.wave % 5 === 0;
+
+  ctx.drawImage(getArenaBackgroundCanvas(isBossWave), 0, 0);
+
+  if (!state.inCombat) {
+    ctx.fillStyle = 'rgba(56, 189, 248, 0.06)';
+    ctx.fillRect(32, 40, 355, h - 54);
+    ctx.strokeStyle = 'rgba(56, 189, 248, 0.42)';
+    ctx.setLineDash([6, 4]);
+    ctx.lineWidth = 2;
+    ctx.strokeRect(32, 40, 355, h - 54);
+    ctx.setLineDash([]);
+  }
+
+  const flicker = Math.sin(nowMs * 0.015) * 2;
   ctx.fillStyle = '#f97316';
   ctx.fillRect(10, 44, 6, 8);
   ctx.fillStyle = '#fde047';
@@ -2944,7 +3061,6 @@ function renderBattleCanvas() {
       ctx.fillStyle = '#34d399';
       ctx.fillRect(u.x + 1, u.y - 9, (bw - 2) * ratio, 3);
 
-      // Thanh hồi chiêu kỹ năng (CD) nhỏ ngay dưới thanh máu
       const maxCd = u.maxSkillCooldown || 4;
       const cdRatio = Math.max(0, Math.min(1, 1 - (u.skillCooldown || 0) / maxCd));
       ctx.fillStyle = '#1e293b';
@@ -3036,11 +3152,20 @@ function renderBattleCanvas() {
   }
 }
 
+let lastHudSyncTime = 0;
+
 function gameLoop(now) {
   const dt = (now - lastTime) / 1000;
   lastTime = now;
   updateSimulation(dt);
-  renderBattleCanvas();
+  renderBattleCanvas(now);
+
+  if (state.inCombat && now - lastHudSyncTime >= 160) {
+    lastHudSyncTime = now;
+    document.getElementById('enemyTag').textContent = `Quân Địch: ${state.enemies.length}`;
+    document.getElementById('statGold').textContent = state.gold;
+    document.getElementById('statEssence').textContent = state.essence;
+  }
   requestAnimationFrame(gameLoop);
 }
 
@@ -3432,7 +3557,7 @@ function renderRoster() {
 
     card.onclick = () => {
       state.selectedUnitId = u.id;
-      updateUI();
+      updateUI(false);
       openHeroDetailModal(u.id);
     };
 
@@ -3634,7 +3759,7 @@ function openShopModal() {
       state.essence -= offer.cost;
       offer.action();
       openShopModal();
-      updateUI();
+      updateUI(true);
     };
     row.appendChild(b);
     wrap.appendChild(row);
@@ -3646,7 +3771,7 @@ function closeModal(id) {
   document.getElementById(id).classList.remove('open');
 }
 
-function updateUI() {
+function updateUI(shouldSave = true) {
   document.getElementById('statLife').textContent = state.life;
   document.getElementById('statGold').textContent = state.gold;
   document.getElementById('interestTag').textContent = `(+${getInterestGold()} lãi)`;
@@ -3654,6 +3779,7 @@ function updateUI() {
   document.getElementById('statCount').textContent = state.units.length;
   document.getElementById('statCap').textContent = state.cap;
   document.getElementById('statWave').textContent = state.wave;
+  document.getElementById('bestWaveLabel').textContent = `VÒNG ${state.bestWave}`;
   document.getElementById('wallGearCount').textContent = state.wallGears.length;
   document.getElementById('spinCost').textContent = getSpinCost();
   document.getElementById('guaranteeTag').textContent = (!state.firstSpinDone || state.units.length === 0)
@@ -3691,6 +3817,8 @@ function updateUI() {
   renderRoster();
   renderWaveSummary();
   renderLogs();
+
+  if (shouldSave) saveProgress();
 }
 
 // ================= EVENTS =================
@@ -3702,13 +3830,13 @@ document.getElementById('nudge2').addEventListener('click', () => handleNudge(2)
 document.getElementById('btnStartWave').addEventListener('click', startWave);
 document.getElementById('btnSpeed').addEventListener('click', () => {
   state.speedMult = state.speedMult === 1 ? 2 : (state.speedMult === 2 ? 3 : 1);
-  updateUI();
+  updateUI(true);
 });
 document.getElementById('btnRestart').addEventListener('click', resetGame);
 document.getElementById('btnRates').addEventListener('click', openRatesModal);
 document.getElementById('btnBackpack').addEventListener('click', openBackpackModal);
 document.getElementById('btnShop').addEventListener('click', openShopModal);
-document.getElementById('btnSound').addEventListener('click', () => { AudioFX.toggle(); updateUI(); });
+document.getElementById('btnSound').addEventListener('click', () => { AudioFX.toggle(); updateUI(true); });
 document.getElementById('btnCancelAbsorb').addEventListener('click', () => {
   state.pendingAbsorb = null;
   state.unlockedReplaceSlots = {};
@@ -3718,9 +3846,16 @@ document.getElementById('btnCancelAbsorb').addEventListener('click', () => {
 // Init
 setupBattleCanvasMovement();
 renderSpriteToCanvas(document.getElementById('brandIcon'), 'warrior', 1.45);
-initGrid();
-addLog('🏰 Chào mừng tới RANDOM-FIGHT! Đã kích hoạt AI chiến đấu theo lớp, đạn địch tầm xa, kỹ năng Boss & tổng kết vòng.', '#f3c677');
-updateUI();
+const restored = loadProgress();
+if (!restored || state.grid.length !== 9) {
+  initGrid();
+}
+if (!restored) {
+  addLog('🏰 Chào mừng tới RANDOM-FIGHT! Đã tối ưu bộ nhớ sprite, vòng lặp trận đấu & lưu tiến trình.', '#f3c677');
+} else {
+  addLog(`💾 Đã khôi phục tiến trình lưu (Vòng ${state.wave} • Kỷ lục Vòng ${state.bestWave}).`, '#34d399');
+}
+updateUI(false);
 requestAnimationFrame(gameLoop);
 </script>
 </body>
