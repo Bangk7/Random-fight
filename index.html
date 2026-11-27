@@ -129,6 +129,11 @@
       position: relative;
       transition: transform 0.15s ease, border-color 0.15s ease, opacity 0.2s ease;
     }
+    .slot-cell.joker-cell {
+      border-color: #f472b6;
+      background: radial-gradient(circle at 50% 35%, #4a154b 0%, #160921 88%);
+      box-shadow: 0 0 12px rgba(244, 114, 182, 0.35);
+    }
     .slot-cell.matched {
       border-color: var(--gold-bright);
       box-shadow: 0 0 18px rgba(250, 204, 21, 0.72), inset 0 0 12px rgba(250, 204, 21, 0.35);
@@ -237,7 +242,11 @@
       flex-direction: column;
       justify-content: space-between;
       gap: 4px;
-      min-height: 68px;
+      min-height: 74px;
+    }
+    .wall-slot.joker-relic {
+      border-color: #f472b6;
+      background: linear-gradient(180deg, #3b1236, #14091a);
     }
     .wall-slot.empty { border-style: dashed; color: #64748b; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; }
 
@@ -360,7 +369,7 @@
       border: 2px solid var(--gold);
       box-shadow: 0 12px 32px rgba(0,0,0,0.7);
       border-radius: 12px;
-      max-width: 620px; width: 100%;
+      max-width: 680px; width: 100%;
       max-height: 88vh; overflow-y: auto;
       padding: 14px;
       display: flex; flex-direction: column; gap: 10px;
@@ -384,6 +393,20 @@
       align-items: center;
       gap: 10px;
     }
+    .shop-offer-card {
+      background: #0b1222;
+      border: 1.5px solid #334155;
+      border-radius: 9px;
+      padding: 9px 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+    }
+    .shop-offer-card.joker-offer {
+      border-color: #f472b6;
+      background: linear-gradient(180deg, #2d0f2b, #0e0a1a);
+    }
     table { width: 100%; border-collapse: collapse; font-size: 12px; }
     th, td { border-bottom: 1px solid #1e293b; padding: 6px 8px; text-align: left; }
     th { color: var(--gold-bright); }
@@ -396,7 +419,7 @@
       <canvas id="brandIcon" width="46" height="46" class="pixel-canvas"></canvas>
       <div>
         <div class="brand-title">RANDOM-FIGHT! • VƯƠNG QUỐC TRUNG CỔ</div>
-        <div class="brand-sub">PIXEL 1080x1080 TRUNG CỔ • 6 BẬC TƯ CHẤT • MÀN 1 ĐƠN ĐẤU CÂN BẰNG</div>
+        <div class="brand-sub">20 CỔ VẬT &amp; JOKER • BOSS HUYỀN THOẠI MỖI 10 MÀN • QUA MÀN +1 / HẠ BOSS +1 TINH TÚ</div>
       </div>
     </div>
     <div class="stats-row">
@@ -438,7 +461,7 @@
       <div class="log-box" id="logBox"></div>
     </div>
 
-    <!-- CỘT PHẢI: TỘC HỆ, CHIẾN TRƯỜNG, TRANG BỊ TREO THÀNH & ĐỘI HÌNH -->
+    <!-- CỘT PHẢI: TỘC HỆ, CHIẾN TRƯỜNG, CỔ VẬT & ĐỘI HÌNH -->
     <div class="card">
       <div class="card-header">
         <div class="card-title" style="font-size:12px; color: var(--emerald);">⚜️ CỘNG HƯỞNG QUÂN ĐOÀN</div>
@@ -450,7 +473,7 @@
         <canvas id="battleCanvas" width="760" height="330" class="pixel-canvas"></canvas>
         <div class="battle-hud">
           <div class="hud-tag" id="phaseTag">GIAI ĐOẠN DÀN TRẬN</div>
-          <div class="hud-tag" id="enemyTag">Quân Địch: 0</div>
+          <div class="hud-tag" id="enemyTag">Quân Địch: 1</div>
         </div>
         <div class="battle-hint" id="battleHint">
           ✋ Kéo thả tướng trên sân để đổi vị trí • Kéo thẻ tướng vật tế thả đè lên tướng chủ lực (ở danh sách hoặc trên sân) để NUỐT!
@@ -470,8 +493,8 @@
       </div>
 
       <div class="card-header">
-        <div class="card-title" style="font-size:12px; color: var(--gold-bright);">🛡️ TRANG BỊ TREO TRÊN THÀNH (<span id="wallGearCount">0</span>/5)</div>
-        <span style="font-size: 11px; color: var(--muted);">Cộng trực tiếp chỉ số lên toàn bộ tướng &amp; thành lũy</span>
+        <div class="card-title" style="font-size:12px; color: var(--gold-bright);">🏺 CỔ VẬT ĐANG TRANG BỊ (<span id="wallGearCount">0</span>/5)</div>
+        <span style="font-size: 11px; color: var(--muted);">20 Cổ Vật • Joker mở khóa lá bài Joker trong Máy Xèng</span>
       </div>
       <div class="wall-gear-strip" id="wallGearStrip"></div>
 
@@ -488,11 +511,11 @@
 <div class="modal-backdrop" id="backpackModal" style="z-index: 65;">
   <div class="modal-card" style="max-width: 620px;">
     <div class="card-header">
-      <div class="card-title" style="color: var(--cyan);">🎒 BALO TRANG BỊ HIỆN CÓ (8 LOẠI VẬT PHẨM)</div>
+      <div class="card-title" style="color: var(--cyan);">🎒 BALO TRANG BỊ HIỆN CÓ</div>
       <button class="btn btn-rose" onclick="closeModal('backpackModal')">✕</button>
     </div>
     <div style="font-size: 12px; color: var(--muted);">
-      Lắp trang bị cho tướng hoặc treo thẳng lên thành (tối đa 5 món treo thành).
+      Lắp trang bị cho tướng (3 ô/tướng) hoặc gắn Cổ Vật vào 5 ô Cổ Vật.
     </div>
     <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap; background:#0b1222; padding:8px 10px; border-radius:8px; border:1px solid #334155;">
       <span style="font-size:12px; font-weight:800; color:var(--gold-bright);">Tướng nhận trang bị:</span>
@@ -558,12 +581,12 @@
         </tr>
       </thead>
       <tbody>
-        <tr><td style="color:#cbd5e1;font-weight:800;">Thường</td><td><b>80%</b></td><td><b>x1.00</b></td></tr>
-        <tr><td style="color:#38bdf8;font-weight:800;">Cơ Bản</td><td><b>15.5%</b></td><td><b>x1.15</b></td></tr>
-        <tr><td style="color:#34d399;font-weight:800;">Hiếm</td><td><b>4%</b></td><td><b>x1.45</b></td></tr>
-        <tr><td style="color:#c084fc;font-weight:800;">Ưu Việt</td><td><b>0.48%</b></td><td><b>x1.75</b></td></tr>
-        <tr><td style="color:#fb7185;font-weight:800;">Sử Thi</td><td><b>0.02%</b></td><td><b>x2.00</b></td></tr>
-        <tr><td style="color:#fde047;font-weight:800;">Huyền Thoại</td><td><b>0% (Siêu cấp)</b></td><td><b>x2.25</b></td></tr>
+        <tr><td style="color:#cbd5e1;font-weight:800;">Thường</td><td><b>75%</b></td><td><b>x1.00</b></td></tr>
+        <tr><td style="color:#38bdf8;font-weight:800;">Cơ Bản</td><td><b>14.5%</b></td><td><b>x1.15</b></td></tr>
+        <tr><td style="color:#34d399;font-weight:800;">Hiếm</td><td><b>6.5%</b></td><td><b>x1.45</b></td></tr>
+        <tr><td style="color:#c084fc;font-weight:800;">Ưu Việt</td><td><b>3.2%</b></td><td><b>x1.75</b></td></tr>
+        <tr><td style="color:#fb7185;font-weight:800;">Sử Thi</td><td><b>0.75%</b></td><td><b>x2.00</b></td></tr>
+        <tr><td style="color:#fde047;font-weight:800;">Huyền Thoại</td><td><b>0.05%</b></td><td><b>x2.25</b></td></tr>
       </tbody>
     </table>
   </div>
@@ -574,29 +597,32 @@
   <div class="modal-card">
     <div class="card-header">
       <div class="card-title">🛒 SHOP TINH TÚ (✦ <span id="shopEssenceNum">10</span>)</div>
-      <button class="btn btn-rose" onclick="closeModal('shopModal')">✕</button>
+      <div style="display:flex; gap:6px;">
+        <button class="btn btn-blue" id="btnRollShop">🎲 ROLL SHOP (1 ✦)</button>
+        <button class="btn btn-rose" onclick="closeModal('shopModal')">✕</button>
+      </div>
     </div>
     <div style="font-size: 12px; color: var(--muted);">
-      Dùng Tinh Tú (✦) mua trang bị treo trên thành (tối đa 5 món), <b>Loại bỏ</b> hoặc <b>Đổi</b> món đang treo trên thành.
+      Mỗi lần mở/roll bán <b>3 Cổ Vật</b> (giá <b>6 ✦</b>; riêng <b>Cổ Vật Joker</b> giá <b>20 ✦</b>). Tỷ lệ Roll chia đều 19 cổ vật thường (99%) &amp; <b>1%</b> cho <b>Joker</b>. Tối đa <b>5 Cổ Vật</b>.
     </div>
 
     <div class="choice-box" style="border-color: var(--gold);">
       <div style="font-size: 12px; font-weight: 900; color: var(--gold-bright);">
-        🏰 TRANG BỊ ĐANG TREO TRÊN THÀNH (<span id="shopWallCount">0</span>/5) — LOẠI BỎ / ĐỔI
+        🏺 CỔ VẬT ĐANG TRANG BỊ (<span id="shopWallCount">0</span>/5) — THÁO / ĐỔI
       </div>
       <div id="shopWallManageList" style="display:flex; flex-direction:column; gap:6px;"></div>
     </div>
 
-    <div style="font-size: 12px; font-weight: 900; color: var(--cyan);">⚔️ MUA TRANG BỊ TREO THÀNH &amp; NÂNG CẤP</div>
+    <div style="font-size: 12px; font-weight: 900; color: var(--cyan);">✨ 3 CỔ VẬT ĐANG BÁN HÔM NAY</div>
     <div id="shopItemsContainer" style="display:flex; flex-direction:column; gap:8px;"></div>
   </div>
 </div>
 
-<!-- MODAL ĐỔI TRANG BỊ TREO THÀNH -->
+<!-- MODAL ĐỔI CỔ VẬT -->
 <div class="modal-backdrop" id="swapWallModal" style="z-index: 75;">
   <div class="modal-card">
     <div class="card-header">
-      <div class="card-title" id="swapWallTitle">🔄 ĐỔI TRANG BỊ TREO THÀNH</div>
+      <div class="card-title" id="swapWallTitle">🔄 ĐỔI CỔ VẬT</div>
       <button class="btn btn-rose" onclick="closeModal('swapWallModal')">✕</button>
     </div>
     <div id="swapWallSub" style="font-size: 12px; color: var(--muted);"></div>
@@ -898,6 +924,17 @@ function createMedieval1080Canvas(key) {
     rect(218, 70, 16, 136, 11);
     rect(120, 114, 30, 36, 11);
     circle(135, 132, 5, 10);
+  } else if (key === 'joker') {
+    rect(58, 34, 154, 202, 10);
+    rect(68, 44, 134, 182, 8);
+    circle(135, 125, 42, 11);
+    rect(105, 62, 60, 18, 5);
+    circle(105, 62, 10, 11);
+    circle(135, 56, 12, 11);
+    circle(165, 62, 10, 11);
+    rect(115, 112, 12, 10, 5);
+    rect(143, 112, 12, 10, 5);
+    ellipse(135, 142, 22, 10, 5);
   } else if (key === 'bandit') {
     ellipse(135, 68, 28, 26, 6);
     ellipse(132, 72, 18, 14, 5);
@@ -948,6 +985,20 @@ function createMedieval1080Canvas(key) {
     rect(118, 96, 34, 72, 11);
     rect(94, 178, 26, 54, 4);
     rect(150, 178, 26, 54, 4);
+  } else if (key === 'mythic_boss') {
+    // Boss Huyền Thoại vương miện vàng & áo choàng hoàng gia đỏ-tím
+    rect(92, 14, 16, 32, 11);
+    rect(130, 8, 16, 38, 11);
+    rect(168, 14, 16, 32, 11);
+    rect(90, 38, 96, 10, 11);
+    ellipse(135, 70, 38, 34, 8);
+    rect(106, 66, 58, 9, 1);
+    rect(115, 68, 10, 5, 11);
+    rect(145, 68, 10, 5, 11);
+    ellipse(135, 138, 52, 46, 5);
+    rect(116, 98, 38, 76, 11);
+    rect(92, 182, 28, 56, 4);
+    rect(150, 182, 28, 56, 4);
   }
 
   const outlined = Array.from({ length: N }, (_, y) => Uint8Array.from(grid[y]));
@@ -1033,7 +1084,7 @@ function renderSpriteToCanvas(canvas, key, targetSize = 56) {
   drawCharacterModel(ctx, key, ox, oy, size);
 }
 
-// ================= GAME DATA, 6 TRAIT TIERS & CLASS SKILLS =================
+// ================= GAME DATA, 6 TRAIT TIERS & 20 RELICS (CỔ VẬT) =================
 const CLASS_SKILLS = {
   warrior: {
     name: 'Chấn Địa Trảm',
@@ -1076,6 +1127,14 @@ const SYMBOL_DEFS = [
   { id: 'chest',   name: 'Rương Báu',  faction: null,         kind: 'gear', weight: 14, color: '#facc15' }
 ];
 
+const JOKER_SYMBOL_DEF = {
+  id: 'joker',
+  name: 'Joker Vạn Năng',
+  faction: null,
+  kind: 'joker',
+  color: '#f472b6'
+};
+
 const FACTION_DEFS = {
   'Thiết Giáp': { name: 'Thiết Giáp', desc: '2+ tướng: +18% Công & +45 HP tối đa cho toàn bộ tướng Thiết Giáp.' },
   'Rừng Sâu':   { name: 'Rừng Sâu',   desc: '2+ tướng: +0.20 Tốc đánh cho toàn bộ tướng Rừng Sâu.' },
@@ -1083,26 +1142,71 @@ const FACTION_DEFS = {
 };
 
 // 6 Tư chất: Thường, Cơ Bản, Hiếm, Ưu Việt, Sử Thi, Huyền Thoại
-// Tỷ lệ 5 bậc đầu: 80%; 15.5%; 4%; 0.48%; 0.02% — Hệ số: 1.0; 1.15; 1.45; 1.75; 2.0 (Huyền Thoại: 2.25)
+// Tỷ lệ: 75%; 14.5%; 6.5%; 3.2%; 0.75%; 0.05% — Hệ số: 1.0; 1.15; 1.45; 1.75; 2.0; 2.25
 const TRAIT_POOL = [
-  { id: 'common',    name: 'Thường',      ratePct: 80.0,  statMult: 1.00, color: '#cbd5e1', desc: 'Tư chất Thường (80%) — Hệ số chỉ số x1.00' },
-  { id: 'basic',     name: 'Cơ Bản',      ratePct: 15.5,  statMult: 1.15, color: '#38bdf8', desc: 'Tư chất Cơ Bản (15.5%) — Hệ số chỉ số x1.15' },
-  { id: 'rare',      name: 'Hiếm',        ratePct: 4.0,   statMult: 1.45, color: '#34d399', desc: 'Tư chất Hiếm (4%) — Hệ số chỉ số x1.45' },
-  { id: 'superior',  name: 'Ưu Việt',     ratePct: 0.48,  statMult: 1.75, color: '#c084fc', desc: 'Tư chất Ưu Việt (0.48%) — Hệ số chỉ số x1.75' },
-  { id: 'epic',      name: 'Sử Thi',      ratePct: 0.02,  statMult: 2.00, color: '#fb7185', desc: 'Tư chất Sử Thi (0.02%) — Hệ số chỉ số x2.00' },
-  { id: 'legendary', name: 'Huyền Thoại', ratePct: 0.0,   statMult: 2.25, color: '#fde047', desc: 'Tư chất Huyền Thoại — Hệ số chỉ số x2.25' }
+  { id: 'common',    name: 'Thường',      ratePct: 75.0,  statMult: 1.00, color: '#cbd5e1', desc: 'Tư chất Thường (75%) — Hệ số chỉ số x1.00' },
+  { id: 'basic',     name: 'Cơ Bản',      ratePct: 14.5,  statMult: 1.15, color: '#38bdf8', desc: 'Tư chất Cơ Bản (14.5%) — Hệ số chỉ số x1.15' },
+  { id: 'rare',      name: 'Hiếm',        ratePct: 6.5,   statMult: 1.45, color: '#34d399', desc: 'Tư chất Hiếm (6.5%) — Hệ số chỉ số x1.45' },
+  { id: 'superior',  name: 'Ưu Việt',     ratePct: 3.2,   statMult: 1.75, color: '#c084fc', desc: 'Tư chất Ưu Việt (3.2%) — Hệ số chỉ số x1.75' },
+  { id: 'epic',      name: 'Sử Thi',      ratePct: 0.75,  statMult: 2.00, color: '#fb7185', desc: 'Tư chất Sử Thi (0.75%) — Hệ số chỉ số x2.00' },
+  { id: 'legendary', name: 'Huyền Thoại', ratePct: 0.05,  statMult: 2.25, color: '#fde047', desc: 'Tư chất Huyền Thoại (0.05%) — Hệ số chỉ số x2.25' }
 ];
 
 function rollTrait() {
-  const rollPool = TRAIT_POOL.filter(t => t.ratePct > 0);
-  const total = rollPool.reduce((s, t) => s + t.ratePct, 0);
+  const total = TRAIT_POOL.reduce((s, t) => s + t.ratePct, 0);
   let r = Math.random() * total;
-  for (const t of rollPool) {
+  for (const t of TRAIT_POOL) {
     r -= t.ratePct;
     if (r <= 0) return t;
   }
-  return rollPool[0];
+  return TRAIT_POOL[0];
 }
+
+// 20 CỔ VẬT KHÁC NHAU (19 Cổ Vật buff theo lớp nhân vật + 1 Cổ Vật Joker)
+const RELIC_DEFS = [
+  // Chiến Binh (warrior) - 4 cổ vật
+  { id: 'r_war_1', name: 'Ấn Kiếm Thiết Huyết', targetClass: 'warrior', atk: 14, hp: 55, spd: 0.05, cost: 6, desc: 'Buff Chiến Binh: +14 Công, +55 HP, +0.05 Tốc đánh' },
+  { id: 'r_war_2', name: 'Khiên Thành Bất Khuất', targetClass: 'warrior', atk: 6, hp: 130, spd: 0.0, cost: 6, desc: 'Buff Chiến Binh: +130 HP tối đa, +6 Công' },
+  { id: 'r_war_3', name: 'Chuôi Búa Chấn Lôi', targetClass: 'warrior', atk: 18, hp: 35, spd: 0.10, cost: 6, desc: 'Buff Chiến Binh: +18 Công, +35 HP, +0.10 Tốc đánh' },
+  { id: 'r_war_4', name: 'Vòng Tay Thép Nguồn', targetClass: 'warrior', atk: 10, hp: 90, spd: 0.12, cost: 6, desc: 'Buff Chiến Binh: +90 HP, +10 Công, +0.12 Tốc đánh' },
+
+  // Cung Thủ (archer) - 4 cổ vật
+  { id: 'r_arc_1', name: 'Ống Tên Phong Linh', targetClass: 'archer', atk: 15, hp: 25, spd: 0.18, cost: 6, desc: 'Buff Cung Thủ: +15 Công, +0.18 Tốc đánh, +25 HP' },
+  { id: 'r_arc_2', name: 'Dây Cung Ưng Nhãn', targetClass: 'archer', atk: 20, hp: 20, spd: 0.10, cost: 6, desc: 'Buff Cung Thủ: +20 Công, +0.10 Tốc đánh, +20 HP' },
+  { id: 'r_arc_3', name: 'Lá Rừng Hộ Mệnh', targetClass: 'archer', atk: 10, hp: 75, spd: 0.14, cost: 6, desc: 'Buff Cung Thủ: +75 HP, +10 Công, +0.14 Tốc đánh' },
+  { id: 'r_arc_4', name: 'Mũi Tên Bão Tố', targetClass: 'archer', atk: 16, hp: 30, spd: 0.22, cost: 6, desc: 'Buff Cung Thủ: +16 Công, +0.22 Tốc đánh, +30 HP' },
+
+  // Pháp Sư (mage) - 4 cổ vật
+  { id: 'r_mag_1', name: 'Trượng Tinh Vân', targetClass: 'mage', atk: 22, hp: 30, spd: 0.08, cost: 6, desc: 'Buff Pháp Sư: +22 Công, +30 HP, +0.08 Tốc đánh' },
+  { id: 'r_mag_2', name: 'Quả Cầu Cổ Ngữ', targetClass: 'mage', atk: 18, hp: 55, spd: 0.10, cost: 6, desc: 'Buff Pháp Sư: +18 Công, +55 HP, +0.10 Tốc đánh' },
+  { id: 'r_mag_3', name: 'Áo Choàng Sao Băng', targetClass: 'mage', atk: 15, hp: 75, spd: 0.12, cost: 6, desc: 'Buff Pháp Sư: +75 HP, +15 Công, +0.12 Tốc đánh' },
+  { id: 'r_mag_4', name: 'Nhẫn Ma Lực Tối Cao', targetClass: 'mage', atk: 25, hp: 20, spd: 0.06, cost: 6, desc: 'Buff Pháp Sư: +25 Công, +20 HP, +0.06 Tốc đánh' },
+
+  // Kỵ Sĩ (lancer) - 4 cổ vật
+  { id: 'r_lan_1', name: 'Bàn Đạp Xung Kích', targetClass: 'lancer', atk: 16, hp: 50, spd: 0.16, cost: 6, desc: 'Buff Kỵ Sĩ: +16 Công, +50 HP, +0.16 Tốc đánh' },
+  { id: 'r_lan_2', name: 'Giáp Ngựa Thiết Kỵ', targetClass: 'lancer', atk: 9, hp: 115, spd: 0.10, cost: 6, desc: 'Buff Kỵ Sĩ: +115 HP, +9 Công, +0.10 Tốc đánh' },
+  { id: 'r_lan_3', name: 'Thương Kỵ Sĩ Hoàng Gia', targetClass: 'lancer', atk: 21, hp: 40, spd: 0.12, cost: 6, desc: 'Buff Kỵ Sĩ: +21 Công, +40 HP, +0.12 Tốc đánh' },
+  { id: 'r_lan_4', name: 'Yên Cương Lôi Mã', targetClass: 'lancer', atk: 13, hp: 70, spd: 0.20, cost: 6, desc: 'Buff Kỵ Sĩ: +0.20 Tốc đánh, +70 HP, +13 Công' },
+
+  // Tư Tế (summoner) - 3 cổ vật
+  { id: 'r_sum_1', name: 'Thánh Tích Hồi Sinh', targetClass: 'summoner', atk: 14, hp: 85, spd: 0.10, cost: 6, desc: 'Buff Tư Tế: +85 HP, +14 Công, +0.10 Tốc đánh' },
+  { id: 'r_sum_2', name: 'Chuông Thánh Quang', targetClass: 'summoner', atk: 12, hp: 70, spd: 0.18, cost: 6, desc: 'Buff Tư Tế: +0.18 Tốc đánh, +70 HP, +12 Công' },
+  { id: 'r_sum_3', name: 'Tràng Hạt Thiên Sứ', targetClass: 'summoner', atk: 17, hp: 65, spd: 0.12, cost: 6, desc: 'Buff Tư Tế: +17 Công, +65 HP, +0.12 Tốc đánh' },
+
+  // Cổ Vật Joker (1 cổ vật) - giá 20 Tinh Tú, tỷ lệ roll 1%
+  { id: 'r_joker', name: 'Cổ Vật Joker', targetClass: 'all', isJoker: true, atk: 8, hp: 40, spd: 0.08, cost: 20, desc: 'Mở khóa lá bài JOKER trong Máy Xèng (thay thế mọi lớp/biểu tượng) & +8 Công, +40 HP, +0.08 Tốc' }
+];
+
+const GEAR_DEFS = [
+  { id: 'blade',  name: 'Trường Kiếm',   atk: 10, hp: 0,   spd: 0.08, desc: '+10 Công, +8% Tốc đánh' },
+  { id: 'plate',  name: 'Giáp Tấm',      atk: 0,  hp: 65,  spd: 0,    desc: '+65 Máu tối đa' },
+  { id: 'boots',  name: 'Ủng Kỵ Sĩ',     atk: 4,  hp: 20,  spd: 0.18, desc: '+4 Công, +20 Máu, +18% Tốc đánh' },
+  { id: 'orb',    name: 'Thánh Ngọc',    atk: 14, hp: 30,  spd: 0.05, desc: '+14 Công, +30 Máu, +5% Tốc đánh' },
+  { id: 'fang',   name: 'Dao Găm Độc',   atk: 12, hp: 15,  spd: 0.12, desc: '+12 Công, +15 Máu, +12% Tốc đánh' },
+  { id: 'aegis',  name: 'Khiên Thánh',   atk: 5,  hp: 105, spd: 0.02, desc: '+5 Công, +105 Máu tối đa, +2% Tốc' },
+  { id: 'halberd',name: 'Kích Rồng Lửa', atk: 18, hp: 25,  spd: 0.06, desc: '+18 Công, +25 Máu, +6% Tốc đánh' },
+  { id: 'crown',  name: 'Vương Miện Cổ', atk: 11, hp: 75,  spd: 0.14, desc: '+11 Công, +75 Máu, +14% Tốc đánh' }
+];
 
 const AWAKEN_MILESTONES = [10, 20, 30];
 
@@ -1123,17 +1227,6 @@ const IMPRINT_DEFS = {
   haste: { id: 'haste', name: 'Cuồng Nộ', tag: 'Tốc độ', desc: 'Cường hóa nhịp độ chiến đấu, tăng vĩnh viễn tốc độ ra đòn của tướng.', formula: (lv) => `Tốc độ đánh cộng thêm: +${(0.12 * lv).toFixed(2)} đòn/giây` }
 };
 
-const GEAR_DEFS = [
-  { id: 'blade',  name: 'Trường Kiếm',   atk: 10, hp: 0,   spd: 0.08, desc: '+10 Công, +8% Tốc đánh' },
-  { id: 'plate',  name: 'Giáp Tấm',      atk: 0,  hp: 65,  spd: 0,    desc: '+65 Máu tối đa' },
-  { id: 'boots',  name: 'Ủng Kỵ Sĩ',     atk: 4,  hp: 20,  spd: 0.18, desc: '+4 Công, +20 Máu, +18% Tốc đánh' },
-  { id: 'orb',    name: 'Thánh Ngọc',    atk: 14, hp: 30,  spd: 0.05, desc: '+14 Công, +30 Máu, +5% Tốc đánh' },
-  { id: 'fang',   name: 'Dao Găm Độc',   atk: 12, hp: 15,  spd: 0.12, desc: '+12 Công, +15 Máu, +12% Tốc đánh' },
-  { id: 'aegis',  name: 'Khiên Thánh',   atk: 5,  hp: 105, spd: 0.02, desc: '+5 Công, +105 Máu tối đa, +2% Tốc' },
-  { id: 'halberd',name: 'Kích Rồng Lửa', atk: 18, hp: 25,  spd: 0.06, desc: '+18 Công, +25 Máu, +6% Tốc đánh' },
-  { id: 'crown',  name: 'Vương Miện Cổ', atk: 11, hp: 75,  spd: 0.14, desc: '+11 Công, +75 Máu, +14% Tốc đánh' }
-];
-
 const PAYLINES = [
   [0,1,2], [3,4,5], [6,7,8],
   [0,3,6], [1,4,7], [2,5,8],
@@ -1141,6 +1234,7 @@ const PAYLINES = [
 ];
 
 const MAX_WALL_GEARS = 5;
+const SHOP_ROLL_COST = 1;
 
 // ================= STATE =================
 const state = {
@@ -1173,12 +1267,13 @@ const state = {
   particles: [],
   effects: [],
   wallGears: [],
+  shopOffers: [],
   swapWallSlotIdx: null,
-  combatStats: { dmgDealt: 0, healed: 0, kills: 0 },
+  combatStats: { dmgDealt: 0, healed: 0, kills: 0, bossesSlain: 0 },
   lastWaveSummary: null,
   inventory: [
-    { uid: 'g_init_1', defId: 'blade' },
-    { uid: 'g_init_2', defId: 'plate' }
+    { uid: 'g_init_1', kind: 'gear', defId: 'blade' },
+    { uid: 'g_init_2', kind: 'gear', defId: 'plate' }
   ],
   logs: [],
   nextId: 1
@@ -1250,18 +1345,31 @@ function getSpinCost() {
   return Math.max(40, 100 + state.spinCountInWave * 50);
 }
 
-function getEffectiveWeights() {
-  return SYMBOL_DEFS.map(s => {
+function hasJokerRelicEquipped() {
+  return state.wallGears.some(wg => wg && wg.defId === 'r_joker');
+}
+
+function getEffectiveSlotPool() {
+  const pool = SYMBOL_DEFS.map(s => {
     let w = s.weight;
     if (s.kind === 'gear' && state.wave === 1 && !state.firstSpinDone) {
       w = 0;
     }
     return { ...s, effWeight: w };
   });
+  if (hasJokerRelicEquipped()) {
+    pool.push({ ...JOKER_SYMBOL_DEF, effWeight: 12 });
+  }
+  return pool;
+}
+
+function getSymbolDefById(id) {
+  if (id === 'joker') return JOKER_SYMBOL_DEF;
+  return SYMBOL_DEFS.find(s => s.id === id) || SYMBOL_DEFS[0];
 }
 
 function pickWeightedSymbol(onlyHeroes = false) {
-  const pool = getEffectiveWeights().filter(x => !onlyHeroes || x.kind === 'hero');
+  const pool = getEffectiveSlotPool().filter(x => !onlyHeroes || x.kind === 'hero');
   const total = pool.reduce((acc, x) => acc + x.effWeight, 0);
   let r = Math.random() * total;
   for (const item of pool) {
@@ -1275,6 +1383,27 @@ function initGrid() {
   state.grid = Array.from({ length: 9 }, () => pickWeightedSymbol(false));
 }
 
+function rollSingleRelicDef() {
+  // 1% cho Cổ Vật Joker, 99% chia đều cho 19 cổ vật còn lại
+  const jokerDef = RELIC_DEFS.find(r => r.isJoker);
+  const normalRelics = RELIC_DEFS.filter(r => !r.isJoker);
+  if (Math.random() < 0.01 && jokerDef) {
+    return jokerDef;
+  }
+  return normalRelics[Math.floor(Math.random() * normalRelics.length)];
+}
+
+function rollShopOffers() {
+  state.shopOffers = Array.from({ length: 3 }, () => {
+    const rd = rollSingleRelicDef();
+    return {
+      offerUid: uid('offer'),
+      relicId: rd.id,
+      cost: rd.cost || 6
+    };
+  });
+}
+
 function getFactionCounts() {
   const counts = { 'Thiết Giáp': 0, 'Rừng Sâu': 0, 'Tinh Tú': 0 };
   for (const u of state.units) {
@@ -1285,17 +1414,18 @@ function getFactionCounts() {
   return counts;
 }
 
-function getWallGearBonuses() {
+function getRelicBonusesForClass(classId) {
   let hp = 0;
   let atk = 0;
   let spd = 0;
   for (const wg of state.wallGears) {
     if (!wg) continue;
-    const gd = GEAR_DEFS.find(x => x.id === wg.defId);
-    if (gd) {
-      hp += gd.hp;
-      atk += gd.atk;
-      spd += gd.spd;
+    const rd = RELIC_DEFS.find(x => x.id === wg.defId);
+    if (!rd) continue;
+    if (rd.targetClass === 'all' || rd.targetClass === classId) {
+      hp += rd.hp || 0;
+      atk += rd.atk || 0;
+      spd += rd.spd || 0;
     }
   }
   return {
@@ -1462,12 +1592,12 @@ function getAwakenBuffSummary(u) {
 function getUnitStats(u) {
   const def = SYMBOL_DEFS.find(d => d.id === u.defId) || SYMBOL_DEFS[0];
   const fCounts = getFactionCounts();
-  const wallBon = getWallGearBonuses();
+  const relicBon = getRelicBonusesForClass(u.defId);
   const buffBon = getAwakenBuffSummary(u);
 
-  let bonusHp = (u.absorbLv - 1) * 14 + wallBon.hp + buffBon.hp;
-  let bonusAtk = (u.absorbLv - 1) * 3.5 + wallBon.atk + buffBon.atk;
-  let bonusSpd = wallBon.spd + buffBon.spd;
+  let bonusHp = (u.absorbLv - 1) * 14 + relicBon.hp + buffBon.hp;
+  let bonusAtk = (u.absorbLv - 1) * 3.5 + relicBon.atk + buffBon.atk;
+  let bonusSpd = relicBon.spd + buffBon.spd;
 
   if (u.faction === 'Thiết Giáp' && fCounts['Thiết Giáp'] >= 2) {
     bonusHp += 45;
@@ -1675,12 +1805,29 @@ function summonHero(defId) {
 
 function grantRandomGear() {
   const gd = GEAR_DEFS[Math.floor(Math.random() * GEAR_DEFS.length)];
-  state.inventory.push({ uid: uid('gear'), defId: gd.id });
+  state.inventory.push({ uid: uid('gear'), kind: 'gear', defId: gd.id });
   addLog(`🎁 Trúng Rương Báu! Nhận [${gd.name}] (${gd.desc}) vào Balo.`, '#fde047');
 }
 
-// ================= SLOT MACHINE =================
+// ================= SLOT MACHINE (WITH JOKER SUBSTITUTION) =================
 function sleep(ms) { return new Promise(res => setTimeout(res, ms)); }
+
+function evaluatePayline(line) {
+  const syms = line.map(idx => state.grid[idx]);
+  const nonJokers = syms.filter(s => s && s !== 'joker');
+  if (nonJokers.length === 0) {
+    // 3 Joker -> triệu hồi tướng ngẫu nhiên
+    const heroPool = SYMBOL_DEFS.filter(s => s.kind === 'hero');
+    const chosen = heroPool[Math.floor(Math.random() * heroPool.length)];
+    return { matched: true, symId: chosen.id, usedJoker: true };
+  }
+  const baseSym = nonJokers[0];
+  const allMatch = nonJokers.every(s => s === baseSym);
+  if (allMatch) {
+    return { matched: true, symId: baseSym, usedJoker: syms.includes('joker') };
+  }
+  return { matched: false };
+}
 
 async function resolveMatchesAndCascade() {
   let combo = 0;
@@ -1688,13 +1835,10 @@ async function resolveMatchesAndCascade() {
     const matchedCells = new Set();
     const wins = [];
     for (const line of PAYLINES) {
-      const [a, b, c] = line;
-      const sa = state.grid[a];
-      if (sa && sa === state.grid[b] && sa === state.grid[c]) {
-        wins.push({ line, symId: sa });
-        matchedCells.add(a);
-        matchedCells.add(b);
-        matchedCells.add(c);
+      const res = evaluatePayline(line);
+      if (res.matched) {
+        wins.push({ line, symId: res.symId, usedJoker: res.usedJoker });
+        line.forEach(idx => matchedCells.add(idx));
       }
     }
     if (wins.length === 0) break;
@@ -1705,6 +1849,10 @@ async function resolveMatchesAndCascade() {
 
     for (const w of wins) {
       const def = SYMBOL_DEFS.find(s => s.id === w.symId);
+      if (!def) continue;
+      if (w.usedJoker) {
+        addLog(`🃏 Lá bài JOKER kích hoạt thay thế thành [${def.name}]!`, '#f472b6');
+      }
       if (def.kind === 'hero') {
         summonHero(def.id);
       } else if (def.kind === 'gear') {
@@ -2002,7 +2150,7 @@ function openImprintDetail(unit, slotIdx) {
   document.getElementById('imprintModal').classList.add('open');
 }
 
-// ================= GEAR & WALL GEAR MANAGEMENT =================
+// ================= GEAR & RELIC (CỔ VẬT) MANAGEMENT =================
 function equipGearToUnit(gearUid, unitId, slotIdx) {
   const u = state.units.find(x => x.id === unitId);
   if (!u) return;
@@ -2034,29 +2182,33 @@ function unequipGearFromUnit(unitId, slotIdx) {
   updateUI();
 }
 
-function hangGearOnWall(gearUid) {
+function equipRelicFromBag(relicUid) {
   if (state.wallGears.length >= MAX_WALL_GEARS) {
-    addLog(`⚠️ Đã treo đủ tối đa ${MAX_WALL_GEARS} món trang bị trên thành! Hãy Loại bỏ hoặc Đổi món trong Shop Tinh Tú.`, '#fb7185');
+    addLog(`⚠️ Đã trang bị đủ tối đa ${MAX_WALL_GEARS} Cổ Vật!`, '#fb7185');
     return;
   }
-  const idx = state.inventory.findIndex(x => x.uid === gearUid);
+  const idx = state.inventory.findIndex(x => x.uid === relicUid);
   if (idx === -1) return;
   const item = state.inventory[idx];
   state.inventory.splice(idx, 1);
   state.wallGears.push(item);
-  const gd = GEAR_DEFS.find(x => x.id === item.defId);
+  const rd = RELIC_DEFS.find(x => x.id === item.defId);
   refreshAllUnitsStats();
-  addLog(`🏰 Đã treo [${gd.name}] lên thành (${state.wallGears.length}/${MAX_WALL_GEARS}).`, '#fde047');
+  if (rd && rd.isJoker) {
+    addLog(`🃏 Đã gắn [${rd.name}]! Lá bài JOKER đã xuất hiện trong Máy Xèng!`, '#f472b6');
+  } else {
+    addLog(`🏺 Đã gắn Cổ Vật [${rd ? rd.name : 'Cổ Vật'}] (${state.wallGears.length}/${MAX_WALL_GEARS}).`, '#fde047');
+  }
   updateUI();
 }
 
 function removeWallGear(wallIdx) {
   const item = state.wallGears[wallIdx];
   if (!item) return;
-  const gd = GEAR_DEFS.find(x => x.id === item.defId);
+  const rd = RELIC_DEFS.find(x => x.id === item.defId);
   state.wallGears.splice(wallIdx, 1);
   refreshAllUnitsStats();
-  addLog(`🗑️ Đã loại bỏ [${gd ? gd.name : 'Trang bị'}] khỏi thành (${state.wallGears.length}/${MAX_WALL_GEARS}).`, '#94a3b8');
+  addLog(`🗑️ Đã tháo Cổ Vật [${rd ? rd.name : 'Cổ Vật'}] (${state.wallGears.length}/${MAX_WALL_GEARS}).`, '#94a3b8');
   updateUI();
   if (document.getElementById('shopModal').classList.contains('open')) openShopModal();
 }
@@ -2064,33 +2216,34 @@ function removeWallGear(wallIdx) {
 function openSwapWallModal(wallIdx) {
   const item = state.wallGears[wallIdx];
   if (!item) return;
-  const currentDef = GEAR_DEFS.find(x => x.id === item.defId);
+  const currentDef = RELIC_DEFS.find(x => x.id === item.defId);
   state.swapWallSlotIdx = wallIdx;
-  document.getElementById('swapWallTitle').textContent = `🔄 ĐỔI MÓN TREO THÀNH #${wallIdx + 1}`;
+  document.getElementById('swapWallTitle').textContent = `🔄 ĐỔI CỔ VẬT #${wallIdx + 1}`;
   document.getElementById('swapWallSub').innerHTML =
-    `Món hiện tại: <b style="color:var(--gold-bright);">${currentDef.name}</b> (${currentDef.desc}). Chọn trang bị mới bằng Tinh Tú (<b>4 ✦</b>) để đổi trực tiếp:`;
+    `Cổ Vật hiện tại: <b style="color:var(--gold-bright);">${currentDef.name}</b> (${currentDef.desc}). Chọn Cổ Vật mới để đổi trực tiếp:`;
 
   const list = document.getElementById('swapWallChoices');
   list.innerHTML = '';
-  GEAR_DEFS.forEach(gd => {
+  RELIC_DEFS.forEach(rd => {
+    const swapCost = rd.isJoker ? 20 : 6;
     const row = document.createElement('div');
     row.style.cssText = 'display:flex; justify-content:space-between; align-items:center; background:#0b1222; border:1px solid #334155; border-radius:8px; padding:8px 10px; gap:8px;';
     row.innerHTML = `
       <div>
-        <div style="font-size:12px; font-weight:900; color:#fde047;">⚔️ ${gd.name} ${gd.id === currentDef.id ? '(Đang treo)' : ''}</div>
-        <div style="font-size:11px; color:#cbd5e1;">${gd.desc}</div>
+        <div style="font-size:12px; font-weight:900; color:${rd.isJoker ? '#f472b6' : '#fde047'};">${rd.isJoker ? '🃏' : '🏺'} ${rd.name} ${rd.id === currentDef.id ? '(Đang gắn)' : ''}</div>
+        <div style="font-size:11px; color:#cbd5e1;">${rd.desc}</div>
       </div>
     `;
     const btn = document.createElement('button');
     btn.className = 'btn btn-gold';
-    btn.textContent = 'ĐỔI (4 ✦)';
-    btn.disabled = state.essence < 4;
+    btn.textContent = `ĐỔI (${swapCost} ✦)`;
+    btn.disabled = state.essence < swapCost;
     btn.onclick = () => {
-      if (state.essence < 4) return;
-      state.essence -= 4;
-      state.wallGears[wallIdx] = { uid: uid('wallg'), defId: gd.id };
+      if (state.essence < swapCost) return;
+      state.essence -= swapCost;
+      state.wallGears[wallIdx] = { uid: uid('relic'), kind: 'relic', defId: rd.id };
       refreshAllUnitsStats();
-      addLog(`🔄 Đổi thành công [${currentDef.name}] → [${gd.name}] trên thành (tốn 4 ✦).`, '#38bdf8');
+      addLog(`🔄 Đổi Cổ Vật [${currentDef.name}] → [${rd.name}] (tốn ${swapCost} ✦).`, '#38bdf8');
       closeModal('swapWallModal');
       updateUI();
       if (document.getElementById('shopModal').classList.contains('open')) openShopModal();
@@ -2200,7 +2353,7 @@ function setupBattleCanvasMovement() {
   window.addEventListener('touchend', onPointerUp);
 }
 
-// ================= BALANCED WAVE SCALING (WAVE 1 = 1 ENEMY) =================
+// ================= BALANCED WAVE SCALING (WAVE 1 = 1 ENEMY, MYTHIC BOSS EVERY 10 WAVES) =================
 function getWaveScaling(waveNum) {
   const w = Math.max(1, waveNum);
   if (w === 1) {
@@ -2213,13 +2366,15 @@ function getWaveScaling(waveNum) {
 }
 
 function spawnWaveEnemies(waveNum) {
-  const isBossWave = waveNum % 5 === 0;
-  const count = waveNum === 1 ? 1 : Math.min(9, 2 + Math.floor(waveNum * 0.75) + (isBossWave ? 1 : 0));
+  const isMythicWave = waveNum % 10 === 0;
+  const isNormalBossWave = !isMythicWave && waveNum % 5 === 0;
+  const isAnyBossWave = isMythicWave || isNormalBossWave;
+  const count = waveNum === 1 ? 1 : Math.min(9, 2 + Math.floor(waveNum * 0.75) + (isAnyBossWave ? 1 : 0));
   const sc = getWaveScaling(waveNum);
   const list = [];
 
   for (let i = 0; i < count; i++) {
-    const isBoss = isBossWave && i === count - 1;
+    const isBoss = isAnyBossWave && i === count - 1;
     let spriteKey = 'bandit';
     let eName = 'Cướp Rừng';
     let roleMultHp = 1.0;
@@ -2235,9 +2390,16 @@ function spawnWaveEnemies(waveNum) {
       roleMultAtk = 1.0;
       baseSpd = 54;
       range = 52;
+    } else if (isBoss && isMythicWave) {
+      spriteKey = 'mythic_boss';
+      eName = `Boss Huyền Thoại Vòng ${waveNum}`;
+      roleMultHp = 6.2;
+      roleMultAtk = 2.05;
+      baseSpd = 38;
+      range = 68;
     } else if (isBoss) {
       spriteKey = 'boss';
-      eName = `Bạo Chúa Vòng ${waveNum}`;
+      eName = `Boss Vòng ${waveNum}`;
       roleMultHp = 3.8;
       roleMultAtk = 1.55;
       baseSpd = 40;
@@ -2277,6 +2439,7 @@ function spawnWaveEnemies(waveNum) {
       name: eName,
       spriteKey,
       isBoss,
+      isMythicBoss: !!(isBoss && isMythicWave),
       isRanged,
       range,
       x: rawX,
@@ -2286,7 +2449,7 @@ function spawnWaveEnemies(waveNum) {
       atk,
       spd,
       atkCd: 1.05,
-      bossCd: 3.2,
+      bossCd: 3.1,
       stunTimer: 0,
       poisonTimer: 0,
       poisonDps: 0,
@@ -2304,7 +2467,7 @@ function startWave() {
   }
   state.inCombat = true;
   state.lastWaveSummary = null;
-  state.combatStats = { dmgDealt: 0, healed: 0, kills: 0 };
+  state.combatStats = { dmgDealt: 0, healed: 0, kills: 0, bossesSlain: 0 };
   state.draggingUnitId = null;
   state.dragSourceOrigin = null;
   state.hoverAbsorbTargetId = null;
@@ -2313,7 +2476,14 @@ function startWave() {
   state.particles = [];
   state.effects = [];
   reviveAllUnitsToStartPos();
-  addLog(`⚔️ Xuất trận Vòng ${state.wave} (${state.enemies.length} kẻ địch)!`, '#38bdf8');
+  const bossObj = state.enemies.find(e => e.isBoss);
+  if (bossObj && bossObj.isMythicBoss) {
+    addLog(`👑 VÒNG ${state.wave}: ${bossObj.name} xuất hiện! Hạ boss nhận thêm +1 Tinh Tú!`, '#fde047');
+  } else if (bossObj) {
+    addLog(`🔥 VÒNG ${state.wave}: ${bossObj.name} xuất hiện! Hạ boss nhận thêm +1 Tinh Tú!`, '#fb7185');
+  } else {
+    addLog(`⚔️ Xuất trận Vòng ${state.wave} (${state.enemies.length} kẻ địch)!`, '#38bdf8');
+  }
   updateUI();
 }
 
@@ -2354,15 +2524,16 @@ function resetGame() {
   state.projectiles = [];
   state.particles = [];
   state.effects = [];
-  state.combatStats = { dmgDealt: 0, healed: 0, kills: 0 };
+  state.combatStats = { dmgDealt: 0, healed: 0, kills: 0, bossesSlain: 0 };
   state.lastWaveSummary = null;
   state.inventory = [
-    { uid: uid('gear'), defId: 'blade' },
-    { uid: uid('gear'), defId: 'plate' }
+    { uid: uid('gear'), kind: 'gear', defId: 'blade' },
+    { uid: uid('gear'), kind: 'gear', defId: 'plate' }
   ];
   state.logs = [];
   initGrid();
-  addLog('🔄 Đã khởi tạo lại RANDOM-FIGHT! Màn 1 có 1 kẻ địch, 6 bậc tư chất mới & hồi sinh khi thắng trận.', '#fde047');
+  rollShopOffers();
+  addLog('🔄 Đã khởi tạo lại RANDOM-FIGHT! Qua màn +1 Tinh Tú, hạ boss +1 Tinh Tú, Boss Huyền Thoại mỗi 10 màn.', '#fde047');
   updateUI();
 }
 
@@ -2743,11 +2914,11 @@ function updateSimulation(rawDt) {
     if (e.isBoss) {
       e.bossCd -= dt;
       if (e.bossCd <= 0 && aliveUnits.length > 0) {
-        e.bossCd = 3.1;
-        const slamRadius = 115;
-        const slamDmg = Math.round(e.atk * 1.55);
-        spawnMagicCircleEffect(e.x + 26, e.y + 26, slamRadius, '#fb7185');
-        spawnParticles(e.x + 26, e.y + 26, '#fb7185', 14, 80);
+        e.bossCd = e.isMythicBoss ? 2.5 : 3.1;
+        const slamRadius = e.isMythicBoss ? 140 : 115;
+        const slamDmg = Math.round(e.atk * (e.isMythicBoss ? 1.85 : 1.55));
+        spawnMagicCircleEffect(e.x + 26, e.y + 26, slamRadius, e.isMythicBoss ? '#fde047' : '#fb7185');
+        spawnParticles(e.x + 26, e.y + 26, e.isMythicBoss ? '#fde047' : '#fb7185', 16, 85);
         aliveUnits.forEach(au => {
           if (Math.hypot((au.x + 22) - (e.x + 26), (au.y + 22) - (e.y + 26)) <= slamRadius) {
             au.hp -= slamDmg;
@@ -2838,51 +3009,66 @@ function updateSimulation(rawDt) {
     return;
   }
 
-  const prevEnemies = state.enemies.length;
-  state.enemies = state.enemies.filter(e => e.hp > 0);
-  if (state.enemies.length < prevEnemies) {
-    const killedNow = prevEnemies - state.enemies.length;
-    state.combatStats.kills += killedNow;
-    state.gold += 25 * killedNow;
-    state.essence += 2 * killedNow;
+  const deadEnemies = state.enemies.filter(e => e.hp <= 0);
+  if (deadEnemies.length > 0) {
+    let bossBonusEss = 0;
+    deadEnemies.forEach(de => {
+      state.combatStats.kills += 1;
+      state.gold += de.isMythicBoss ? 120 : (de.isBoss ? 65 : 25);
+      if (de.isBoss) {
+        state.combatStats.bossesSlain += 1;
+        bossBonusEss += 1;
+        state.essence += 1;
+        addLog(`💥 Đã hạ ${de.name}! Nhận thêm +1 Tinh Tú!`, '#fde047');
+      }
+    });
+    state.enemies = state.enemies.filter(e => e.hp > 0);
+    void bossBonusEss;
   }
 
   if (state.enemies.length === 0) {
     state.inCombat = false;
     const interest = getInterestGold();
     const rewardGold = 110 + state.wave * 20 + interest;
-    const rewardEss = 3 + Math.floor(state.wave / 3);
+    const waveClearEss = 1; // Qua màn +1 Tinh Tú
     state.gold += rewardGold;
-    state.essence += rewardEss;
+    state.essence += waveClearEss;
     const clearedWave = state.wave;
+    const totalEssEarned = waveClearEss + state.combatStats.bossesSlain;
     state.lastWaveSummary = {
       wave: clearedWave,
       dmgDealt: Math.round(state.combatStats.dmgDealt),
       healed: Math.round(state.combatStats.healed),
       kills: state.combatStats.kills,
-      goldEarned: rewardGold + state.combatStats.kills * 25,
-      essenceEarned: rewardEss + state.combatStats.kills * 2
+      goldEarned: rewardGold,
+      essenceEarned: totalEssEarned,
+      bossBonus: state.combatStats.bossesSlain
     };
     state.wave += 1;
     state.spinCountInWave = 0;
     state.nudges = [1, 1, 1];
     reviveAllUnitsToStartPos();
-    addLog(`🏆 Chiến thắng Vòng ${clearedWave}! Toàn bộ tướng đã hồi sinh về vị trí ban đầu, giữ nguyên trang bị & nhận +${rewardGold} 🪙, +${rewardEss} ✦.`, '#34d399');
+    addLog(`🏆 Qua màn Vòng ${clearedWave}! +1 Tinh Tú${state.combatStats.bossesSlain > 0 ? ` (+${state.combatStats.bossesSlain} hạ boss)` : ''} & +${rewardGold} 🪙.`, '#34d399');
     updateUI();
   }
 }
 
-// ================= BATTLE CANVAS =================
+// ================= BATTLE CANVAS (WITH VISIBLE BOSS HP BARS) =================
 function renderBattleCanvas() {
   const canvas = document.getElementById('battleCanvas');
   const ctx = canvas.getContext('2d');
   ctx.imageSmoothingEnabled = false;
   const w = canvas.width;
   const h = canvas.height;
+  const isMythicWave = state.wave % 10 === 0;
   const isBossWave = state.wave % 5 === 0;
 
   const bgGrad = ctx.createLinearGradient(0, 0, 0, h);
-  if (isBossWave) {
+  if (isMythicWave) {
+    bgGrad.addColorStop(0, '#361408');
+    bgGrad.addColorStop(0.5, '#1d0c1c');
+    bgGrad.addColorStop(1, '#090614');
+  } else if (isBossWave) {
     bgGrad.addColorStop(0, '#2a0d16');
     bgGrad.addColorStop(0.5, '#180914');
     bgGrad.addColorStop(1, '#0b0612');
@@ -2900,7 +3086,9 @@ function renderBattleCanvas() {
       const colIdx = Math.floor(gx / tileSize);
       const rowIdx = Math.floor(gy / tileSize);
       const alt = ((colIdx + rowIdx) % 2) === 0;
-      ctx.fillStyle = isBossWave ? (alt ? '#2c1122' : '#210c19') : (alt ? '#132740' : '#0e1e33');
+      ctx.fillStyle = isMythicWave
+        ? (alt ? '#381814' : '#261015')
+        : (isBossWave ? (alt ? '#2c1122' : '#210c19') : (alt ? '#132740' : '#0e1e33'));
       ctx.fillRect(gx, gy, tileSize - 2, tileSize - 2);
 
       ctx.fillStyle = 'rgba(148, 163, 184, 0.06)';
@@ -3004,26 +3192,51 @@ function renderBattleCanvas() {
       ctx.fillText(`${'★'.repeat(u.star)} L${u.absorbLv}`, u.x, drawY - 13);
     } else {
       const e = item.data;
-      const sizePx = e.isBoss ? 70 : 52;
+      const sizePx = e.isMythicBoss ? 76 : (e.isBoss ? 68 : 52);
 
       ctx.fillStyle = 'rgba(0, 0, 0, 0.55)';
       ctx.beginPath();
       ctx.ellipse(e.x + sizePx * 0.5, e.y + sizePx * 0.86, sizePx * 0.42, 7, 0, 0, Math.PI * 2);
       ctx.fill();
 
+      if (e.isBoss) {
+        ctx.strokeStyle = e.isMythicBoss ? '#fde047' : '#fb7185';
+        ctx.lineWidth = 2.5;
+        ctx.beginPath();
+        ctx.ellipse(e.x + sizePx * 0.5, e.y + sizePx * 0.86, sizePx * 0.54, 10, 0, 0, Math.PI * 2);
+        ctx.stroke();
+      }
+
       drawCharacterModel(ctx, e.spriteKey, e.x, e.y, sizePx, true, e.flashTimer > 0);
 
-      const bw = e.isBoss ? 58 : 44;
       const ratio = Math.max(0, Math.min(1, e.hp / e.maxHp));
-      ctx.fillStyle = '#0f172a';
-      ctx.fillRect(e.x, e.y - 9, bw, 6);
-      ctx.fillStyle = e.poisonTimer > 0 ? '#a3e635' : '#fb7185';
-      ctx.fillRect(e.x + 1, e.y - 8, (bw - 2) * ratio, 4);
+      if (e.isBoss) {
+        const bw = e.isMythicBoss ? 86 : 74;
+        const bh = 8;
+        const bx = Math.round(e.x + sizePx * 0.5 - bw * 0.5);
+        const by = Math.round(e.y - 14);
+        ctx.fillStyle = '#090d16';
+        ctx.fillRect(bx - 1, by - 1, bw + 2, bh + 2);
+        ctx.fillStyle = e.isMythicBoss ? '#f59e0b' : '#ef4444';
+        ctx.fillRect(bx, by, bw * ratio, bh);
+        ctx.fillStyle = '#ffffff';
+        ctx.font = 'bold 9px sans-serif';
+        ctx.fillText(`${Math.max(0, Math.ceil(e.hp))}/${e.maxHp}`, bx + 4, by + 7);
+        ctx.fillStyle = e.isMythicBoss ? '#fde047' : '#fda4af';
+        ctx.font = 'bold 10px sans-serif';
+        ctx.fillText(e.isMythicBoss ? `👑 ${e.name}` : `🔥 ${e.name}`, bx, by - 4);
+      } else {
+        const bw = 44;
+        ctx.fillStyle = '#0f172a';
+        ctx.fillRect(e.x, e.y - 9, bw, 6);
+        ctx.fillStyle = e.poisonTimer > 0 ? '#a3e635' : '#fb7185';
+        ctx.fillRect(e.x + 1, e.y - 8, (bw - 2) * ratio, 4);
+      }
 
       if (e.stunTimer > 0) {
         ctx.fillStyle = '#fde047';
         ctx.font = 'bold 10px sans-serif';
-        ctx.fillText('⚡CHOÁNG', e.x, e.y - 12);
+        ctx.fillText('⚡CHOÁNG', e.x, e.y - (e.isBoss ? 26 : 12));
       }
     }
   }
@@ -3148,15 +3361,16 @@ function renderWallGearStrip() {
     const wg = state.wallGears[i];
     const box = document.createElement('div');
     if (wg) {
-      const gd = GEAR_DEFS.find(x => x.id === wg.defId);
-      box.className = 'wall-slot';
+      const rd = RELIC_DEFS.find(x => x.id === wg.defId);
+      const isJoker = !!(rd && rd.isJoker);
+      box.className = 'wall-slot' + (isJoker ? ' joker-relic' : '');
       box.innerHTML = `
-        <div style="font-size:11px; font-weight:900; color:#fde047;">🏰 ${gd ? gd.name : 'Vật phẩm'}</div>
-        <div style="font-size:10px; color:#cbd5e1;">${gd ? gd.desc : ''}</div>
+        <div style="font-size:11px; font-weight:900; color:${isJoker ? '#f472b6' : '#fde047'};">${isJoker ? '🃏' : '🏺'} ${rd ? rd.name : 'Cổ Vật'}</div>
+        <div style="font-size:10px; color:#cbd5e1;">${rd ? rd.desc : ''}</div>
       `;
     } else {
       box.className = 'wall-slot empty';
-      box.textContent = `Thành #${i + 1} (Trống)`;
+      box.textContent = `Cổ Vật #${i + 1} (Trống)`;
     }
     strip.appendChild(box);
   }
@@ -3182,9 +3396,10 @@ function renderSlotGrid(matchedSet = new Set(), poppingSet = new Set(), dropping
   const gridEl = document.getElementById('slotGrid');
   gridEl.innerHTML = '';
   state.grid.forEach((symId, idx) => {
-    const def = SYMBOL_DEFS.find(s => s.id === symId) || SYMBOL_DEFS[0];
+    const def = getSymbolDefById(symId);
+    const isJoker = symId === 'joker';
     const cell = document.createElement('div');
-    cell.className = 'slot-cell';
+    cell.className = 'slot-cell' + (isJoker ? ' joker-cell' : '');
     if (matchedSet.has(idx)) cell.classList.add('matched');
     if (poppingSet.has(idx)) cell.classList.add('popping');
     if (droppingSet.has(idx)) cell.classList.add('dropping');
@@ -3193,7 +3408,8 @@ function renderSlotGrid(matchedSet = new Set(), poppingSet = new Set(), dropping
     cnv.width = 60;
     cnv.height = 60;
     cnv.className = 'pixel-canvas';
-    renderSpriteToCanvas(cnv, def.kind === 'gear' ? 'chest' : def.id, 56);
+    const spriteKey = isJoker ? 'joker' : (def.kind === 'gear' ? 'chest' : def.id);
+    renderSpriteToCanvas(cnv, spriteKey, 56);
 
     const lbl = document.createElement('div');
     lbl.className = 'slot-label';
@@ -3345,13 +3561,14 @@ function openEquipPickerModal(unitId, slotIdx) {
     list.appendChild(unequipRow);
   }
 
-  if (state.inventory.length === 0) {
+  const gearItems = state.inventory.filter(x => x.kind !== 'relic');
+  if (gearItems.length === 0) {
     const emptyMsg = document.createElement('div');
     emptyMsg.style.cssText = 'font-size:12px; color:var(--muted); padding:10px; text-align:center; background:#0b1222; border-radius:8px;';
-    emptyMsg.textContent = 'Balo hiện không còn trang bị hiện có nào. Hãy quay trúng Rương Báu hoặc mua ở Shop Tinh Tú!';
+    emptyMsg.textContent = 'Balo hiện không còn trang bị tướng nào. Hãy quay trúng Rương Báu!';
     list.appendChild(emptyMsg);
   } else {
-    state.inventory.forEach(g => {
+    gearItems.forEach(g => {
       const gd = GEAR_DEFS.find(x => x.id === g.defId);
       const row = document.createElement('div');
       row.style.cssText = 'display:flex; justify-content:space-between; align-items:center; background:#0b1222; border:1px solid #334155; border-radius:8px; padding:8px 10px; gap:8px;';
@@ -3408,13 +3625,36 @@ function renderBackpackItems() {
   const list = document.getElementById('backpackList');
   list.innerHTML = '';
   if (state.inventory.length === 0) {
-    list.innerHTML = '<div style="font-size: 12px; color: var(--muted);">Balo trống. Quay trúng Rương Báu hoặc mua ở Shop Tinh Tú để nhận trang bị!</div>';
+    list.innerHTML = '<div style="font-size: 12px; color: var(--muted);">Balo trống. Quay trúng Rương Báu để nhận trang bị!</div>';
     return;
   }
   const targetId = document.getElementById('bagTargetHeroSelect').value || state.selectedUnitId;
   const targetUnit = state.units.find(x => x.id === targetId) || state.units[0];
 
   for (const g of state.inventory) {
+    if (g.kind === 'relic') {
+      const rd = RELIC_DEFS.find(x => x.id === g.defId);
+      const card = document.createElement('div');
+      card.style.cssText = 'display:flex; justify-content:space-between; align-items:center; width:100%; background:#0b1222; border:1.5px solid #c084fc; border-radius:8px; padding:8px 10px; gap:8px; flex-wrap:wrap;';
+      card.innerHTML = `
+        <div>
+          <div style="font-size:13px; font-weight:900; color:#e9d5ff;">🏺 ${rd ? rd.name : 'Cổ Vật'}</div>
+          <div style="font-size:11px; color:#cbd5e1;">${rd ? rd.desc : ''}</div>
+        </div>
+      `;
+      const btnRelic = document.createElement('button');
+      btnRelic.className = 'btn btn-purple';
+      btnRelic.textContent = `Gắn Cổ Vật (${state.wallGears.length}/${MAX_WALL_GEARS})`;
+      btnRelic.disabled = state.wallGears.length >= MAX_WALL_GEARS;
+      btnRelic.onclick = () => {
+        equipRelicFromBag(g.uid);
+        renderBackpackItems();
+      };
+      card.appendChild(btnRelic);
+      list.appendChild(card);
+      continue;
+    }
+
     const gd = GEAR_DEFS.find(x => x.id === g.defId);
     const card = document.createElement('div');
     card.style.cssText = 'display:flex; justify-content:space-between; align-items:center; width:100%; background:#0b1222; border:1.5px solid #334155; border-radius:8px; padding:8px 10px; gap:8px; flex-wrap:wrap;';
@@ -3424,10 +3664,6 @@ function renderBackpackItems() {
         <div style="font-size:11px; color:#cbd5e1;">${gd.desc}</div>
       </div>
     `;
-    const actions = document.createElement('div');
-    actions.style.display = 'flex';
-    actions.style.gap = '6px';
-
     const btnEquip = document.createElement('button');
     btnEquip.className = 'btn btn-gold';
     btnEquip.textContent = targetUnit ? `Lắp ${targetUnit.name}` : 'Chưa có tướng';
@@ -3438,19 +3674,7 @@ function renderBackpackItems() {
       equipGearToUnit(g.uid, targetUnit.id, freeIdx !== -1 ? freeIdx : 0);
       renderBackpackItems();
     };
-
-    const btnWall = document.createElement('button');
-    btnWall.className = 'btn btn-blue';
-    btnWall.textContent = `Treo thành (${state.wallGears.length}/${MAX_WALL_GEARS})`;
-    btnWall.disabled = state.wallGears.length >= MAX_WALL_GEARS;
-    btnWall.onclick = () => {
-      hangGearOnWall(g.uid);
-      renderBackpackItems();
-    };
-
-    actions.appendChild(btnEquip);
-    actions.appendChild(btnWall);
-    card.appendChild(actions);
+    card.appendChild(btnEquip);
     list.appendChild(card);
   }
 }
@@ -3622,22 +3846,27 @@ function renderWaveSummary() {
   }
   const s = state.lastWaveSummary;
   banner.classList.add('visible');
-  banner.innerHTML = `📊 <b>Tổng kết Vòng ${s.wave}:</b> Hạ <b>${s.kills}</b> địch • Gây <b>${s.dmgDealt}</b> sát thương • Hồi <b>${s.healed}</b> HP • Nhận <b>+${s.goldEarned} 🪙</b> &amp; <b>+${s.essenceEarned} ✦</b>.`;
+  banner.innerHTML = `📊 <b>Tổng kết Vòng ${s.wave}:</b> Hạ <b>${s.kills}</b> địch • Gây <b>${s.dmgDealt}</b> sát thương • Hồi <b>${s.healed}</b> HP • Nhận <b>+${s.goldEarned} 🪙</b> &amp; <b>+${s.essenceEarned} ✦</b>${s.bossBonus > 0 ? ` (gồm +${s.bossBonus} hạ boss)` : ''}.`;
 }
 
 function openRatesModal() {
-  const weights = getEffectiveWeights();
-  const total = weights.reduce((a, b) => a + b.effWeight, 0) || 1;
+  const pool = getEffectiveSlotPool();
+  const total = pool.reduce((a, b) => a + b.effWeight, 0) || 1;
   document.getElementById('ratesNote').textContent = state.wave === 1 && !state.firstSpinDone
     ? 'Lượt quay đầu tiên Vòng 1: 100% ưu tiên nổ Tướng để bạn có đội hình ra trận.'
-    : 'Tỷ lệ tính theo trọng số hiện tại của guồng quay Hoàng Gia 3x3.';
+    : (hasJokerRelicEquipped()
+      ? 'Đang trang bị Cổ Vật Joker: Lá bài Joker đã thêm vào guồng quay 3x3!'
+      : 'Gắn Cổ Vật Joker (từ Shop Tinh Tú) để mở khóa lá bài Joker trong máy xèng.');
 
   const tbody = document.getElementById('ratesTableBody');
-  tbody.innerHTML = weights.map(w => {
+  tbody.innerHTML = pool.map(w => {
     const pct = ((w.effWeight / total) * 100).toFixed(1);
+    const kindLabel = w.kind === 'joker'
+      ? '🃏 Vạn năng (thay thế mọi lớp)'
+      : (w.kind === 'hero' ? `Tướng (${w.faction})` : 'Rương Binh Khí');
     return `<tr>
       <td style="color:${w.color}; font-weight:800;">${w.name}</td>
-      <td>${w.kind === 'hero' ? `Tướng (${w.faction})` : 'Rương Binh Khí'}</td>
+      <td>${kindLabel}</td>
       <td><b>${pct}%</b></td>
     </tr>`;
   }).join('');
@@ -3645,22 +3874,38 @@ function openRatesModal() {
 }
 
 function openShopModal() {
+  if (!state.shopOffers || state.shopOffers.length !== 3) {
+    rollShopOffers();
+  }
   document.getElementById('shopEssenceNum').textContent = state.essence;
   document.getElementById('shopWallCount').textContent = state.wallGears.length;
+
+  const btnRoll = document.getElementById('btnRollShop');
+  btnRoll.textContent = `🎲 ROLL SHOP (${SHOP_ROLL_COST} ✦)`;
+  btnRoll.disabled = state.essence < SHOP_ROLL_COST;
+  btnRoll.onclick = () => {
+    if (state.essence < SHOP_ROLL_COST) return;
+    state.essence -= SHOP_ROLL_COST;
+    rollShopOffers();
+    addLog(`🎲 Đã Roll Shop Tinh Tú (tốn ${SHOP_ROLL_COST} ✦) — 1% nổ Cổ Vật Joker.`, '#38bdf8');
+    openShopModal();
+    updateUI();
+  };
 
   const manageWrap = document.getElementById('shopWallManageList');
   manageWrap.innerHTML = '';
   if (state.wallGears.length === 0) {
-    manageWrap.innerHTML = '<div style="font-size:11px; color:var(--muted);">Chưa có trang bị nào treo trên thành. Hãy mua bên dưới (tối đa 5 món).</div>';
+    manageWrap.innerHTML = '<div style="font-size:11px; color:var(--muted);">Chưa có Cổ Vật nào được gắn (tối đa 5 Cổ Vật).</div>';
   } else {
     state.wallGears.forEach((wg, idx) => {
-      const gd = GEAR_DEFS.find(x => x.id === wg.defId);
+      const rd = RELIC_DEFS.find(x => x.id === wg.defId);
+      const isJoker = !!(rd && rd.isJoker);
       const row = document.createElement('div');
       row.style.cssText = 'display:flex; justify-content:space-between; align-items:center; background:#111c33; border:1px solid #334155; border-radius:7px; padding:6px 8px; gap:8px; flex-wrap:wrap;';
       row.innerHTML = `
         <div style="font-size:11px;">
-          <b style="color:#fde047;">#${idx + 1}: ${gd ? gd.name : 'Vật phẩm'}</b>
-          <span style="color:#cbd5e1;"> — ${gd ? gd.desc : ''}</span>
+          <b style="color:${isJoker ? '#f472b6' : '#fde047'};">#${idx + 1}: ${rd ? rd.name : 'Cổ Vật'}</b>
+          <span style="color:#cbd5e1;"> — ${rd ? rd.desc : ''}</span>
         </div>
       `;
       const btns = document.createElement('div');
@@ -3671,15 +3916,14 @@ function openShopModal() {
       btnSwap.className = 'btn btn-gold';
       btnSwap.style.padding = '4px 8px';
       btnSwap.style.fontSize = '11px';
-      btnSwap.textContent = '🔄 Đổi (4 ✦)';
-      btnSwap.disabled = state.essence < 4;
+      btnSwap.textContent = '🔄 Đổi';
       btnSwap.onclick = () => openSwapWallModal(idx);
 
       const btnRemove = document.createElement('button');
       btnRemove.className = 'btn btn-rose';
       btnRemove.style.padding = '4px 8px';
       btnRemove.style.fontSize = '11px';
-      btnRemove.textContent = '🗑️ Loại bỏ';
+      btnRemove.textContent = '🗑️ Tháo';
       btnRemove.onclick = () => removeWallGear(idx);
 
       btns.appendChild(btnSwap);
@@ -3691,43 +3935,48 @@ function openShopModal() {
 
   const wrap = document.getElementById('shopItemsContainer');
   wrap.innerHTML = '';
-  const shopOffers = [
-    {
-      title: '➕ Mở rộng quân số tối đa (+1 Tướng)',
-      cost: 8,
-      disabled: false,
-      action: () => { state.cap += 1; addLog(`📈 Giới hạn tướng tăng lên ${state.cap}!`, '#34d399'); }
-    },
-    ...GEAR_DEFS.map(gd => ({
-      title: `🏰 Treo Thành [${gd.name}] — ${gd.desc} (${state.wallGears.length}/${MAX_WALL_GEARS})`,
-      cost: 6,
-      disabled: state.wallGears.length >= MAX_WALL_GEARS,
-      action: () => {
-        state.wallGears.push({ uid: uid('wallg'), defId: gd.id });
-        refreshAllUnitsStats();
-        addLog(`🏰 Đã mua & treo [${gd.name}] lên thành (${state.wallGears.length}/${MAX_WALL_GEARS}).`, '#fde047');
-      }
-    }))
-  ];
 
-  shopOffers.forEach(offer => {
-    const row = document.createElement('div');
-    row.style.cssText = 'display:flex; justify-content:space-between; align-items:center; background:#0b1222; padding:8px 10px; border-radius:8px; border:1px solid #334155; gap:8px;';
-    row.innerHTML = `<span style="font-size:12px; font-weight:700;">${offer.title}</span>`;
+  state.shopOffers.forEach((offer, oIdx) => {
+    const rd = RELIC_DEFS.find(x => x.id === offer.relicId) || RELIC_DEFS[0];
+    const isJoker = !!rd.isJoker;
+    const price = offer.cost ?? (isJoker ? 20 : 6);
+    const card = document.createElement('div');
+    card.className = 'shop-offer-card' + (isJoker ? ' joker-offer' : '');
+    card.innerHTML = `
+      <div>
+        <div style="font-size:13px; font-weight:900; color:${isJoker ? '#f472b6' : '#fde047'};">
+          ${isJoker ? '🃏' : '🏺'} ${rd.name}
+          <span style="font-size:10px; color:#94a3b8; font-weight:700;">[${isJoker ? 'Tỷ lệ Roll 1%' : 'Tỷ lệ Roll ~5.21%'}]</span>
+        </div>
+        <div style="font-size:11px; color:#cbd5e1; margin-top:2px;">${rd.desc}</div>
+      </div>
+    `;
+
     const b = document.createElement('button');
-    b.className = 'btn btn-gold';
-    b.textContent = `${offer.cost} ✦`;
-    b.disabled = state.essence < offer.cost || offer.disabled;
+    b.className = isJoker ? 'btn btn-purple' : 'btn btn-gold';
+    b.textContent = `MUA (${price} ✦)`;
+    b.disabled = state.essence < price || state.wallGears.length >= MAX_WALL_GEARS;
     b.onclick = () => {
-      if (state.essence < offer.cost || offer.disabled) return;
-      state.essence -= offer.cost;
-      offer.action();
+      if (state.essence < price || state.wallGears.length >= MAX_WALL_GEARS) return;
+      state.essence -= price;
+      state.wallGears.push({ uid: uid('relic'), kind: 'relic', defId: rd.id });
+      refreshAllUnitsStats();
+      state.shopOffers.splice(oIdx, 1);
+      if (isJoker) {
+        addLog(`🃏 Đã mua Cổ Vật JOKER (20 ✦)! Lá bài JOKER đã có trong Máy Xèng!`, '#f472b6');
+      } else {
+        addLog(`🏺 Đã mua Cổ Vật [${rd.name}] (6 ✦) — Đang trang bị ${state.wallGears.length}/${MAX_WALL_GEARS}.`, '#fde047');
+      }
+      if (state.shopOffers.length === 0) {
+        rollShopOffers();
+      }
       openShopModal();
       updateUI();
     };
-    row.appendChild(b);
-    wrap.appendChild(row);
+    card.appendChild(b);
+    wrap.appendChild(card);
   });
+
   document.getElementById('shopModal').classList.add('open');
 }
 
@@ -3747,7 +3996,7 @@ function updateUI() {
   document.getElementById('spinCost').textContent = getSpinCost();
   document.getElementById('guaranteeTag').textContent = (!state.firstSpinDone || state.units.length === 0)
     ? 'Lượt này: 100% Tướng'
-    : 'Nổ 3 ô → Rơi ô mới';
+    : (hasJokerRelicEquipped() ? '🃏 Joker đang hoạt động' : 'Nổ 3 ô → Rơi ô mới');
 
   const lockActions = state.isSpinning || state.inCombat || state.gameOver || !!state.activeAwakenPrompt;
   document.getElementById('btnSpin').disabled = lockActions || state.gold < getSpinCost();
@@ -3803,7 +4052,8 @@ document.getElementById('btnCancelAbsorb').addEventListener('click', () => {
 setupBattleCanvasMovement();
 renderSpriteToCanvas(document.getElementById('brandIcon'), 'warrior', 42);
 initGrid();
-addLog('🏰 Đã cân bằng lại Vòng 1 (1 kẻ địch) & thêm 6 bậc tư chất (80% / 15.5% / 4% / 0.48% / 0.02% — hệ số 1.0 / 1.15 / 1.45 / 1.75 / 2.0).', '#f3c677');
+rollShopOffers();
+addLog('🏺 Đã thêm 20 Cổ Vật + Joker, Boss Huyền Thoại mỗi 10 màn, thanh máu Boss rõ ràng & tỷ lệ 6 tư chất (75% / 14.5% / 6.5% / 3.2% / 0.75% / 0.05%).', '#f3c677');
 updateUI();
 requestAnimationFrame(gameLoop);
 </script>
