@@ -697,15 +697,16 @@
       <div class="brand-title">⚔️ Random-Fight! <span style="font-size:12px;font-weight:600;color:var(--accent-cyan);">64x64 Pixel</span></div>
       <div class="stat-pills">
         <div class="pill">Vòng: <strong id="uiWave">1</strong></div>
-        <div class="pill essence">Tinh Hoa: <strong id="uiEssence">12</strong></div>
-        <div class="pill starlight">Tinh Tú: <strong id="uiStarlight">14</strong></div>
+        <div class="pill" style="border-color:#ffd166;"><strong id="uiGold" style="color:#ffd166;">250</strong> Vàng</div>
+        <div class="pill essence">Tinh Hoa: <strong id="uiEssence">0</strong></div>
+        <div class="pill starlight">Tinh Tú: <strong id="uiStarlight">0</strong></div>
         <div class="pill">Cổ Vật: <strong id="uiRelicCount">0/5</strong></div>
         <div class="pill">Tài Khoản: <strong id="uiAccount">Khách</strong></div>
       </div>
     </div>
 
     <div class="control-bar">
-      <button class="primary" id="btnSpin">🎰 Quay Slot (3 Tinh Hoa)</button>
+      <button class="primary" id="btnSpin">🎰 Quay Slot (100 Vàng)</button>
       <button class="accent-green" id="btnFight">⚔️ Bắt Đầu Chiến Đấu</button>
       <button id="btnRosterModal">🛡️ Nhân Vật</button>
       <button id="btnRelicCompendium">🏛️ 22 Cổ Vật</button>
@@ -816,7 +817,7 @@
    RANDOM-FIGHT! — FULL SINGLE-FILE ENGINE (64x64 PIXEL SPRITES & VFX)
    ============================================================================ */
 
-const STORAGE_KEY = "random_fight_64_save_v3";
+const STORAGE_KEY = "random_fight_64_save_autochess_v3";
 
 const QUALITIES = {
   common:    { name: "Thường",  color: "#9eb0cc", mult: 1.0,  xpMult: 1.0 },
@@ -1204,7 +1205,12 @@ function createHero(classId, qualityKey = "common", customName = null) {
     atk: 20,
     def: 8,
     posX: 160,
-    posY: 180
+    posY: 180,
+    homeX: 160,
+    homeY: 180,
+    atkTimer: 0,
+    skillCharge: 0,
+    hitFlash: 0
   };
 }
 
@@ -1216,8 +1222,10 @@ function defaultState() {
     accountName: "Khách",
     records: { bestWave: 1, wins: 0, totalSwallows: 0 },
     wave: 1,
-    essence: 12,
-    starlight: 14,
+    gold: 250,
+    essence: 0,
+    starlight: 0,
+    spinCount: 0,
     rerollCount: 0,
     heroes: [h1, h2, h3],
     selectedHeroId: h1.uid,
@@ -1265,8 +1273,10 @@ function saveGame() {
       accountName: G.accountName,
       records: G.records,
       wave: G.wave,
+      gold: G.gold,
       essence: G.essence,
       starlight: G.starlight,
+      spinCount: G.spinCount || 0,
       rerollCount: G.rerollCount,
       heroes: G.heroes,
       selectedHeroId: G.selectedHeroId,
@@ -1374,9 +1384,16 @@ function recalcAllHeroStats(state) {
     if (h.hp === undefined || h.hp > h.maxHp) h.hp = h.maxHp;
     if (h.hp <= 0 && !state.inBattle) h.hp = h.maxHp;
 
-    // Position on left side of 64x64 battlefield
-    h.posX = 95 + (idx % 2) * 58;
-    h.posY = 75 + idx * 58;
+    // Auto-chess formation on left side of 64x64 battlefield
+    const frontRow = (h.classId === "knight" || h.classId === "warrior");
+    h.homeX = frontRow ? 225 : 95;
+    h.homeY = 62 + idx * 56;
+    if (!state.inBattle) {
+      h.posX = h.homeX;
+      h.posY = h.homeY;
+    }
+    if (h.skillCharge === undefined) h.skillCharge = 0;
+    if (h.atkTimer === undefined) h.atkTimer = 0;
   });
 }
 
@@ -1545,7 +1562,9 @@ function evaluateSlotLines(cells) {
   return { matchedLines, bonusEssence, bonusXp, highlightedIndices };
 }
 
-const SPIN_COST_ESSENCE = 3;
+function getSpinGoldCost() {
+  return 100 + (G.spinCount || 0) * 50;
+}
 let draggedSlotIndex = null;
 
 function rollRandomSlotHero(luckBonus = 0) {
@@ -1565,13 +1584,14 @@ function rollRandomSlotHero(luckBonus = 0) {
 
 function spinSlotMachine() {
   if (G.inBattle) return;
-  if (G.essence < SPIN_COST_ESSENCE) {
-    addLog(G, "⚠️ Không đủ Tinh Hoa để quay Slot (cần 3 Tinh Hoa).");
+  const goldCost = getSpinGoldCost();
+  if ((G.gold || 0) < goldCost) {
+    addLog(G, `⚠️ Không đủ Vàng để quay Slot (cần ${goldCost} Vàng).`);
     renderAll();
     return;
   }
-
-  G.essence -= SPIN_COST_ESSENCE;
+  G.gold -= goldCost;
+  G.spinCount = (G.spinCount || 0) + 1;
   const luckBonus = getRelicVal(G, "slot_spin_luck");
 
   // Strictly prevent duplicate seals across all 9 slot cells and active heroes
@@ -1703,12 +1723,16 @@ function getRerollCost() {
 function rollShop(state, free = false) {
   if (!free) {
     const cost = getRerollCost();
-    if (state.starlight < cost) {
-      addLog(state, `⚠️ Không đủ Tinh Tú để làm mới cửa hàng (cần ${cost} Tinh Tú).`);
+    const goldCost = cost * 10;
+    if (state.starlight >= cost) {
+      state.starlight -= cost;
+    } else if ((state.gold || 0) >= goldCost) {
+      state.gold -= goldCost;
+    } else {
+      addLog(state, `⚠️ Không đủ tài nguyên để làm mới cửa hàng (cần ${cost} Tinh Tú hoặc ${goldCost} Vàng).`);
       renderAll();
       return;
     }
-    state.starlight -= cost;
     state.rerollCount += 1;
   }
 
@@ -1768,8 +1792,9 @@ function buyShopItem(index) {
   if (G.inBattle) return;
   const item = G.shopItems[index];
   if (!item) return;
-  if (G.starlight < item.cost) {
-    addLog(G, `⚠️ Không đủ Tinh Tú để mua [${item.name}].`);
+  const goldCost = item.cost * 10;
+  if (G.starlight < item.cost && (G.gold || 0) < goldCost) {
+    addLog(G, `⚠️ Không đủ Tinh Tú (${item.cost}) hoặc Vàng (${goldCost}) để mua [${item.name}].`);
     renderAll();
     return;
   }
@@ -1785,13 +1810,13 @@ function buyShopItem(index) {
       renderAll();
       return;
     }
-    G.starlight -= item.cost;
+    if (G.starlight >= item.cost) G.starlight -= item.cost; else G.gold -= item.cost * 10;
     G.equippedRelics.push(item.data);
     addLog(G, `🏛️ Đã treo Cổ Vật [${item.name}] lên thành (${G.equippedRelics.length}/5).`);
   } else if (item.kind === "gear") {
     const targetHero = G.heroes.find(h => h.uid === G.selectedHeroId) || G.heroes[0];
     if (!targetHero) return;
-    G.starlight -= item.cost;
+    if (G.starlight >= item.cost) G.starlight -= item.cost; else G.gold -= item.cost * 10;
     targetHero.gear = { ...item.data };
     addLog(G, `🛡️ Đã trang bị [${item.name}] cho ${getHeroDisplayName(targetHero)}.`);
   } else if (item.kind === "hero") {
@@ -1800,7 +1825,7 @@ function buyShopItem(index) {
       renderAll();
       return;
     }
-    G.starlight -= item.cost;
+    if (G.starlight >= item.cost) G.starlight -= item.cost; else G.gold -= item.cost * 10;
     const newHero = createHero(item.data.classId, item.data.quality);
     G.heroes.push(newHero);
     G.selectedHeroId = newHero.uid;
@@ -1844,6 +1869,8 @@ function spawnWaveEnemies(state) {
     const atk = Math.round(arch.atkBase * waveScaleAtk * (1 - nerfAtkPct) * (1 + i * 0.08));
     const def = Math.round(arch.defBase * waveScaleDef);
 
+    const ex = arch.ranged ? 605 : 495;
+    const ey = 75 + i * 88;
     state.enemies.push({
       uid: "e_" + state.wave + "_" + i + "_" + Math.random().toString(36).slice(2, 6),
       archId: arch.id,
@@ -1854,8 +1881,12 @@ function spawnWaveEnemies(state) {
       maxHp,
       atk,
       def,
-      posX: 540 + (i % 2) * 55,
-      posY: 95 + i * 82
+      posX: ex,
+      posY: ey,
+      homeX: ex,
+      homeY: ey,
+      atkTimer: 0.4 + i * 0.25,
+      skillCharge: 0
     });
   }
 }
@@ -1930,156 +1961,66 @@ function updateAndDrawVfx(ctx) {
 }
 
 /* ============================================================================
-   TURN-BASED BATTLE ENGINE (PRIEST PURE HEALER + SKILLS + BALANCED STATS)
+   REAL-TIME AUTO CHESS COMBAT ENGINE (PRIEST PURE HEALER + SKILLS + LIVE AI)
    ============================================================================ */
 
-function sleep(ms) {
-  return new Promise(res => setTimeout(res, ms));
-}
+let battleElapsed = 0;
+let uiSyncTimer = 0;
 
-async function startBattle() {
+function startBattle() {
   if (G.inBattle) return;
   if (G.enemies.length === 0) {
     spawnWaveEnemies(G);
   }
   G.inBattle = true;
+  battleElapsed = 0;
+  uiSyncTimer = 0;
   recalcAllHeroStats(G);
   const startShield = getRelicVal(G, "start_shield");
-  G.heroes.forEach(h => {
-    if (h.hp <= 0) h.hp = Math.round(h.maxHp * 0.6);
+
+  G.heroes.forEach((h, idx) => {
+    if (h.hp <= 0) h.hp = Math.round(h.maxHp * 0.65);
     h.shield = startShield;
+    h.posX = h.homeX;
+    h.posY = h.homeY;
+    h.atkTimer = 0.35 + idx * 0.14;
+    h.skillCharge = 40;
   });
 
-  addLog(G, `⚔️ Vòng ${G.wave} bắt đầu! Đối đầu ${G.enemies.length} kẻ địch cực mạnh.`);
+  G.enemies.forEach((en, idx) => {
+    en.posX = en.homeX;
+    en.posY = en.homeY;
+    en.atkTimer = 0.55 + idx * 0.22;
+    en.skillCharge = 0;
+  });
+
+  addLog(G, `⚔️ Auto Chess Vòng ${G.wave} khai chiến! Các tướng tự động di chuyển, tích năng lượng và tung kỹ năng.`);
   renderAll();
+}
 
-  let turn = 1;
-  while (G.inBattle && turn <= 20) {
-    // 1. Heroes act
-    for (const hero of G.heroes) {
-      if (!G.inBattle || hero.hp <= 0) continue;
-      const aliveEnemies = G.enemies.filter(e => e.hp > 0);
-      if (aliveEnemies.length === 0) break;
-
-      const useSkill = (turn % 2 === 0);
-
-      if (hero.classId === "priest") {
-        // Priest NEVER basic attacks enemies: basic heals single lowest-HP ally; skill heals AoE
-        if (!useSkill) {
-          const lowestAlly = [...G.heroes]
-            .filter(a => a.hp > 0)
-            .sort((a, b) => (a.hp / a.maxHp) - (b.hp / b.maxHp))[0];
-          if (lowestAlly) {
-            const healAmt = Math.round((hero.atk * 1.15 + 14) * hero.healMult);
-            lowestAlly.hp = Math.min(lowestAlly.maxHp, lowestAlly.hp + healAmt);
-            spawnVfx(lowestAlly.posX + 32, lowestAlly.posY + 28, "heal", "#72efdd", `+${healAmt} HP`);
-            addLog(G, `✚ ${getHeroDisplayName(hero)} hồi ${healAmt} HP đơn lẻ cho ${getHeroDisplayName(lowestAlly)}.`);
-          }
-        } else {
-          const aoeHeal = Math.round((hero.atk * 1.35 + 18) * hero.healMult * hero.skillMult);
-          G.heroes.filter(a => a.hp > 0).forEach(ally => {
-            ally.hp = Math.min(ally.maxHp, ally.hp + aoeHeal);
-            spawnVfx(ally.posX + 32, ally.posY + 28, "heal", "#52b788", `+${aoeHeal} AOE`);
-          });
-          addLog(G, `✨ ${getHeroDisplayName(hero)} dùng [${CLASSES.priest.skillName}] hồi ${aoeHeal} HP phạm vi cho toàn đội!`);
-        }
-      } else {
-        // Offensive classes (knight, warrior, archer, mage)
-        const target = aliveEnemies[0];
-        const isCrit = Math.random() < hero.critChance;
-        const critFactor = isCrit ? 1.5 : 1.0;
-
-        if (!useSkill) {
-          const rawDmg = Math.max(4, (hero.atk - target.def * 0.45) * critFactor);
-          const dmg = Math.round(rawDmg);
-          target.hp = Math.max(0, target.hp - dmg);
-          const fxType = hero.classId === "mage" ? "magic" : "slash";
-          const fxCol = hero.classId === "mage" ? "#c77dff" : isCrit ? "#ff6b6b" : "#4ea8de";
-          spawnVfx(target.posX + 32, target.posY + 32, fxType, fxCol, `-${dmg}${isCrit ? "!" : ""}`);
-          addLog(G, `⚔️ ${getHeroDisplayName(hero)} đánh ${target.name} gây ${dmg} sát thương${isCrit ? " (BẠO KÍCH)" : ""}.`);
-        } else {
-          const skillMult = (hero.classId === "warrior" ? 1.95 : hero.classId === "archer" ? 1.80 : hero.classId === "mage" ? 1.70 : 1.75) * hero.skillMult;
-          const dmg = Math.round(Math.max(8, (hero.atk * skillMult - target.def * 0.35) * critFactor));
-          target.hp = Math.max(0, target.hp - dmg);
-          const fxType = (hero.classId === "mage" || hero.classId === "archer") ? "magic" : "slash";
-          spawnVfx(target.posX + 32, target.posY + 32, fxType, "#72efdd", `SKILL -${dmg}`);
-          addLog(G, `🔥 ${getHeroDisplayName(hero)} kích hoạt [${CLASSES[hero.classId].skillName}] gây ${dmg} sát thương lên ${target.name}!`);
-
-          if (hero.classId === "knight") {
-            const sh = Math.round(hero.maxHp * 0.16);
-            hero.shield += sh;
-            spawnVfx(hero.posX + 32, hero.posY + 24, "heal", "#4ea8de", `+${sh} Khiên`);
-          } else if (hero.classId === "mage") {
-            target.def = Math.max(0, Math.round(target.def * 0.85));
-          } else if (hero.classId === "archer" && aliveEnemies[1]) {
-            const splash = Math.round(dmg * 0.55);
-            aliveEnemies[1].hp = Math.max(0, aliveEnemies[1].hp - splash);
-            spawnVfx(aliveEnemies[1].posX + 32, aliveEnemies[1].posY + 32, "magic", "#48bfe3", `-${splash}`);
-          }
-        }
-      }
-
-      renderAll();
-      await sleep(360);
-    }
-
-    if (G.enemies.every(e => e.hp <= 0)) {
-      break;
-    }
-
-    // 2. Enemies act
-    const aliveHeroes = G.heroes.filter(h => h.hp > 0);
-    for (const enemy of G.enemies) {
-      if (!G.inBattle || enemy.hp <= 0) continue;
-      const targets = G.heroes.filter(h => h.hp > 0);
-      if (targets.length === 0) break;
-      const victim = targets[Math.floor(Math.random() * targets.length)];
-      const augDmgRed = (victim.augments || []).reduce((s, a) => s + (a.stat.dmgRed || 0), 0);
-      let incoming = Math.max(5, Math.round((enemy.atk - victim.def * 0.55) * (1 - augDmgRed)));
-
-      if (victim.shield > 0) {
-        const absorbed = Math.min(victim.shield, incoming);
-        victim.shield -= absorbed;
-        incoming -= absorbed;
-      }
-      victim.hp = Math.max(0, victim.hp - incoming);
-
-      const thorns = getRelicVal(G, "thorns");
-      if (!enemy.ranged && thorns > 0) {
-        enemy.hp = Math.max(0, enemy.hp - thorns);
-      }
-
-      spawnVfx(victim.posX + 32, victim.posY + 32, enemy.ranged ? "magic" : "slash", "#ef476f", `-${incoming}`);
-      addLog(G, `👾 ${enemy.name} tấn công ${getHeroDisplayName(victim)} gây ${incoming} sát thương.`);
-      renderAll();
-      await sleep(360);
-    }
-
-    if (aliveHeroes.length === 0 || G.heroes.every(h => h.hp <= 0)) {
-      break;
-    }
-
-    turn += 1;
-  }
-
-  const won = G.enemies.every(e => e.hp <= 0);
+function finishBattle(won) {
   G.inBattle = false;
+  G.spinCount = 0;
   G.heroes.forEach(h => {
     h.tempAtkBuff = 0;
     h.tempDefBuff = 0;
     h.shield = 0;
+    h.skillCharge = 0;
+    h.posX = h.homeX;
+    h.posY = h.homeY;
   });
 
   if (won) {
-    // Reduced essence & starlight rewards for tighter pacing
+    const goldReward = 25 + G.wave * 5;
     const essenceReward = 2 + getRelicVal(G, "wave_essence");
     const starReward = 1 + getRelicVal(G, "star_bonus");
+    G.gold = (G.gold || 0) + goldReward;
     G.essence += essenceReward;
     G.starlight += starReward;
     G.records.wins += 1;
     if (G.wave > G.records.bestWave) G.records.bestWave = G.wave;
 
-    addLog(G, `🏆 Thắng Vòng ${G.wave}! Nhận +${essenceReward} Tinh Hoa và +${starReward} Tinh Tú.`);
+    addLog(G, `🏆 Thắng Auto Chess Vòng ${G.wave}! Nhận +${goldReward} Vàng, +${essenceReward} Tinh Hoa và +${starReward} Tinh Tú.`);
     G.heroes.forEach(h => {
       if (h.hp > 0) grantHeroXp(G, h, 16 + G.wave * 3);
     });
@@ -2094,6 +2035,164 @@ async function startBattle() {
 
   saveGame();
   renderAll();
+}
+
+function performHeroAutoAction(hero) {
+  const aliveEnemies = G.enemies.filter(e => e.hp > 0);
+  if (aliveEnemies.length === 0) return;
+
+  const useSkill = (hero.skillCharge || 0) >= 100;
+  if (useSkill) hero.skillCharge = 0;
+
+  if (hero.classId === "priest") {
+    // Pure healer: basic heals lowest HP ally; skill heals AoE all allies
+    if (!useSkill) {
+      const lowestAlly = [...G.heroes]
+        .filter(a => a.hp > 0)
+        .sort((a, b) => (a.hp / a.maxHp) - (b.hp / b.maxHp))[0];
+      if (lowestAlly) {
+        const healAmt = Math.round((hero.atk * 1.15 + 14) * hero.healMult);
+        lowestAlly.hp = Math.min(lowestAlly.maxHp, lowestAlly.hp + healAmt);
+        hero.skillCharge = Math.min(100, (hero.skillCharge || 0) + 34);
+        spawnVfx(lowestAlly.posX + 32, lowestAlly.posY + 28, "heal", "#72efdd", `+${healAmt} HP`);
+      }
+    } else {
+      const aoeHeal = Math.round((hero.atk * 1.35 + 18) * hero.healMult * hero.skillMult);
+      G.heroes.filter(a => a.hp > 0).forEach(ally => {
+        ally.hp = Math.min(ally.maxHp, ally.hp + aoeHeal);
+        spawnVfx(ally.posX + 32, ally.posY + 28, "heal", "#52b788", `+${aoeHeal}`);
+      });
+      addLog(G, `✨ ${getHeroDisplayName(hero)} tung [${CLASSES.priest.skillName}] hồi ${aoeHeal} HP toàn đội!`);
+    }
+    return;
+  }
+
+  // Pick nearest alive enemy
+  const target = [...aliveEnemies].sort((a, b) => {
+    const da = Math.hypot(a.posX - hero.posX, a.posY - hero.posY);
+    const db = Math.hypot(b.posX - hero.posX, b.posY - hero.posY);
+    return da - db;
+  })[0];
+
+  const isCrit = Math.random() < hero.critChance;
+  const critFactor = isCrit ? 1.5 : 1.0;
+
+  if (!useSkill) {
+    const dmg = Math.max(4, Math.round((hero.atk - target.def * 0.45) * critFactor));
+    target.hp = Math.max(0, target.hp - dmg);
+    hero.skillCharge = Math.min(100, (hero.skillCharge || 0) + 34);
+    const fxType = hero.classId === "mage" ? "magic" : "slash";
+    const fxCol = hero.classId === "mage" ? "#c77dff" : isCrit ? "#ff6b6b" : "#4ea8de";
+    spawnVfx(target.posX + 32, target.posY + 32, fxType, fxCol, `-${dmg}${isCrit ? "!" : ""}`);
+  } else {
+    const skillMult = (hero.classId === "warrior" ? 1.95 : hero.classId === "archer" ? 1.80 : hero.classId === "mage" ? 1.70 : 1.75) * hero.skillMult;
+    const dmg = Math.max(8, Math.round((hero.atk * skillMult - target.def * 0.35) * critFactor));
+    target.hp = Math.max(0, target.hp - dmg);
+    const fxType = (hero.classId === "mage" || hero.classId === "archer") ? "magic" : "slash";
+    spawnVfx(target.posX + 32, target.posY + 32, fxType, "#72efdd", `SKILL -${dmg}`);
+    addLog(G, `🔥 ${getHeroDisplayName(hero)} dùng [${CLASSES[hero.classId].skillName}] gây ${dmg} sát thương!`);
+
+    if (hero.classId === "knight") {
+      const sh = Math.round(hero.maxHp * 0.16);
+      hero.shield += sh;
+      spawnVfx(hero.posX + 32, hero.posY + 24, "heal", "#4ea8de", `+${sh} Khiên`);
+    } else if (hero.classId === "mage") {
+      target.def = Math.max(0, Math.round(target.def * 0.85));
+    } else if (hero.classId === "archer" && aliveEnemies[1]) {
+      const splash = Math.round(dmg * 0.55);
+      aliveEnemies[1].hp = Math.max(0, aliveEnemies[1].hp - splash);
+      spawnVfx(aliveEnemies[1].posX + 32, aliveEnemies[1].posY + 32, "magic", "#48bfe3", `-${splash}`);
+    }
+  }
+}
+
+function updateAutoChess(dt) {
+  if (!G.inBattle) return;
+  battleElapsed += dt;
+  uiSyncTimer += dt;
+
+  const aliveHeroes = G.heroes.filter(h => h.hp > 0);
+  const aliveEnemies = G.enemies.filter(e => e.hp > 0);
+
+  if (aliveEnemies.length === 0) {
+    finishBattle(true);
+    return;
+  }
+  if (aliveHeroes.length === 0 || battleElapsed >= 35) {
+    finishBattle(false);
+    return;
+  }
+
+  // Update Heroes movement & auto-attacks
+  for (const hero of aliveHeroes) {
+    const isRangedOrHealer = (hero.classId === "archer" || hero.classId === "mage" || hero.classId === "priest");
+    const target = [...aliveEnemies].sort((a, b) => Math.hypot(a.posX - hero.posX, a.posY - hero.posY) - Math.hypot(b.posX - hero.posX, b.posY - hero.posY))[0];
+    const desiredDist = isRangedOrHealer ? 230 : 54;
+    const dx = target.posX - hero.posX;
+    const dy = target.posY - hero.posY;
+    const dist = Math.hypot(dx, dy) || 1;
+
+    if (dist > desiredDist + 10) {
+      const speed = 95 * dt;
+      hero.posX += (dx / dist) * speed;
+      hero.posY += (dy / dist) * speed;
+    } else if (dist < desiredDist - 25 && !isRangedOrHealer) {
+      const speed = 60 * dt;
+      hero.posX -= (dx / dist) * speed;
+      hero.posY -= (dy / dist) * speed;
+    }
+
+    hero.atkTimer -= dt;
+    if (hero.atkTimer <= 0) {
+      hero.atkTimer = hero.classId === "archer" ? 1.05 : 1.25;
+      performHeroAutoAction(hero);
+    }
+  }
+
+  // Update Enemies movement & auto-attacks
+  const thorns = getRelicVal(G, "thorns");
+  for (const enemy of aliveEnemies) {
+    const currentTargets = G.heroes.filter(h => h.hp > 0);
+    if (currentTargets.length === 0) break;
+    const victim = [...currentTargets].sort((a, b) => Math.hypot(a.posX - enemy.posX, a.posY - enemy.posY) - Math.hypot(b.posX - enemy.posX, b.posY - enemy.posY))[0];
+    const desiredDist = enemy.ranged ? 240 : 52;
+    const dx = victim.posX - enemy.posX;
+    const dy = victim.posY - enemy.posY;
+    const dist = Math.hypot(dx, dy) || 1;
+
+    if (dist > desiredDist + 10) {
+      const speed = 82 * dt;
+      enemy.posX += (dx / dist) * speed;
+      enemy.posY += (dy / dist) * speed;
+    }
+
+    enemy.atkTimer -= dt;
+    if (enemy.atkTimer <= 0) {
+      enemy.atkTimer = enemy.ranged ? 1.65 : 1.45;
+      const augDmgRed = (victim.augments || []).reduce((s, a) => s + (a.stat.dmgRed || 0), 0);
+      let incoming = Math.max(5, Math.round((enemy.atk - victim.def * 0.55) * (1 - augDmgRed)));
+
+      if (victim.shield > 0) {
+        const absorbed = Math.min(victim.shield, incoming);
+        victim.shield -= absorbed;
+        incoming -= absorbed;
+      }
+      victim.hp = Math.max(0, victim.hp - incoming);
+
+      if (!enemy.ranged && thorns > 0) {
+        enemy.hp = Math.max(0, enemy.hp - thorns);
+      }
+
+      spawnVfx(victim.posX + 32, victim.posY + 32, enemy.ranged ? "magic" : "slash", "#ef476f", `-${incoming}`);
+    }
+  }
+
+  if (uiSyncTimer >= 0.25) {
+    uiSyncTimer = 0;
+    renderRosterStrip();
+    renderInspector();
+    renderBattleLog();
+  }
 }
 
 /* ============================================================================
@@ -2112,15 +2211,19 @@ function renderAll() {
 
 function renderTopBar() {
   document.getElementById("uiWave").textContent = G.wave;
+  if (document.getElementById("uiGold")) document.getElementById("uiGold").textContent = G.gold ?? 250;
   document.getElementById("uiEssence").textContent = G.essence;
   document.getElementById("uiStarlight").textContent = G.starlight;
   document.getElementById("uiRelicCount").textContent = `${G.equippedRelics.length}/5`;
   document.getElementById("uiAccount").textContent = G.accountName;
 
-  document.getElementById("btnSpin").disabled = G.inBattle || G.essence < SPIN_COST_ESSENCE;
+  const currentSpinCost = getSpinGoldCost();
+  const btnSpinEl = document.getElementById("btnSpin");
+  btnSpinEl.textContent = `🎰 Quay Slot (${currentSpinCost} Vàng)`;
+  btnSpinEl.disabled = G.inBattle || (G.gold || 0) < currentSpinCost;
   document.getElementById("btnFight").disabled = G.inBattle;
-  document.getElementById("btnRerollShop").disabled = G.inBattle || G.starlight < getRerollCost();
-  document.getElementById("rerollCostLabel").textContent = `Làm mới: ${getRerollCost()} Tinh Tú`;
+  document.getElementById("btnRerollShop").disabled = G.inBattle || (G.starlight < getRerollCost() && (G.gold || 0) < getRerollCost() * 10);
+  document.getElementById("rerollCostLabel").textContent = `Làm mới: ${getRerollCost()} TT / ${getRerollCost() * 10} Vàng`;
   document.getElementById("waveDifficultyTag").textContent = `Độ khó: Vòng ${G.wave} (Quái ít, chỉ số cao)`;
   const lineInfo = evaluateSlotLines(G.slotCells);
   const slotStatusEl = document.getElementById("slotLineStatus");
@@ -2374,14 +2477,14 @@ function renderShopGrid() {
     foot.className = "shop-card-footer";
     const price = document.createElement("span");
     price.className = "price-tag";
-    price.textContent = `✦ ${item.cost} Tinh Tú`;
+    price.textContent = `✦ ${item.cost} TT | ${item.cost * 10} Vàng`;
 
     const buyBtn = document.createElement("button");
     buyBtn.className = "primary";
     buyBtn.style.padding = "4px 9px";
     buyBtn.style.fontSize = "11px";
     buyBtn.textContent = "Mua";
-    buyBtn.disabled = G.inBattle || G.starlight < item.cost;
+    buyBtn.disabled = G.inBattle || (G.starlight < item.cost && (G.gold || 0) < item.cost * 10);
     buyBtn.onclick = () => buyShopItem(idx);
 
     foot.appendChild(price);
@@ -2430,7 +2533,13 @@ battleCanvas.addEventListener("click", (e) => {
   }
 });
 
-function drawBattleScene() {
+let lastFrameTime = performance.now();
+
+function drawBattleScene(now = performance.now()) {
+  const dt = Math.min(0.05, Math.max(0.001, (now - lastFrameTime) / 1000));
+  lastFrameTime = now;
+  updateAutoChess(dt);
+
   const w = battleCanvas.width;
   const h = battleCanvas.height;
   bCtx.clearRect(0, 0, w, h);
@@ -2474,6 +2583,9 @@ function drawBattleScene() {
     bCtx.fillRect(hero.posX + 4, hero.posY - 10, 56, 6);
     bCtx.fillStyle = hero.classId === "priest" ? "#72efdd" : "#52b788";
     bCtx.fillRect(hero.posX + 4, hero.posY - 10, Math.round(56 * ratio), 6);
+    const manaRatio = Math.max(0, Math.min(1, (hero.skillCharge || 0) / 100));
+    bCtx.fillStyle = "#48bfe3";
+    bCtx.fillRect(hero.posX + 4, hero.posY - 4, Math.round(56 * manaRatio), 3);
 
     bCtx.font = "bold 10px Segoe UI, sans-serif";
     bCtx.fillStyle = "#e2e8f0";
