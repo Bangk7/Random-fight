@@ -3,23 +3,29 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Random-Fight! 0.0.3</title>
+<title>Random-Fight! — Pixel 64x64 Slotbound Tactics</title>
 <style>
   :root {
-    --bg-dark: #10141c;
-    --bg-panel: #181f2c;
-    --bg-panel-2: #20293a;
-    --bg-slot: #131822;
-    --border-pixel: #3a4a66;
-    --border-accent: #56ccf2;
+    --bg-deep: #0b0e17;
+    --bg-panel: #131926;
+    --bg-card: #1a2234;
+    --bg-card-2: #222c42;
+    --border-ui: #324161;
+    --border-accent: #58a6ff;
     --text-main: #eef3fb;
     --text-muted: #9eb0cc;
-    --hp-color: #ef4444;
-    --shield-color: #38bdf8;
-    --star-color: #a78bfa;
-    --essence-color: #34d399;
-    --gold-color: #fbbf24;
-    --danger-color: #f87171;
+    --accent-blue: #4ea8de;
+    --accent-cyan: #48bfe3;
+    --accent-green: #52b788;
+    --accent-purple: #9d4edd;
+    --accent-pink: #f72585;
+    --accent-red: #ef476f;
+    --accent-star: #72efdd;
+    --accent-essence: #b5179e;
+    --q-common: #9eb0cc;
+    --q-rare: #4ea8de;
+    --q-epic: #b5179e;
+    --q-legend: #ff6b6b;
   }
 
   * {
@@ -29,34 +35,106 @@
 
   body {
     margin: 0;
-    background: var(--bg-dark);
+    background: radial-gradient(circle at top, #151d30 0%, var(--bg-deep) 70%);
     color: var(--text-main);
-    font-family: "Courier New", Courier, monospace;
-    font-size: 13px;
-    line-height: 1.4;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
     overflow-x: hidden;
   }
 
+  canvas {
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+  }
+
+  .top-bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 10px 16px;
+    background: rgba(14, 19, 30, 0.94);
+    border-bottom: 1px solid var(--border-ui);
+    position: sticky;
+    top: 0;
+    z-index: 30;
+  }
+
+  .brand-group {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .brand-title {
+    font-size: 20px;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+    color: #ffffff;
+    text-shadow: 0 0 12px rgba(78, 168, 222, 0.45);
+  }
+
+  .stat-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+  }
+
+  .pill {
+    background: var(--bg-card);
+    border: 1px solid var(--border-ui);
+    border-radius: 8px;
+    padding: 5px 10px;
+    font-size: 13px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .pill strong {
+    color: var(--accent-cyan);
+  }
+
+  .pill.essence strong {
+    color: #e0aaff;
+  }
+
+  .pill.starlight strong {
+    color: var(--accent-star);
+  }
+
+  .control-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+  }
+
   button {
-    font-family: inherit;
-    font-weight: bold;
-    cursor: pointer;
-    border: 2px solid var(--border-pixel);
-    background: var(--bg-panel-2);
+    background: var(--bg-card-2);
     color: var(--text-main);
-    padding: 6px 10px;
-    border-radius: 4px;
-    transition: transform 0.08s ease, background 0.12s ease, border-color 0.12s ease;
+    border: 1px solid var(--border-ui);
+    border-radius: 8px;
+    padding: 7px 12px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.12s ease, background 0.15s ease, border-color 0.15s ease;
   }
 
   button:hover:not(:disabled) {
-    background: #2b384f;
-    border-color: var(--border-accent);
+    background: #2c3a57;
+    border-color: var(--accent-blue);
     transform: translateY(-1px);
   }
 
   button:active:not(:disabled) {
-    transform: translateY(1px);
+    transform: translateY(0);
   }
 
   button:disabled {
@@ -64,104 +142,46 @@
     cursor: not-allowed;
   }
 
-  .btn-primary {
-    background: #1d4ed8;
-    border-color: #60a5fa;
+  button.primary {
+    background: linear-gradient(135deg, #2b6cb0, #3182ce);
+    border-color: #63b3ed;
+    color: #fff;
   }
 
-  .btn-primary:hover:not(:disabled) {
-    background: #2563eb;
+  button.primary:hover:not(:disabled) {
+    background: linear-gradient(135deg, #3182ce, #4299e1);
   }
 
-  .btn-star {
-    background: #4c1d95;
-    border-color: #a78bfa;
+  button.accent-green {
+    background: linear-gradient(135deg, #236449, #2f855a);
+    border-color: #68d391;
+    color: #fff;
   }
 
-  .btn-star:hover:not(:disabled) {
-    background: #5b21b6;
+  button.accent-purple {
+    background: linear-gradient(135deg, #5a189a, #7b2cbf);
+    border-color: #c77dff;
+    color: #fff;
   }
 
-  .btn-danger {
-    background: #7f1d1d;
-    border-color: #f87171;
+  button.danger {
+    background: #4a1c29;
+    border-color: #ef476f;
+    color: #ffd6e0;
   }
 
-  .btn-danger:hover:not(:disabled) {
-    background: #991b1b;
-  }
-
-  .app-shell {
-    max-width: 1320px;
-    margin: 0 auto;
-    padding: 10px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
-
-  /* Top Bar */
-  .top-bar {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    align-items: center;
-    gap: 8px;
-    background: var(--bg-panel);
-    border: 2px solid var(--border-pixel);
-    padding: 8px 12px;
-    border-radius: 6px;
-  }
-
-  .brand-title {
-    font-size: 17px;
-    font-weight: 800;
-    letter-spacing: 0.5px;
-    color: #7dd3fc;
-  }
-
-  .version-badge {
-    background: #233044;
-    border: 1px solid #56ccf2;
-    color: #bae6fd;
-    padding: 2px 7px;
-    border-radius: 4px;
-    font-size: 11px;
-    margin-left: 6px;
-  }
-
-  .stat-strip {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    align-items: center;
-  }
-
-  .stat-pill {
-    background: var(--bg-panel-2);
-    border: 1px solid var(--border-pixel);
-    padding: 4px 9px;
-    border-radius: 4px;
-    display: flex;
-    align-items: center;
-    gap: 5px;
-  }
-
-  .control-bar {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-    align-items: center;
-  }
-
-  /* Main Arena Layout */
   .main-grid {
     display: grid;
     grid-template-columns: 1.35fr 1fr;
-    gap: 10px;
+    gap: 14px;
+    padding: 14px 16px;
+    max-width: 1580px;
+    width: 100%;
+    margin: 0 auto;
+    flex: 1;
   }
 
-  @media (max-width: 980px) {
+  @media (max-width: 1120px) {
     .main-grid {
       grid-template-columns: 1fr;
     }
@@ -169,354 +189,269 @@
 
   .panel {
     background: var(--bg-panel);
-    border: 2px solid var(--border-pixel);
-    border-radius: 6px;
-    padding: 10px;
-    position: relative;
+    border: 1px solid var(--border-ui);
+    border-radius: 12px;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    box-shadow: 0 10px 26px rgba(0, 0, 0, 0.35);
   }
 
   .panel-header {
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    margin-bottom: 8px;
-    padding-bottom: 5px;
-    border-bottom: 1px solid #2b384f;
+    justify-content: space-between;
+    gap: 8px;
+    border-bottom: 1px solid rgba(158, 176, 204, 0.16);
+    padding-bottom: 8px;
   }
 
   .panel-title {
-    font-weight: bold;
-    color: #93c5fd;
-    font-size: 13px;
-  }
-
-  /* Battlefield */
-  .battlefield-wrap {
-    position: relative;
-    background: linear-gradient(180deg, #162032 0%, #101622 65%, #19222d 100%);
-    border: 2px solid #33435e;
-    border-radius: 6px;
-    padding: 10px;
-    min-height: 250px;
-    overflow: hidden;
-  }
-
-  #fxCanvas {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
-    z-index: 15;
-  }
-
-  .battle-sides {
-    position: relative;
-    z-index: 5;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-    align-items: start;
-  }
-
-  .side-column {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-
-  .side-label {
-    font-size: 11px;
-    text-transform: uppercase;
-    color: var(--text-muted);
-    letter-spacing: 0.6px;
-  }
-
-  .unit-cards {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-  }
-
-  .unit-card {
-    background: rgba(18, 25, 38, 0.92);
-    border: 2px solid #3c4f6e;
-    border-radius: 6px;
-    padding: 6px;
-    width: 128px;
-    cursor: pointer;
-    position: relative;
-    transition: border-color 0.12s ease, transform 0.1s ease;
-  }
-
-  .unit-card:hover {
-    border-color: #7dd3fc;
-  }
-
-  .unit-card.selected {
-    border-color: #fbbf24;
-    box-shadow: 0 0 0 1px #fbbf24;
-  }
-
-  .unit-card.dead {
-    opacity: 0.35;
-    filter: grayscale(0.85);
-  }
-
-  .unit-card.hit-flash {
-    animation: unitHit 0.28s ease;
-  }
-
-  @keyframes unitHit {
-    0% { transform: translateX(0); filter: brightness(2.2); }
-    30% { transform: translateX(-5px); }
-    65% { transform: translateX(5px); }
-    100% { transform: translateX(0); filter: brightness(1); }
-  }
-
-  .sprite-box {
-    width: 64px;
-    height: 64px;
-    margin: 0 auto 4px;
+    font-size: 15px;
+    font-weight: 700;
+    color: #ffffff;
     display: flex;
     align-items: center;
-    justify-content: center;
-    background: rgba(10, 14, 22, 0.65);
-    border-radius: 4px;
-    border: 1px solid #2b3952;
+    gap: 8px;
   }
 
-  .sprite-box canvas {
-    width: 64px;
-    height: 64px;
-    image-rendering: pixelated;
-    image-rendering: crisp-edges;
-  }
-
-  .unit-name {
-    font-size: 11px;
-    font-weight: bold;
-    text-align: center;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  .unit-sub {
-    font-size: 10px;
-    text-align: center;
+  .sub-note {
+    font-size: 12px;
     color: var(--text-muted);
-    margin-bottom: 4px;
   }
 
-  .hp-bar {
-    height: 7px;
-    background: #281518;
-    border: 1px solid #5c262d;
-    border-radius: 3px;
-    overflow: hidden;
-    margin-bottom: 3px;
+  /* Relic Wall (5 slots) */
+  .relic-wall {
+    background: var(--bg-card);
+    border: 1px solid var(--border-ui);
+    border-radius: 10px;
+    padding: 10px;
   }
 
-  .hp-fill {
-    height: 100%;
-    background: linear-gradient(90deg, #dc2626, #f87171);
-    transition: width 0.25s ease;
-  }
-
-  .shield-bar {
-    height: 4px;
-    background: #102536;
-    border-radius: 2px;
-    overflow: hidden;
-    margin-bottom: 3px;
-  }
-
-  .shield-fill {
-    height: 100%;
-    background: #38bdf8;
-    transition: width 0.25s ease;
-  }
-
-  .unit-mini-stats {
-    display: flex;
-    justify-content: space-between;
-    font-size: 10px;
-    color: #cbd5e1;
-  }
-
-  /* Inspector & Log */
-  .sub-grid {
+  .relic-slots {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-    margin-top: 10px;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 8px;
+    margin-top: 8px;
   }
 
-  @media (max-width: 720px) {
-    .sub-grid {
-      grid-template-columns: 1fr;
+  @media (max-width: 680px) {
+    .relic-slots {
+      grid-template-columns: repeat(2, 1fr);
     }
   }
 
-  .inspector-box {
-    background: var(--bg-slot);
-    border: 1px solid var(--border-pixel);
+  .relic-slot {
+    background: rgba(11, 14, 23, 0.65);
+    border: 1px dashed var(--border-ui);
+    border-radius: 8px;
+    padding: 7px;
+    min-height: 86px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 4px;
+    position: relative;
+  }
+
+  .relic-slot.filled {
+    border-style: solid;
+    border-color: var(--accent-star);
+    background: rgba(26, 39, 64, 0.85);
+  }
+
+  .relic-top {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .relic-name {
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1.2;
+    color: #fff;
+  }
+
+  .relic-buff {
+    font-size: 11px;
+    color: var(--accent-star);
+    line-height: 1.25;
+  }
+
+  .relic-remove-btn {
+    align-self: flex-end;
+    padding: 2px 6px;
+    font-size: 10px;
     border-radius: 5px;
-    padding: 8px;
-    min-height: 115px;
+    background: #3d1622;
+    border-color: #ef476f;
+    color: #ffccd5;
   }
 
-  .log-box {
-    background: var(--bg-slot);
-    border: 1px solid var(--border-pixel);
-    border-radius: 5px;
-    padding: 8px;
-    height: 115px;
-    overflow-y: auto;
-    font-size: 11.5px;
+  /* Battlefield */
+  .battle-wrap {
+    position: relative;
+    background: #0d1320;
+    border: 1px solid var(--border-ui);
+    border-radius: 10px;
+    overflow: hidden;
   }
 
-  .log-entry {
-    margin-bottom: 4px;
-    padding-bottom: 3px;
-    border-bottom: 1px dashed #222d40;
+  #battleCanvas {
+    width: 100%;
+    height: 360px;
+    display: block;
+    cursor: pointer;
   }
 
-  /* Slot Machine */
-  .slot-machine {
-    background: var(--bg-slot);
-    border: 2px solid #3c4f6e;
-    border-radius: 6px;
-    padding: 8px;
+  .inspector-strip {
+    background: var(--bg-card);
+    border: 1px solid var(--border-ui);
+    border-radius: 10px;
+    padding: 10px 12px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+  }
+
+  .inspector-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex: 1;
+    min-width: 240px;
+  }
+
+  .inspector-text h4 {
+    margin: 0 0 3px 0;
+    font-size: 14px;
+    color: #fff;
+  }
+
+  .inspector-text p {
+    margin: 0;
+    font-size: 12px;
+    color: var(--text-muted);
+    line-height: 1.35;
+  }
+
+  .inspector-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  /* 3x3 Slot Machine */
+  .slot-section {
+    background: var(--bg-card);
+    border: 1px solid var(--border-ui);
+    border-radius: 10px;
+    padding: 10px;
   }
 
   .slot-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 6px;
-    margin-bottom: 8px;
+    gap: 8px;
+    margin-top: 8px;
   }
 
   .slot-cell {
-    background: #1a2334;
-    border: 2px solid #3c4f6e;
-    border-radius: 6px;
-    padding: 6px 4px;
-    min-height: 92px;
+    background: #0e1422;
+    border: 2px solid var(--border-ui);
+    border-radius: 10px;
+    padding: 8px;
+    min-height: 112px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     text-align: center;
+    gap: 4px;
     position: relative;
-    transition: border-color 0.12s ease, transform 0.12s ease;
+    transition: border-color 0.15s ease, transform 0.15s ease;
   }
 
   .slot-cell.spinning {
-    border-color: #38bdf8;
-    animation: slotPulse 0.22s infinite alternate;
+    border-color: var(--accent-cyan);
+    box-shadow: 0 0 12px rgba(72, 191, 227, 0.25);
   }
 
-  @keyframes slotPulse {
-    from { transform: scale(0.98); }
-    to { transform: scale(1.02); }
-  }
-
-  .slot-cell.swallowable {
-    border-color: #34d399;
-    cursor: grab;
-  }
-
-  .slot-cell.swallowable:hover {
-    background: #1d2e3d;
-  }
-
-  .slot-cell.drag-over {
-    border-color: #fbbf24;
-    background: #2b2919;
-  }
-
-  .slot-icon-canvas {
-    width: 48px;
-    height: 48px;
-    image-rendering: pixelated;
-    image-rendering: crisp-edges;
-    margin-bottom: 3px;
+  .slot-cell.swallow-target {
+    border-color: var(--accent-green) !important;
+    box-shadow: 0 0 16px rgba(82, 183, 136, 0.55);
+    transform: scale(1.03);
   }
 
   .slot-label {
-    font-size: 11px;
-    font-weight: bold;
+    font-size: 12px;
+    font-weight: 700;
+    color: #fff;
   }
 
-  .slot-val {
-    font-size: 10px;
+  .slot-sub {
+    font-size: 11px;
     color: var(--text-muted);
   }
 
-  .swallow-zone {
-    border: 2px dashed #34d399;
-    background: rgba(16, 185, 129, 0.08);
-    border-radius: 6px;
-    padding: 8px;
+  .seal-badge {
+    font-size: 10px;
+    padding: 1px 6px;
+    border-radius: 999px;
+    background: rgba(157, 78, 221, 0.25);
+    border: 1px solid #c77dff;
+    color: #e0aaff;
+  }
+
+  .drop-zone {
+    margin-top: 8px;
+    border: 2px dashed var(--accent-green);
+    border-radius: 10px;
+    padding: 10px;
     text-align: center;
     font-size: 12px;
-    color: #a7f3d0;
-    margin-bottom: 8px;
-    transition: background 0.15s ease, border-color 0.15s ease;
+    font-weight: 600;
+    color: #95d5b2;
+    background: rgba(82, 183, 136, 0.08);
+    transition: background 0.15s ease, transform 0.15s ease;
   }
 
-  .swallow-zone.drag-active {
-    background: rgba(52, 211, 153, 0.22);
-    border-color: #fbbf24;
-    color: #fef08a;
+  .drop-zone.drag-over {
+    background: rgba(82, 183, 136, 0.24);
+    transform: scale(1.01);
+    color: #fff;
   }
 
-  .slot-actions {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-    justify-content: space-between;
-    align-items: center;
+  /* Shop 3 items */
+  .shop-section {
+    background: var(--bg-card);
+    border: 1px solid var(--border-ui);
+    border-radius: 10px;
+    padding: 10px;
   }
 
-  /* Wall & Shop */
-  .wall-list {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-    margin-bottom: 10px;
-  }
-
-  .wall-slot {
-    flex: 1 1 110px;
-    min-width: 105px;
-    background: var(--bg-slot);
-    border: 1px solid var(--border-pixel);
-    border-radius: 5px;
-    padding: 6px;
-    font-size: 11px;
-  }
-
-  .shop-cards {
+  .shop-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 7px;
-    margin-bottom: 8px;
+    gap: 8px;
+    margin-top: 8px;
   }
 
-  @media (max-width: 600px) {
-    .shop-cards {
+  @media (max-width: 680px) {
+    .shop-grid {
       grid-template-columns: 1fr;
     }
   }
 
   .shop-card {
-    background: var(--bg-slot);
-    border: 2px solid #3c4f6e;
-    border-radius: 6px;
-    padding: 7px;
+    background: #101726;
+    border: 1px solid var(--border-ui);
+    border-radius: 9px;
+    padding: 8px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -525,1247 +460,1992 @@
 
   .shop-card-top {
     display: flex;
-    flex-direction: column;
     align-items: center;
-    text-align: center;
+    gap: 8px;
   }
 
-  .shop-card canvas {
-    width: 48px;
-    height: 48px;
-    image-rendering: pixelated;
-    image-rendering: crisp-edges;
-    margin-bottom: 4px;
+  .shop-card-title {
+    font-size: 12px;
+    font-weight: 700;
+    color: #fff;
   }
 
-  .shop-name {
-    font-size: 11.5px;
-    font-weight: bold;
-    color: #e2e8f0;
-  }
-
-  .shop-desc {
+  .shop-card-type {
     font-size: 10px;
-    color: var(--text-muted);
-    margin-top: 2px;
+    color: var(--accent-cyan);
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
   }
 
-  .shop-cost {
+  .shop-card-desc {
     font-size: 11px;
-    color: #c4b5fd;
-    font-weight: bold;
-    text-align: center;
+    color: var(--text-muted);
+    line-height: 1.3;
   }
 
-  /* Modals */
-  .modal-backdrop {
+  .shop-card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+  }
+
+  .price-tag {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--accent-star);
+  }
+
+  /* Roster & Logs */
+  .roster-strip {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 8px;
+  }
+
+  .hero-mini-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-ui);
+    border-radius: 9px;
+    padding: 7px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    cursor: pointer;
+  }
+
+  .hero-mini-card.selected {
+    border-color: var(--accent-cyan);
+    box-shadow: 0 0 10px rgba(72, 191, 227, 0.25);
+  }
+
+  .hero-mini-head {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+  }
+
+  .q-tag {
+    font-size: 10px;
+    font-weight: 700;
+    padding: 1px 6px;
+    border-radius: 5px;
+    border: 1px solid currentColor;
+  }
+
+  .log-box {
+    background: #0b0f19;
+    border: 1px solid var(--border-ui);
+    border-radius: 9px;
+    padding: 8px 10px;
+    max-height: 145px;
+    overflow-y: auto;
+    font-size: 12px;
+    line-height: 1.45;
+  }
+
+  .log-entry {
+    padding: 2px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  }
+
+  .log-entry:last-child {
+    border-bottom: none;
+  }
+
+  /* Fullscreen Awakening Overlay */
+  .overlay-backdrop {
     position: fixed;
     inset: 0;
-    background: rgba(6, 10, 18, 0.78);
+    background: rgba(6, 9, 16, 0.88);
+    backdrop-filter: blur(4px);
+    z-index: 60;
     display: none;
     align-items: center;
     justify-content: center;
-    z-index: 50;
-    padding: 14px;
+    padding: 18px;
   }
 
-  .modal-backdrop.open {
+  .overlay-backdrop.active {
     display: flex;
   }
 
-  .modal-card {
-    background: var(--bg-panel);
-    border: 2px solid #56ccf2;
-    border-radius: 8px;
-    padding: 14px;
-    max-width: 560px;
+  .awakening-modal {
+    max-width: 780px;
+    width: 100%;
+    background: #121929;
+    border: 2px solid var(--accent-cyan);
+    border-radius: 16px;
+    padding: 22px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.7);
+    text-align: center;
+  }
+
+  .awakening-modal h2 {
+    margin: 0 0 6px 0;
+    font-size: 24px;
+    color: #fff;
+  }
+
+  .awakening-choices {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    margin-top: 18px;
+  }
+
+  @media (max-width: 640px) {
+    .awakening-choices {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .aug-card {
+    background: #192338;
+    border: 2px solid var(--border-ui);
+    border-radius: 12px;
+    padding: 16px;
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 12px;
+    cursor: pointer;
+    transition: transform 0.15s ease, border-color 0.15s ease;
+  }
+
+  .aug-card:hover {
+    transform: translateY(-3px);
+    border-color: var(--accent-star);
+    background: #202d47;
+  }
+
+  /* Secondary Modal (Account / Records / Compendium) */
+  .sub-modal {
+    max-width: 820px;
     width: 100%;
     max-height: 85vh;
     overflow-y: auto;
+    background: #121929;
+    border: 1px solid var(--border-ui);
+    border-radius: 14px;
+    padding: 18px;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.65);
   }
 
-  .modal-title {
-    font-size: 15px;
-    font-weight: bold;
-    color: #7dd3fc;
-    margin-bottom: 8px;
-  }
-
-  .choice-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-    gap: 8px;
-    margin: 10px 0;
-  }
-
-  .choice-btn {
+  .modal-head {
     display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    text-align: left;
-    gap: 4px;
-    padding: 9px;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
   }
 
-  .tag-q {
-    font-size: 10px;
-    padding: 1px 5px;
-    border-radius: 3px;
-    background: #27354d;
-    color: #fde68a;
+  .modal-head h3 {
+    margin: 0;
+    font-size: 18px;
+  }
+
+  .compendium-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 8px;
+  }
+
+  .comp-item {
+    background: var(--bg-card);
+    border: 1px solid var(--border-ui);
+    border-radius: 8px;
+    padding: 8px;
+    font-size: 12px;
+  }
+
+  .notice-banner {
+    background: rgba(78, 168, 222, 0.14);
+    border: 1px solid rgba(78, 168, 222, 0.45);
+    border-radius: 8px;
+    padding: 7px 12px;
+    font-size: 12px;
+    color: #d8efff;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+  }
+
+  .field-row {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+  }
+
+  input[type="text"] {
+    background: #0d1320;
+    border: 1px solid var(--border-ui);
+    color: #fff;
+    border-radius: 8px;
+    padding: 7px 10px;
+    font-size: 13px;
+    flex: 1;
+    min-width: 180px;
   }
 </style>
 </head>
 <body>
-<div class="app-shell">
-  <!-- Top Header -->
-  <div class="top-bar">
-    <div>
-      <span class="brand-title">Random-Fight!</span>
-      <span class="version-badge">v0.0.3 • 64x64 Pixel</span>
+  <header class="top-bar">
+    <div class="brand-group">
+      <div class="brand-title">⚔️ Random-Fight! <span style="font-size:12px;font-weight:600;color:var(--accent-cyan);">64x64 Pixel</span></div>
+      <div class="stat-pills">
+        <div class="pill">Vòng: <strong id="uiWave">1</strong></div>
+        <div class="pill essence">Tinh Hoa: <strong id="uiEssence">12</strong></div>
+        <div class="pill starlight">Tinh Tú: <strong id="uiStarlight">14</strong></div>
+        <div class="pill">Cổ Vật: <strong id="uiRelicCount">0/5</strong></div>
+        <div class="pill">Tài Khoản: <strong id="uiAccount">Khách</strong></div>
+      </div>
     </div>
-    <div class="stat-strip">
-      <div class="stat-pill">🌊 Vòng: <strong id="waveStat">1</strong></div>
-      <div class="stat-pill">✨ Tinh Tú: <strong id="starStat" style="color:var(--star-color)">6</strong></div>
-      <div class="stat-pill">🌿 Tinh Hoa: <strong id="essenceStat" style="color:var(--essence-color)">0</strong></div>
-      <div class="stat-pill">🎲 Lượt Xoay: <strong id="spinStat" style="color:var(--gold-color)">3</strong></div>
-    </div>
+
     <div class="control-bar">
-      <button id="charRosterBtn">🛡️ Đội Hình / Phẩm Chất</button>
-      <button id="recordsBtn">📜 Hồ Sơ</button>
-      <button id="accountBtn">👤 Tài Khoản</button>
-      <button id="resetRunBtn" class="btn-danger">↻ Chạy Lại</button>
+      <button class="primary" id="btnSpin">🎰 Quay Slot (3 Tinh Hoa)</button>
+      <button class="accent-green" id="btnFight">⚔️ Bắt Đầu Chiến Đấu</button>
+      <button id="btnRosterModal">🛡️ Nhân Vật</button>
+      <button id="btnRelicCompendium">🏛️ 22 Cổ Vật</button>
+      <button id="btnAccountModal">👤 Tài Khoản</button>
+      <button id="btnRecordsModal">🏆 Kỷ Lục</button>
+    </div>
+  </header>
+
+  <div style="padding: 8px 16px 0; max-width: 1580px; width: 100%; margin: 0 auto;">
+    <div class="notice-banner" id="startNotice">
+      <span>📢 <strong>Thông báo:</strong> Kéo biểu tượng ô Slot thả vào vùng <strong>Nuốt</strong> để nhận Tinh Hoa & XP tướng. Mốc thức tỉnh: <strong>Lv.10, Lv.20, Lv.30</strong> (chọn 1/2 Tăng Cường toàn màn hình riêng cho tướng). Tiến hóa tướng mở khóa ở <strong>Lv.15</strong>!</span>
+      <button style="padding:3px 8px;font-size:11px;" onclick="document.getElementById('startNotice').style.display='none'">Ẩn</button>
     </div>
   </div>
 
-  <!-- Main Workspace -->
-  <div class="main-grid">
-    <!-- Left: Battlefield, Inspector, Log -->
-    <div class="panel">
-      <div class="panel-header">
-        <span class="panel-title">⚔️ Chiến Trường (Ít Địch — Chỉ Số Nặng — Leo Thang Theo Vòng)</span>
-        <span id="phaseBadge" style="font-size:11px;color:#93c5fd;">Giai đoạn: Xoay & Hành Động</span>
+  <main class="main-grid">
+    <!-- Left Column: Relic Wall + 64x64 Battlefield + Inspector + Roster -->
+    <section class="panel">
+      <div class="relic-wall">
+        <div class="panel-header" style="padding-bottom:6px;">
+          <div class="panel-title">🏛️ Trang Bị Treo Thành — Cổ Vật (Tối đa 5)</div>
+          <span class="sub-note">Tách biệt hoàn toàn với trang bị tướng • 22 loại cổ vật</span>
+        </div>
+        <div class="relic-slots" id="relicSlots"></div>
       </div>
 
-      <div class="battlefield-wrap" id="battlefieldWrap">
-        <canvas id="fxCanvas" width="700" height="260"></canvas>
-        <div class="battle-sides">
-          <div class="side-column">
-            <div class="side-label">Đồng Minh (Nhấn để xem chỉ số)</div>
-            <div class="unit-cards" id="allyCards"></div>
-          </div>
-          <div class="side-column">
-            <div class="side-label">Kẻ Địch Đợt Này</div>
-            <div class="unit-cards" id="enemyCards"></div>
+      <div class="battle-wrap">
+        <canvas id="battleCanvas" width="768" height="360"></canvas>
+      </div>
+
+      <div class="inspector-strip" id="inspectorStrip">
+        <div class="inspector-info">
+          <canvas id="inspectorCanvas" width="64" height="64" style="border:1px solid var(--border-ui);border-radius:8px;background:#0e1524;"></canvas>
+          <div class="inspector-text">
+            <h4 id="inspTitle">Chưa chọn thực thể trên chiến trường</h4>
+            <p id="inspDesc">Nhấp vào tướng hoặc kẻ địch trên bản đồ để xem chỉ số, mốc thức tỉnh (10/20/30), tiến hóa (Lv.15) và tăng cường riêng.</p>
           </div>
         </div>
+        <div class="inspector-actions" id="inspectorActions"></div>
       </div>
 
-      <div class="sub-grid">
-        <div class="inspector-box" id="inspectorBox">
-          <div style="font-weight:bold;color:#fde68a;margin-bottom:4px;">🔍 Thông Tin Nhân Vật</div>
-          <div style="color:var(--text-muted);">Nhấn vào bất kỳ nhân vật hoặc kẻ địch nào trên chiến trường để xem chi tiết.</div>
+      <div>
+        <div class="panel-header" style="padding-bottom:6px;">
+          <div class="panel-title">🧭 Đội Hình Tướng Hiện Tại</div>
+          <span class="sub-note">Tư tế: Đòn cơ bản hồi 1 đồng minh • Kỹ năng hồi phạm vi</span>
         </div>
-        <div class="log-box" id="logBox"></div>
+        <div class="roster-strip" id="rosterStrip"></div>
       </div>
-    </div>
 
-    <!-- Right: 3x3 Slot + Swallow + Shop + Wall -->
-    <div style="display:flex;flex-direction:column;gap:10px;">
-      <!-- 3x3 Slot Panel -->
-      <div class="panel">
+      <div>
+        <div class="panel-header" style="padding-bottom:6px;">
+          <div class="panel-title">📜 Nhật Ký Chiến Trận</div>
+          <span class="sub-note" id="waveDifficultyTag">Độ khó: Vòng 1</span>
+        </div>
+        <div class="log-box" id="battleLog"></div>
+      </div>
+    </section>
+
+    <!-- Right Column: 3x3 Slotbound Machine + Drag-Swallow + 3-Item Shop -->
+    <section class="panel">
+      <div class="slot-section">
         <div class="panel-header">
-          <span class="panel-title">🎰 Máy Xoay 3x3 & Nuốt Biểu Tượng</span>
-          <span id="sealInfoBadge" style="font-size:11px;color:#6ee7b7;">Chống trùng Ấn: Bật</span>
+          <div class="panel-title">🎰 Máy Xèng 3x3 (Slotbound)</div>
+          <span class="sub-note">Chống trùng ấn • Quay chậm rõ nhịp</span>
         </div>
-
-        <div class="slot-machine">
-          <div class="slot-grid" id="slotGrid"></div>
-
-          <div class="swallow-zone" id="swallowZone">
-            ⬇️ Kéo thả ô <strong>Kiếm / Khiên / Bình Máu / Ấn</strong> vào đây để <strong>Nuốt</strong> chuyển hóa sức mạnh!
-          </div>
-
-          <div class="slot-actions">
-            <div style="display:flex;gap:6px;flex-wrap:wrap;">
-              <button id="spinBtn" class="btn-primary">🎰 Xoay (Chậm)</button>
-              <button id="executeTurnBtn">⚡ Ra Đòn & Kết Thúc Lượt</button>
-            </div>
-            <span id="slotHint" style="font-size:11px;color:var(--text-muted);">Còn 3 lượt xoay</span>
-          </div>
+        <div class="slot-grid" id="slotGrid"></div>
+        <div class="drop-zone" id="swallowDropZone">
+          🫙 Kéo ô Slot vào đây để <strong>NUỐT</strong> (Nhận Tinh Hoa + XP cho tướng được chọn)
         </div>
       </div>
 
-      <!-- Shop (Random 3 items, costs Starlight to reroll, reduced Starlight income) & Wall -->
-      <div class="panel">
+      <div class="shop-section">
         <div class="panel-header">
-          <span class="panel-title">🏪 Cửa Hàng (3 Món Ngẫu Nhiên) & Tường (Tối Đa 5)</span>
-          <span id="wallCountBadge" style="font-size:11px;color:#c4b5fd;">Tường: 0/5</span>
+          <div class="panel-title">🛒 Cửa Hàng Ngẫu Nhiên (3 Món)</div>
+          <div style="display:flex;gap:6px;align-items:center;">
+            <span class="sub-note" id="rerollCostLabel">Làm mới: 2 Tinh Tú</span>
+            <button class="accent-purple" id="btnRerollShop">🔄 Làm Mới</button>
+          </div>
         </div>
-
-        <div class="wall-list" id="wallList"></div>
-
-        <div class="shop-cards" id="shopCards"></div>
-
-        <div style="display:flex;justify-content:space-between;align-items:center;gap:6px;flex-wrap:wrap;">
-          <button id="rerollShopBtn" class="btn-star">✨ Random Lại Shop (-2 Tinh Tú)</button>
-          <span style="font-size:11px;color:var(--text-muted);">Mỗi lần random mới ra đúng 3 món</span>
-        </div>
+        <div class="shop-grid" id="shopGrid"></div>
       </div>
+    </section>
+  </main>
+
+  <!-- Fullscreen Awakening Modal (2 choices -> 1 per awakened hero) -->
+  <div class="overlay-backdrop" id="awakeningOverlay">
+    <div class="awakening-modal">
+      <div style="font-size:12px;letter-spacing:1.2px;color:var(--accent-star);font-weight:700;">⚡ THỨC TỈNH TƯỚNG ⚡</div>
+      <h2 id="awkTitle">Tướng Đạt Mốc Thức Tỉnh</h2>
+      <p class="sub-note" id="awkSubtitle">Chọn 1 trong 2 Tăng Cường — Chỉ có hiệu lực riêng cho vị tướng này.</p>
+      <div class="awakening-choices" id="awakeningChoices"></div>
     </div>
   </div>
-</div>
 
-<!-- Start Notice Modal -->
-<div class="modal-backdrop open" id="startModal">
-  <div class="modal-card">
-    <div class="modal-title">📣 Thông Báo Khởi Động — Random-Fight! 0.0.3</div>
-    <p style="margin:6px 0;color:#cbd5e1;">
-      Chào mừng đến bản cập nhật <strong>0.0.3</strong>:
-    </p>
-    <ul style="margin:6px 0 12px 18px;color:#cbd5e1;">
-      <li><strong>Ít địch nhưng cực mạnh:</strong> Mỗi đợt ít mục tiêu hơn nhưng HP/ATK tăng nặng và leo thang độ khó theo từng vòng.</li>
-      <li><strong>Shop 3 món ngẫu nhiên & Tinh Tú khan hiếm:</strong> Lượng Tinh Tú nhận được giảm; dùng Tinh Tú để random lại shop 3 món.</li>
-      <li><strong>Hiệu ứng chiến đấu & Đồ họa 64x64:</strong> Toàn bộ nhân vật, kẻ địch và biểu tượng nâng cấp lên lưới pixel 64x64 kèm hiệu ứng chém, tia sáng, lá chắn và số sát thương bay.</li>
-    </ul>
-    <button id="closeStartBtn" class="btn-primary" style="width:100%;">Bắt Đầu Trận Đấu</button>
-  </div>
-</div>
-
-<!-- Core Choice Modal (Every 3 rounds through round 18) -->
-<div class="modal-backdrop" id="coreModal">
-  <div class="modal-card">
-    <div class="modal-title" id="coreModalTitle">💠 Bắt Buộc Chọn Lõi Sức Mạnh</div>
-    <p id="coreModalDesc" style="margin:4px 0 8px;color:var(--text-muted);"></p>
-    <div class="choice-grid" id="coreChoiceGrid"></div>
-  </div>
-</div>
-
-<!-- Roster / Quality Upgrade Modal -->
-<div class="modal-backdrop" id="rosterModal">
-  <div class="modal-card">
-    <div class="modal-title">🛡️ Đội Hình & Nâng Phẩm Chất Nhân Vật</div>
-    <p style="margin:4px 0 8px;color:var(--text-muted);">
-      Dùng <strong>Tinh Hoa</strong> để nâng phẩm chất (Thường → Hiếm → Sử Thi → Huyền Thoại), tăng mạnh chỉ số và kỹ năng nghề.
-    </p>
-    <div id="rosterList" style="display:flex;flex-direction:column;gap:8px;"></div>
-    <button id="closeRosterBtn" style="margin-top:10px;width:100%;">Đóng</button>
-  </div>
-</div>
-
-<!-- Records Modal -->
-<div class="modal-backdrop" id="recordsModal">
-  <div class="modal-card">
-    <div class="modal-title">📜 Hồ Sơ Thành Tích (Random-Fight! 0.0.3)</div>
-    <div id="recordsContent" style="color:#cbd5e1;margin:8px 0;"></div>
-    <button id="closeRecordsBtn" style="width:100%;">Đóng</button>
-  </div>
-</div>
-
-<!-- Account Modal -->
-<div class="modal-backdrop" id="accountModal">
-  <div class="modal-card">
-    <div class="modal-title">👤 Hồ Sơ Tài Khoản Cục Bộ</div>
-    <div style="margin:8px 0;">
-      <label style="display:block;margin-bottom:4px;color:var(--text-muted);">Tên người chơi:</label>
-      <input id="accountNameInput" type="text" maxlength="24"
-        style="width:100%;padding:6px 8px;background:#101622;color:#fff;border:1px solid #475569;border-radius:4px;" />
-    </div>
-    <div style="display:flex;gap:8px;margin-top:10px;">
-      <button id="saveAccountBtn" class="btn-primary" style="flex:1;">Lưu Tài Khoản</button>
-      <button id="closeAccountBtn" style="flex:1;">Đóng</button>
+  <!-- Secondary Modal -->
+  <div class="overlay-backdrop" id="subModalOverlay">
+    <div class="sub-modal">
+      <div class="modal-head">
+        <h3 id="subModalTitle">Thông Tin</h3>
+        <button onclick="closeSubModal()">✕ Đóng</button>
+      </div>
+      <div id="subModalBody"></div>
     </div>
   </div>
-</div>
 
 <script>
-(() => {
-  const STORAGE_KEY = "random_fight_003_save";
+/* ============================================================================
+   RANDOM-FIGHT! — FULL SINGLE-FILE ENGINE (64x64 PIXEL SPRITES & VFX)
+   ============================================================================ */
 
-  const QUALITIES = [
-    { name: "Thường", mult: 1.0, color: "#cbd5e1", cost: 4 },
-    { name: "Hiếm", mult: 1.35, color: "#60a5fa", cost: 8 },
-    { name: "Sử Thi", mult: 1.8, color: "#c084fc", cost: 14 },
-    { name: "Huyền Thoại", mult: 2.4, color: "#fbbf24", cost: 999 }
-  ];
+const STORAGE_KEY = "random_fight_64_save_v1";
 
-  const CORE_POOL = [
-    { id: "c_fury", name: "Lõi Cuồng Nộ", desc: "+35% ATK cho toàn bộ đồng minh." },
-    { id: "c_aegis", name: "Lõi Bất Diệt", desc: "+28 Khiên mỗi đầu lượt & +20% Máu tối đa." },
-    { id: "c_crit", name: "Lõi Xé Giáp", desc: "+25% Tỉ lệ chí mạng & đòn đánh gây thêm sát thương chuẩn." },
-    { id: "c_star", name: "Lõi Tinh Vệ", desc: "Nhận thêm +1 Tinh Tú khi qua vòng (vẫn giữ mức thấp cân bằng)." },
-    { id: "c_echo", name: "Lõi Dư Âm", desc: "Nuốt biểu tượng hồi thêm +10 Máu cho đồng minh thấp máu nhất." }
-  ];
+const QUALITIES = {
+  common:    { name: "Thường",  color: "#9eb0cc", mult: 1.0,  xpMult: 1.0 },
+  rare:      { name: "Hiếm",    color: "#4ea8de", mult: 1.25, xpMult: 1.15 },
+  epic:      { name: "Sử Thi",  color: "#c77dff", mult: 1.55, xpMult: 1.3 },
+  legendary: { name: "Huyền Thoại", color: "#ff6b6b", mult: 1.95, xpMult: 1.5 }
+};
 
-  const WALL_ITEMS_POOL = [
-    { id: "w_lance", name: "Cọc Giáo Bén", cost: 3, desc: "+8 ATK cho đồng minh.", stat: { atk: 8 } },
-    { id: "w_ward", name: "Bùa Hộ Mệnh", cost: 3, desc: "+35 HP tối đa & +10 Khiên đầu trận.", stat: { maxHp: 35, shield: 10 } },
-    { id: "w_prism", name: "Lăng Kính Lửa", cost: 4, desc: "+12 ATK & +10% Chí mạng.", stat: { atk: 12, crit: 0.10 } },
-    { id: "w_chalice", name: "Chén Thánh Trắng", cost: 4, desc: "Mỗi lượt hồi +12 HP cho đồng minh.", stat: { regen: 12 } },
-    { id: "w_totem", name: "Cột Đá Lôi", cost: 5, desc: "+16 ATK & +15 Khiên đầu lượt.", stat: { atk: 16, shield: 15 } },
-    { id: "w_crown", name: "Vương Miện Sương", cost: 5, desc: "+50 HP tối đa & +15% Chí mạng.", stat: { maxHp: 50, crit: 0.15 } }
-  ];
+const CLASSES = {
+  knight: {
+    id: "knight",
+    name: "Hiệp Sĩ",
+    evolvedName: "Thánh Hiệp Sĩ",
+    role: "Đỡ đòn & Chém Kiếm Thánh",
+    baseHp: 210,
+    baseAtk: 24,
+    baseDef: 14,
+    skillName: "Trảm Quang Kiếm",
+    skillDesc: "Tung vệt kiếm sát thương 175% Công và tạo khiên chắn cho bản thân."
+  },
+  warrior: {
+    id: "warrior",
+    name: "Chiến Binh",
+    evolvedName: "Cuồng Chiến Vương",
+    role: "Cận chiến bạo kích cao",
+    baseHp: 185,
+    baseAtk: 31,
+    baseDef: 9,
+    skillName: "Cuồng Nộ Phách",
+    skillDesc: "Đập rìu vệt lửa gây 195% Công, tăng +25% bạo kích trong lượt kế."
+  },
+  archer: {
+    id: "archer",
+    name: "Cung Thủ",
+    evolvedName: "Xạ Thủ Tinh Anh",
+    role: "Tầm xa & Xuyên phá",
+    baseHp: 140,
+    baseAtk: 33,
+    baseDef: 6,
+    skillName: "Mưa Tên Băng Lôi",
+    skillDesc: "Bắn loạt tên xuyên thấu gây 180% Công lên mục tiêu chính và 65% lên địch cạnh bên."
+  },
+  mage: {
+    id: "mage",
+    name: "Pháp Sư",
+    evolvedName: "Đại Pháp Sư",
+    role: "Ma pháp diện rộng",
+    baseHp: 132,
+    baseAtk: 36,
+    baseDef: 5,
+    skillName: "Bão Lôi Ma Pháp",
+    skillDesc: "Triệu hồi cột ma pháp gây 170% Công và làm suy yếu -15% Giáp địch trong 2 lượt."
+  },
+  priest: {
+    id: "priest",
+    name: "Tư Tế",
+    evolvedName: "Thánh Tư Tế",
+    role: "Hồi máu thuần túy (Không đánh thường)",
+    baseHp: 155,
+    baseAtk: 26,
+    baseDef: 8,
+    skillName: "Thánh Quang Phổ Độ",
+    skillDesc: "Hồi máu phạm vi cho toàn bộ đồng minh bằng 135% chỉ số trị liệu + 18 HP."
+  }
+};
 
-  const SLOT_TYPES = ["sword", "shield", "potion", "seal"];
-  const SEAL_NAMES = ["Ấn Lôi", "Ấn Băng", "Ấn Hỏa", "Ấn Phong", "Ấn Địa", "Ấn Quang"];
+// 22 distinct Wall Relics (Cổ vật treo thành - max 5 equipped, separate from hero gear)
+const RELICS_POOL = [
+  { id: "r01", name: "Bệ Xèng Hoàng Kim", buffType: "slot_essence", val: 2, desc: "+2 Tinh Hoa khi nuốt ô Slot." },
+  { id: "r02", name: "Con Lắc Thời Gian", buffType: "slot_xp", val: 14, desc: "+14 XP tướng mỗi lần nuốt ô Slot." },
+  { id: "r03", name: "Bùa Chống Trùng Ấn", buffType: "slot_crit", val: 0.12, desc: "+12% Tỷ lệ bạo kích toàn đội." },
+  { id: "r04", name: "Đá Lửa Thợ Rèn", buffType: "reroll_discount", val: 1, desc: "Giảm 1 Tinh Tú khi làm mới Cửa Hàng (tối thiểu 1)." },
+  { id: "r05", name: "Ngọn Đèn Tinh Tú", buffType: "star_bonus", val: 1, desc: "+1 Tinh Tú nhận thêm khi hạ đợt quái." },
+  { id: "r06", name: "Khiên Thành Cổ", buffType: "team_def", val: 6, desc: "+6 Giáp cho toàn bộ đồng minh." },
+  { id: "r07", name: "Ấn Ký Hiệp Sĩ", buffType: "class_atk", targetClass: "knight", val: 0.25, desc: "Hiệp Sĩ tăng +25% Công." },
+  { id: "r08", name: "Rìu Máu Chiến Binh", buffType: "class_atk", targetClass: "warrior", val: 0.28, desc: "Chiến Binh tăng +28% Công." },
+  { id: "r09", name: "Cung Gió Cung Thủ", buffType: "class_atk", targetClass: "archer", val: 0.28, desc: "Cung Thủ tăng +28% Công." },
+  { id: "r10", name: "Cầu Pha Lê Pháp Sư", buffType: "class_atk", targetClass: "mage", val: 0.30, desc: "Pháp Sư tăng +30% Công." },
+  { id: "r11", name: "Thánh Tượng Tư Tế", buffType: "priest_heal", val: 0.35, desc: "Tư Tế tăng +35% hiệu quả hồi máu đơn & phạm vi." },
+  { id: "r12", name: "Linh Hồn Thức Tỉnh", buffType: "awk_power", val: 0.20, desc: "Tăng +20% hiệu quả mọi Tăng Cường thức tỉnh." },
+  { id: "r13", name: "Vòng Nguyệt Quế Lv15", buffType: "evo_stats", val: 0.18, desc: "Tướng đã Tiến Hóa Lv.15 nhận thêm +18% Máu & Công." },
+  { id: "r14", name: "Chuông Báo Nguy", buffType: "enemy_nerf", val: 0.08, desc: "Giảm 8% Công của kẻ địch đầu mỗi vòng." },
+  { id: "r15", name: "Mạch Ngọc Sinh Lực", buffType: "team_hp", val: 45, desc: "+45 Máu tối đa cho mọi tướng." },
+  { id: "r16", name: "Gương Phản Chấn", buffType: "thorns", val: 12, desc: "Phản 12 sát thương khi tướng cận chiến bị đánh." },
+  { id: "r17", name: "Cuộn Giấy Ma Thuật", buffType: "skill_power", val: 0.18, desc: "Tăng +18% sát thương / hồi máu kỹ năng." },
+  { id: "r18", name: "Mỏ Neo Trấn Thành", buffType: "start_shield", val: 35, desc: "Đầu trận mỗi tướng nhận 35 điểm Khiên." },
+  { id: "r19", name: "Hộp Đựng Tinh Hoa", buffType: "wave_essence", val: 2, desc: "+2 Tinh Hoa thưởng mỗi khi qua vòng." },
+  { id: "r20", name: "Bánh Răng Máy Xèng", buffType: "slot_spin_luck", val: 0.15, desc: "+15% cơ hội ra biểu tượng cấp cao trên Slot." },
+  { id: "r21", name: "Ngọc Lục Bảo Tinh Anh", buffType: "xp_gain", val: 0.25, desc: "Tăng +25% XP nhận được cho toàn đội." },
+  { id: "r22", name: "Vương Miện Thành Trì", buffType: "all_stats", val: 0.10, desc: "+10% mọi chỉ số (HP, Công, Giáp) cho toàn đội." }
+];
 
-  // 64x64 Pixel Sprite Renderer (draws 2x2 pixel blocks on 64x64 canvas for crisp retro detail)
-  function drawPixelSprite(canvas, kind, paletteIndex = 0) {
-    const ctx = canvas.getContext("2d");
-    canvas.width = 64;
-    canvas.height = 64;
-    ctx.imageSmoothingEnabled = false;
-    ctx.clearRect(0, 0, 64, 64);
+// Awakening Augments (2 shown fullscreen at Lv.10, Lv.20, Lv.30 -> pick 1 per hero)
+const AWAKENING_POOL = [
+  { id: "a_blade", name: "Vệt Chém Xé Gió", desc: "Đòn đánh / kỹ năng gây thêm +25% sát thương chuẩn hoặc +25% hồi máu cho chính tướng này.", stat: { atkPct: 0.25, healPct: 0.25 } },
+  { id: "a_aegis", name: "Giáp Hộ Thể Bất Khuất", desc: "Tăng +35% Máu tối đa và +10 Giáp riêng cho tướng này.", stat: { hpPct: 0.35, defAdd: 10 } },
+  { id: "a_frenzy", name: "Nhịp Đánh Liên Hoàn", desc: "Tăng +28% Công và +18% Tỷ lệ bạo kích riêng cho tướng này.", stat: { atkPct: 0.28, critAdd: 0.18 } },
+  { id: "a_sanctuary", name: "Suối Nguồn Thánh Lực", desc: "Tăng +40% hiệu quả kỹ năng & hồi máu của tướng này.", stat: { skillPct: 0.40, healPct: 0.40 } },
+  { id: "a_overdrive", name: "Quá Tải Ma Lực", desc: "Tăng +32% Công và +20% Máu tối đa cho tướng này.", stat: { atkPct: 0.32, hpPct: 0.20 } },
+  { id: "a_ward", name: "Kết Giới Nguyên Tố", desc: "Giảm 15% sát thương nhận vào và tăng +12 Giáp cho tướng này.", stat: { dmgRed: 0.15, defAdd: 12 } }
+];
 
-    // Draw on 32x32 virtual grid scaled by 2 -> 64x64 crisp pixels
-    const px = (x, y, w, h, color) => {
-      ctx.fillStyle = color;
-      ctx.fillRect(x * 2, y * 2, w * 2, h * 2);
+const SLOT_SYMBOLS = [
+  { key: "sword",  name: "Kiếm Ấn",   color: "#4ea8de", essence: 2, xp: 18, buffText: "+Công tạm" },
+  { key: "shield", name: "Khiên Ấn",  color: "#52b788", essence: 2, xp: 18, buffText: "+Giáp tạm" },
+  { key: "orb",    name: "Ma Cầu",    color: "#c77dff", essence: 3, xp: 22, buffText: "+Ma Lực" },
+  { key: "heart",  name: "Thánh Tâm", color: "#ff6b6b", essence: 2, xp: 24, buffText: "+Hồi Phục" },
+  { key: "star",   name: "Tinh Hạch", color: "#72efdd", essence: 4, xp: 26, buffText: "+Tinh Tú" }
+];
+
+const HERO_GEAR_POOL = [
+  { id: "g_edge", name: "Kiếm Bạc Chấn Động", atk: 9, hp: 20, desc: "+9 Công, +20 HP" },
+  { id: "g_plate", name: "Áo Giáp Tinh Thạch", atk: 2, hp: 85, def: 6, desc: "+85 HP, +6 Giáp, +2 Công" },
+  { id: "g_focus", name: "Trượng Tập Trung", atk: 14, hp: 15, desc: "+14 Công, +15 HP" },
+  { id: "g_chalice", name: "Chén Thánh Thuần Khiết", atk: 10, hp: 55, def: 4, desc: "+10 Công, +55 HP, +4 Giáp" }
+];
+
+const ENEMY_ARCHETYPES = [
+  { id: "brute",  name: "Cự Thú Thiết Giáp", color: "#ef476f", hpBase: 240, atkBase: 26, defBase: 10, ranged: false },
+  { id: "hexer",  name: "Tế Ty Hắc Ám",      color: "#9d4edd", hpBase: 195, atkBase: 32, defBase: 7,  ranged: true },
+  { id: "colossus", name: "Khổng Lồ Ma Thạch", color: "#f72585", hpBase: 320, atkBase: 35, defBase: 15, ranged: false }
+];
+
+/* ============================================================================
+   64x64 PIXEL SPRITE GENERATOR (OFFSCREEN 64x64 CANVASES)
+   ============================================================================ */
+const SPRITE_CACHE = {};
+
+function createPixelCanvas64() {
+  const c = document.createElement("canvas");
+  c.width = 64;
+  c.height = 64;
+  return c;
+}
+
+function px(ctx, x, y, w, h, color) {
+  ctx.fillStyle = color;
+  ctx.fillRect(Math.floor(x), Math.floor(y), Math.floor(w), Math.floor(h));
+}
+
+function buildHeroSprite64(classId, evolved) {
+  const key = `hero_${classId}_${evolved ? "evo" : "base"}`;
+  if (SPRITE_CACHE[key]) return SPRITE_CACHE[key];
+
+  const c = createPixelCanvas64();
+  const ctx = c.getContext("2d");
+  ctx.clearRect(0, 0, 64, 64);
+
+  // Shadow at feet (y=56..60)
+  px(ctx, 18, 56, 28, 4, "rgba(0,0,0,0.45)");
+
+  let armorMain = "#4ea8de";
+  let armorTrim = "#caf0f8";
+  let accent = "#48bfe3";
+
+  if (classId === "knight") {
+    armorMain = evolved ? "#3a86ff" : "#4ea8de";
+    armorTrim = evolved ? "#ffd166" : "#e2f1ff";
+    accent = "#90e0ef";
+  } else if (classId === "warrior") {
+    armorMain = evolved ? "#d90429" : "#e63946";
+    armorTrim = evolved ? "#ffd166" : "#ffb703";
+    accent = "#ff758f";
+  } else if (classId === "archer") {
+    armorMain = evolved ? "#2a9d8f" : "#52b788";
+    armorTrim = evolved ? "#e9c46a" : "#d8f3dc";
+    accent = "#95d5b2";
+  } else if (classId === "mage") {
+    armorMain = evolved ? "#7209b7" : "#9d4edd";
+    armorTrim = evolved ? "#4cc9f0" : "#e0aaff";
+    accent = "#c77dff";
+  } else if (classId === "priest") {
+    // White robe with gold trim as specified
+    armorMain = "#f8f9fa";
+    armorTrim = "#ffd166";
+    accent = "#fff3b0";
+  }
+
+  // Boots / Legs
+  px(ctx, 22, 44, 7, 12, "#1e293b");
+  px(ctx, 35, 44, 7, 12, "#1e293b");
+  px(ctx, 21, 52, 9, 4, armorTrim);
+  px(ctx, 34, 52, 9, 4, armorTrim);
+
+  // Torso / Robe / Armor
+  px(ctx, 20, 26, 24, 19, armorMain);
+  px(ctx, 20, 26, 24, 3, armorTrim);
+  px(ctx, 20, 42, 24, 3, armorTrim);
+  px(ctx, 30, 28, 4, 15, accent);
+
+  // Pauldrons (64x64 crisp detail)
+  px(ctx, 13, 25, 8, 8, armorTrim);
+  px(ctx, 43, 25, 8, 8, armorTrim);
+  if (evolved) {
+    px(ctx, 14, 22, 6, 3, accent);
+    px(ctx, 44, 22, 6, 3, accent);
+  }
+
+  // Head / Helmet / Hood
+  px(ctx, 22, 11, 20, 15, classId === "priest" ? "#ffe5d9" : armorTrim);
+  px(ctx, 24, 13, 16, 11, classId === "mage" ? armorMain : "#ffe5d9");
+  // Visor / Eyes
+  px(ctx, 26, 17, 4, 3, "#0b0e17");
+  px(ctx, 34, 17, 4, 3, "#0b0e17");
+  px(ctx, 27, 17, 2, 2, accent);
+  px(ctx, 35, 17, 2, 2, accent);
+
+  // Crown / Plume / Hat
+  if (classId === "mage") {
+    px(ctx, 18, 6, 28, 6, armorMain);
+    px(ctx, 24, 2, 16, 5, armorTrim);
+  } else if (classId === "priest") {
+    px(ctx, 23, 8, 18, 3, armorTrim);
+    px(ctx, 30, 4, 4, 6, armorTrim);
+  } else {
+    px(ctx, 28, 5, 8, 6, accent);
+  }
+
+  // Class weapon / staff / bow / tome
+  if (classId === "knight" || classId === "warrior") {
+    // Blade on right
+    px(ctx, 51, 14, 4, 24, "#e2e8f0");
+    px(ctx, 52, 10, 2, 4, "#ffffff");
+    px(ctx, 48, 36, 10, 3, armorTrim);
+    px(ctx, 52, 39, 2, 6, "#64748b");
+  } else if (classId === "archer") {
+    // Bow on right
+    px(ctx, 50, 14, 3, 28, armorTrim);
+    px(ctx, 53, 17, 2, 22, armorMain);
+    px(ctx, 48, 16, 2, 24, "#cbd5e1");
+  } else if (classId === "mage" || classId === "priest") {
+    // Staff on right
+    px(ctx, 51, 16, 3, 34, armorTrim);
+    px(ctx, 48, 9, 9, 8, accent);
+    px(ctx, 50, 11, 5, 4, "#ffffff");
+  }
+
+  SPRITE_CACHE[key] = c;
+  return c;
+}
+
+function buildEnemySprite64(archId) {
+  const key = `enemy_${archId}`;
+  if (SPRITE_CACHE[key]) return SPRITE_CACHE[key];
+
+  const c = createPixelCanvas64();
+  const ctx = c.getContext("2d");
+  ctx.clearRect(0, 0, 64, 64);
+
+  const arch = ENEMY_ARCHETYPES.find(a => a.id === archId) || ENEMY_ARCHETYPES[0];
+  px(ctx, 16, 56, 32, 4, "rgba(0,0,0,0.5)");
+
+  // Heavy monster legs
+  px(ctx, 19, 44, 9, 12, "#2b192e");
+  px(ctx, 36, 44, 9, 12, "#2b192e");
+
+  // Hulking body
+  px(ctx, 15, 22, 34, 23, arch.color);
+  px(ctx, 18, 25, 28, 17, "#1e1226");
+  px(ctx, 22, 28, 20, 11, arch.color);
+
+  // Horns / Spikes
+  px(ctx, 16, 11, 5, 11, "#f8f9fa");
+  px(ctx, 43, 11, 5, 11, "#f8f9fa");
+  px(ctx, 24, 14, 16, 9, arch.color);
+
+  // Glowing eyes
+  px(ctx, 26, 17, 4, 3, "#ffbe0b");
+  px(ctx, 34, 17, 4, 3, "#ffbe0b");
+
+  // Claws
+  px(ctx, 9, 30, 6, 12, "#f8f9fa");
+  px(ctx, 49, 30, 6, 12, "#f8f9fa");
+
+  SPRITE_CACHE[key] = c;
+  return c;
+}
+
+function buildSymbolSprite64(symKey) {
+  const key = `sym_${symKey}`;
+  if (SPRITE_CACHE[key]) return SPRITE_CACHE[key];
+
+  const c = createPixelCanvas64();
+  const ctx = c.getContext("2d");
+  ctx.clearRect(0, 0, 64, 64);
+
+  const sym = SLOT_SYMBOLS.find(s => s.key === symKey) || SLOT_SYMBOLS[0];
+  px(ctx, 12, 12, 40, 40, "#131b2e");
+  px(ctx, 14, 14, 36, 36, sym.color);
+  px(ctx, 18, 18, 28, 28, "#0d1322");
+
+  if (symKey === "sword") {
+    px(ctx, 30, 16, 4, 26, "#e2e8f0");
+    px(ctx, 24, 34, 16, 4, sym.color);
+    px(ctx, 30, 38, 4, 8, "#94a3b8");
+  } else if (symKey === "shield") {
+    px(ctx, 22, 18, 20, 22, sym.color);
+    px(ctx, 25, 22, 14, 14, "#0d1322");
+    px(ctx, 30, 20, 4, 22, "#ffffff");
+  } else if (symKey === "orb") {
+    px(ctx, 22, 20, 20, 20, sym.color);
+    px(ctx, 26, 24, 6, 6, "#ffffff");
+  } else if (symKey === "heart") {
+    px(ctx, 20, 22, 10, 8, sym.color);
+    px(ctx, 34, 22, 10, 8, sym.color);
+    px(ctx, 22, 30, 20, 8, sym.color);
+    px(ctx, 27, 38, 10, 6, sym.color);
+  } else {
+    // star
+    px(ctx, 29, 16, 6, 32, sym.color);
+    px(ctx, 16, 29, 32, 6, sym.color);
+    px(ctx, 22, 22, 20, 20, "#ffffff");
+  }
+
+  SPRITE_CACHE[key] = c;
+  return c;
+}
+
+function buildRelicSprite64(relicId) {
+  const key = `relic_${relicId}`;
+  if (SPRITE_CACHE[key]) return SPRITE_CACHE[key];
+
+  const c = createPixelCanvas64();
+  const ctx = c.getContext("2d");
+  ctx.clearRect(0, 0, 64, 64);
+
+  const hash = relicId.split("").reduce((acc, ch) => acc + ch.charCodeAt(0), 0);
+  const palette = ["#72efdd", "#4ea8de", "#c77dff", "#52b788", "#ff6b6b", "#48bfe3"];
+  const col = palette[hash % palette.length];
+
+  // Pedestal + Relic core
+  px(ctx, 16, 46, 32, 8, "#334155");
+  px(ctx, 20, 22, 24, 22, col);
+  px(ctx, 24, 26, 16, 14, "#0f172a");
+  px(ctx, 28, 14, 8, 8, "#ffffff");
+  px(ctx, 28, 30, 8, 6, col);
+
+  SPRITE_CACHE[key] = c;
+  return c;
+}
+
+/* ============================================================================
+   GAME STATE & INITIALIZATION
+   ============================================================================ */
+
+function createHero(classId, qualityKey = "common", customName = null) {
+  const cls = CLASSES[classId] || CLASSES.knight;
+  const q = QUALITIES[qualityKey] || QUALITIES.common;
+  return {
+    uid: "h_" + Math.random().toString(36).slice(2, 9),
+    classId: cls.id,
+    name: customName || cls.name,
+    quality: qualityKey,
+    level: 1,
+    xp: 0,
+    evolved: false,
+    awakenedLevels: [], // e.g. [10, 20, 30]
+    augments: [],       // hero-specific augments chosen at Lv.10, 20, 30
+    gear: null,         // separate from wall relics
+    tempAtkBuff: 0,
+    tempDefBuff: 0,
+    hp: 100,
+    maxHp: 100,
+    shield: 0,
+    atk: 20,
+    def: 8,
+    posX: 160,
+    posY: 180
+  };
+}
+
+function defaultState() {
+  const h1 = createHero("knight", "rare");
+  const h2 = createHero("archer", "common");
+  const h3 = createHero("priest", "common");
+  const state = {
+    accountName: "Khách",
+    records: { bestWave: 1, wins: 0, totalSwallows: 0 },
+    wave: 1,
+    essence: 12,
+    starlight: 14,
+    rerollCount: 0,
+    heroes: [h1, h2, h3],
+    selectedHeroId: h1.uid,
+    equippedRelics: [], // max 5
+    slotCells: Array.from({ length: 9 }, () => ({
+      symbol: "sword",
+      seal: null, // prevents duplicate seal of same type
+      spinning: false
+    })),
+    shopItems: [],
+    enemies: [],
+    effects: [], // combat VFX: slashes, magic rings, heals, floating numbers
+    pendingAwakenings: [], // queue of { heroId, milestone }
+    inBattle: false,
+    logs: []
+  };
+  recalcAllHeroStats(state);
+  rollShop(state, true);
+  spawnWaveEnemies(state);
+  addLog(state, "Chào mừng đến Random-Fight! 64x64. Kéo ô Slot vào vùng Nuốt hoặc bấm Bắt Đầu Chiến Đấu.");
+  return state;
+}
+
+let G = loadGame() || defaultState();
+
+function saveGame() {
+  try {
+    const slim = {
+      accountName: G.accountName,
+      records: G.records,
+      wave: G.wave,
+      essence: G.essence,
+      starlight: G.starlight,
+      rerollCount: G.rerollCount,
+      heroes: G.heroes,
+      selectedHeroId: G.selectedHeroId,
+      equippedRelics: G.equippedRelics,
+      slotCells: G.slotCells.map(c => ({ symbol: c.symbol, seal: c.seal, spinning: false })),
+      shopItems: G.shopItems
     };
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(slim));
+  } catch (_) {}
+}
 
-    if (kind === "knight") {
-      // Plume & Helmet
-      px(13, 3, 6, 3, "#ef4444");
-      px(11, 6, 10, 8, "#cbd5e1");
-      px(12, 8, 8, 2, "#1e293b");
-      px(13, 9, 2, 1, "#38bdf8");
-      px(17, 9, 2, 1, "#38bdf8");
-      // Armor torso
-      px(10, 14, 12, 9, "#94a3b8");
-      px(15, 14, 2, 9, "#e2e8f0");
-      // Shield left & Sword right
-      px(5, 13, 5, 8, "#3b82f6");
-      px(6, 15, 3, 4, "#fbbf24");
-      px(23, 8, 2, 11, "#e2e8f0");
-      px(21, 16, 6, 2, "#fbbf24");
-      // Legs
-      px(11, 23, 4, 6, "#475569");
-      px(17, 23, 4, 6, "#475569");
-    } else if (kind === "warrior") {
-      // Horned helm & heavy axe
-      px(9, 5, 3, 4, "#f59e0b");
-      px(20, 5, 3, 4, "#f59e0b");
-      px(11, 6, 10, 7, "#b45309");
-      px(13, 9, 6, 2, "#111827");
-      px(14, 9, 4, 1, "#fb7185");
-      // Broad muscular torso
-      px(9, 13, 14, 10, "#dc2626");
-      px(12, 14, 8, 6, "#fca5a5");
-      // Heavy Axe
-      px(24, 5, 2, 19, "#78350f");
-      px(25, 6, 5, 7, "#cbd5e1");
-      // Boots
-      px(11, 23, 4, 6, "#451a03");
-      px(17, 23, 4, 6, "#451a03");
-    } else if (kind === "archer") {
-      // Hood & cloak
-      px(12, 5, 8, 7, "#15803d");
-      px(13, 8, 6, 3, "#fde68a");
-      px(14, 9, 1, 1, "#111827");
-      px(17, 9, 1, 1, "#111827");
-      px(10, 12, 12, 10, "#16a34a");
-      // Bow on left
-      px(6, 8, 2, 14, "#92400e");
-      px(8, 8, 1, 2, "#b45309");
-      px(8, 20, 1, 2, "#b45309");
-      px(7, 9, 1, 12, "#e2e8f0");
-      // Legs
-      px(11, 22, 4, 7, "#3f6212");
-      px(17, 22, 4, 7, "#3f6212");
-    } else if (kind === "mage") {
-      // Pointy wizard hat & staff
-      px(15, 2, 2, 3, "#fbbf24");
-      px(13, 5, 6, 3, "#4f46e5");
-      px(10, 8, 12, 2, "#6366f1");
-      px(12, 10, 8, 4, "#fde68a");
-      px(14, 11, 1, 1, "#1e1b4b");
-      px(17, 11, 1, 1, "#1e1b4b");
-      px(10, 14, 12, 13, "#3730a3");
-      px(15, 14, 2, 13, "#fbbf24");
-      // Staff with orb
-      px(24, 8, 2, 19, "#78350f");
-      px(23, 5, 4, 4, "#38bdf8");
-      px(24, 6, 2, 2, "#e0f2fe");
-    } else if (kind === "priest") {
-      // White robe with gold trim
-      px(12, 5, 8, 6, "#fef3c7");
-      px(13, 8, 6, 2, "#1e293b");
-      px(14, 8, 1, 1, "#0284c7");
-      px(17, 8, 1, 1, "#0284c7");
-      px(10, 11, 12, 16, "#f8fafc");
-      // Gold trim borders & cross
-      px(10, 11, 12, 2, "#fbbf24");
-      px(10, 25, 12, 2, "#fbbf24");
-      px(15, 14, 2, 6, "#f59e0b");
-      px(13, 16, 6, 2, "#f59e0b");
-    } else if (kind === "enemy_brute") {
-      const colors = ["#991b1b", "#7c2d12", "#4c1d95"];
-      const c = colors[paletteIndex % colors.length];
-      px(9, 6, 14, 11, c);
-      px(11, 9, 3, 2, "#fef08a");
-      px(18, 9, 3, 2, "#fef08a");
-      px(12, 14, 8, 2, "#f8fafc");
-      px(7, 17, 18, 9, "#1f2937");
-      px(9, 26, 5, 4, "#111827");
-      px(18, 26, 5, 4, "#111827");
-    } else if (kind === "enemy_boss") {
-      px(8, 3, 3, 4, "#fbbf24");
-      px(21, 3, 3, 4, "#fbbf24");
-      px(8, 6, 16, 12, "#581c87");
-      px(10, 10, 4, 2, "#f43f5e");
-      px(18, 10, 4, 2, "#f43f5e");
-      px(6, 18, 20, 9, "#311042");
-      px(13, 19, 6, 6, "#fbbf24");
-      px(9, 27, 5, 4, "#1e1b4b");
-      px(18, 27, 5, 4, "#1e1b4b");
-    } else if (kind === "sword") {
-      px(20, 5, 6, 6, "#e2e8f0");
-      px(14, 11, 8, 8, "#cbd5e1");
-      px(9, 15, 6, 2, "#fbbf24");
-      px(6, 21, 5, 5, "#92400e");
-    } else if (kind === "shield") {
-      px(10, 6, 12, 14, "#2563eb");
-      px(12, 20, 8, 5, "#1d4ed8");
-      px(15, 9, 2, 12, "#fbbf24");
-      px(12, 13, 8, 2, "#fbbf24");
-    } else if (kind === "potion") {
-      px(13, 6, 6, 4, "#d97706");
-      px(11, 10, 10, 4, "#e2e8f0");
-      px(9, 14, 14, 11, "#ef4444");
-      px(11, 16, 4, 4, "#fca5a5");
-    } else if (kind === "seal") {
-      px(16, 5, 4, 4, "#a78bfa");
-      px(10, 10, 12, 12, "#6d28d9");
-      px(13, 13, 6, 6, "#fde047");
-      px(16, 23, 4, 4, "#a78bfa");
-    } else {
-      // Wall / Relic item
-      px(9, 7, 14, 18, "#78350f");
-      px(11, 9, 10, 14, "#fbbf24");
-      px(14, 12, 4, 8, "#38bdf8");
-    }
+function loadGame() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw);
+    const base = defaultState();
+    Object.assign(base, parsed);
+    if (!Array.isArray(base.heroes) || base.heroes.length === 0) return null;
+    recalcAllHeroStats(base);
+    spawnWaveEnemies(base);
+    return base;
+  } catch (_) {
+    return null;
   }
+}
 
-  function createInitialState() {
-    return {
-      version: "0.0.3",
-      accountName: "Người Chơi 0.0.3",
-      wave: 1,
-      starlight: 6,
-      essence: 1,
-      spinsLeft: 3,
-      isSpinning: false,
-      selectedUnitId: "ally_knight",
-      cores: [],
-      offeredCoreWaves: [],
-      wallItems: [],
-      shopOffers: [],
-      usedSeals: [],
-      slotGrid: Array.from({ length: 9 }, () => ({ type: "sword", seal: null, value: 8 })),
-      allies: [
-        { id: "ally_knight", name: "Hiệp Sĩ", role: "Đỡ Đòn", sprite: "knight", qIdx: 0, baseHp: 145, hp: 145, maxHp: 145, shield: 18, baseAtk: 18, atk: 18, crit: 0.12, regen: 0 },
-        { id: "ally_warrior", name: "Chiến Binh", role: "Càn Lướt", sprite: "warrior", qIdx: 0, baseHp: 125, hp: 125, maxHp: 125, shield: 6, baseAtk: 24, atk: 24, crit: 0.18, regen: 0 },
-        { id: "ally_archer", name: "Cung Thủ", role: "Xuyên Phá", sprite: "archer", qIdx: 0, baseHp: 95, hp: 95, maxHp: 95, shield: 0, baseAtk: 26, atk: 26, crit: 0.28, regen: 0 },
-        { id: "ally_mage", name: "Pháp Sư", role: "Phép Thuật", sprite: "mage", qIdx: 0, baseHp: 90, hp: 90, maxHp: 90, shield: 6, baseAtk: 28, atk: 28, crit: 0.22, regen: 0 },
-        { id: "ally_priest", name: "Tư Tế", role: "Hồi Phục Đơn/Phạm Vi", sprite: "priest", qIdx: 0, baseHp: 105, hp: 105, maxHp: 105, shield: 12, baseAtk: 0, atk: 0, healPower: 26, skillCd: 2, skillTimer: 0, crit: 0.0, regen: 4 }
-      ],
-      enemies: [],
-      records: {
-        highestWave: 1,
-        totalSwallows: 0,
-        totalWins: 0
-      },
-      logs: []
-    };
-  }
+function addLog(state, msg) {
+  state.logs.unshift({ time: `W${state.wave}`, text: msg });
+  if (state.logs.length > 60) state.logs.pop();
+}
 
-  let state = loadState();
+/* ============================================================================
+   STAT CALCULATION, AWAKENING (10/20/30), EVOLUTION (LV.15) & RELICS
+   ============================================================================ */
 
-  function loadState() {
-    try {
-      const raw = localStorage.getItem(STORAGE_KEY);
-      if (raw) {
-        const parsed = JSON.parse(raw);
-        if (parsed && parsed.version === "0.0.3") {
-          return parsed;
-        }
-      }
-    } catch (_) {}
-    const fresh = createInitialState();
-    fresh.enemies = spawnEnemiesForWave(fresh.wave);
-    return fresh;
-  }
+function getXpNeeded(level) {
+  return Math.floor(35 + level * 20 + Math.pow(level, 1.35) * 6);
+}
 
-  function saveState() {
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-    } catch (_) {}
-  }
+function hasRelic(state, relicId) {
+  return state.equippedRelics.some(r => r.id === relicId);
+}
 
-  function addLog(msg) {
-    state.logs.unshift(`[V${state.wave}] ${msg}`);
-    if (state.logs.length > 45) state.logs.pop();
-  }
+function getRelicVal(state, buffType, targetClass = null) {
+  return state.equippedRelics
+    .filter(r => r.buffType === buffType && (!targetClass || r.targetClass === targetClass))
+    .reduce((sum, r) => sum + r.val, 0);
+}
 
-  // Fewer enemies per wave, heavier stats, steeper scaling as wave rises
-  function spawnEnemiesForWave(wave) {
-    // Count: 1-2 early, 2-3 mid, max 3-4 late (fewer enemies overall)
-    let count = 1;
-    if (wave >= 2 && wave <= 4) count = 2;
-    else if (wave >= 5 && wave <= 11) count = (wave % 2 === 0) ? 3 : 2;
-    else if (wave >= 12) count = (wave % 3 === 0) ? 4 : 3;
+function recalcAllHeroStats(state) {
+  const teamDef = getRelicVal(state, "team_def");
+  const teamHp = getRelicVal(state, "team_hp");
+  const allStatsPct = getRelicVal(state, "all_stats");
+  const evoStatsPct = getRelicVal(state, "evo_stats");
 
-    // Steep exponential + wave acceleration curve balanced around single-target + AoE healing
-    const waveFactor = 1 + (wave - 1) * 0.38 + Math.pow(Math.max(0, wave - 1), 1.42) * 0.13;
-    const atkFactor = 1 + (wave - 1) * 0.31 + Math.pow(Math.max(0, wave - 1), 1.35) * 0.10;
+  state.heroes.forEach((h, idx) => {
+    const cls = CLASSES[h.classId] || CLASSES.knight;
+    const q = QUALITIES[h.quality] || QUALITIES.common;
 
-    const list = [];
-    for (let i = 0; i < count; i++) {
-      const isBoss = (wave % 6 === 0 && i === count - 1) || (wave >= 15 && i === 0);
-      const roleMultHp = isBoss ? 1.85 : (i === 0 ? 1.25 : 0.95);
-      const roleMultAtk = isBoss ? 1.65 : (i === 0 ? 1.05 : 1.25);
+    let hpScale = 1 + (h.level - 1) * 0.14;
+    let atkScale = 1 + (h.level - 1) * 0.15;
+    let defScale = 1 + (h.level - 1) * 0.10;
 
-      const maxHp = Math.round(95 * waveFactor * roleMultHp);
-      const atk = Math.round(15 * atkFactor * roleMultAtk);
-      const shield = isBoss ? Math.round(25 * waveFactor) : Math.round(6 * (wave - 1));
-
-      list.push({
-        id: `enemy_${wave}_${i}`,
-        name: isBoss ? `Chúa Tể Vòng ${wave}` : (i === 0 ? `Cự Thú Vòng ${wave}` : `Ác Ma Vòng ${wave}`),
-        role: isBoss ? "Boss Nặng Tay" : (i === 0 ? "Trâu Máu" : "Sát Thương Cao"),
-        sprite: isBoss ? "enemy_boss" : "enemy_brute",
-        paletteIndex: i + wave,
-        hp: maxHp,
-        maxHp,
-        shield,
-        atk,
-        crit: Math.min(0.45, 0.08 + wave * 0.015)
-      });
-    }
-    return list;
-  }
-
-  // Shop always offers 3 random items
-  function rollShopOffers() {
-    const pool = [...WALL_ITEMS_POOL];
-    const picked = [];
-    while (picked.length < 3 && pool.length > 0) {
-      const idx = Math.floor(Math.random() * pool.length);
-      picked.push({ ...pool.splice(idx, 1)[0] });
-    }
-    state.shopOffers = picked;
-  }
-
-  if (!state.shopOffers || state.shopOffers.length !== 3) {
-    rollShopOffers();
-  }
-  if (!state.enemies || state.enemies.length === 0) {
-    state.enemies = spawnEnemiesForWave(state.wave);
-  }
-
-  function recalcAllies() {
-    const hasFury = state.cores.some(c => c.id === "c_fury");
-    const hasAegis = state.cores.some(c => c.id === "c_aegis");
-    const hasCrit = state.cores.some(c => c.id === "c_crit");
-
-    let wallAtk = 0, wallHp = 0, wallShield = 0, wallCrit = 0, wallRegen = 0;
-    for (const w of state.wallItems) {
-      wallAtk += w.stat.atk || 0;
-      wallHp += w.stat.maxHp || 0;
-      wallShield += w.stat.shield || 0;
-      wallCrit += w.stat.crit || 0;
-      wallRegen += w.stat.regen || 0;
+    if (h.evolved) {
+      hpScale *= (1.28 + evoStatsPct);
+      atkScale *= (1.28 + evoStatsPct);
+      defScale *= 1.22;
     }
 
-    for (const a of state.allies) {
-      const qMult = QUALITIES[a.qIdx].mult;
-      const prevMax = a.maxHp || a.baseHp;
-      const nextMax = Math.round((a.baseHp * qMult + wallHp) * (hasAegis ? 1.2 : 1.0));
-      const hpDiff = Math.max(0, nextMax - prevMax);
+    // Hero-specific augments from Lv.10, Lv.20, Lv.30 awakenings
+    let augHpPct = 0, augAtkPct = 0, augDefAdd = 0, augCritAdd = 0, augHealPct = 0, augSkillPct = 0;
+    for (const aug of (h.augments || [])) {
+      if (aug.stat.hpPct) augHpPct += aug.stat.hpPct;
+      if (aug.stat.atkPct) augAtkPct += aug.stat.atkPct;
+      if (aug.stat.defAdd) augDefAdd += aug.stat.defAdd;
+      if (aug.stat.critAdd) augCritAdd += aug.stat.critAdd;
+      if (aug.stat.healPct) augHealPct += aug.stat.healPct;
+      if (aug.stat.skillPct) augSkillPct += aug.stat.skillPct;
+    }
 
-      a.maxHp = nextMax;
-      a.hp = Math.min(a.maxHp, a.hp + hpDiff);
-      if (a.sprite === "priest") {
-        a.atk = 0;
-        a.crit = 0;
-        a.healPower = Math.round((26 * qMult + wallAtk * 1.4) * (hasFury ? 1.2 : 1.0));
-      } else {
-        a.atk = Math.round((a.baseAtk * qMult + wallAtk) * (hasFury ? 1.35 : 1.0));
-        a.crit = Math.min(0.85, a.crit + wallCrit + (hasCrit ? 0.25 : 0));
-      }
-      a.regen = a.regen + wallRegen;
-      if (wallShield > 0 && a.shield < wallShield) {
-        a.shield = wallShield;
+    const gearHp = h.gear ? (h.gear.hp || 0) : 0;
+    const gearAtk = h.gear ? (h.gear.atk || 0) : 0;
+    const gearDef = h.gear ? (h.gear.def || 0) : 0;
+
+    const classAtkMult = 1 + getRelicVal(state, "class_atk", h.classId);
+    const totalMult = q.mult * (1 + allStatsPct);
+
+    const maxHp = Math.round(((cls.baseHp * hpScale) + gearHp + teamHp) * totalMult * (1 + augHpPct));
+    const atk = Math.round(((cls.baseAtk * atkScale) + gearAtk + (h.tempAtkBuff || 0)) * totalMult * classAtkMult * (1 + augAtkPct));
+    const def = Math.round(((cls.baseDef * defScale) + gearDef + (h.tempDefBuff || 0) + teamDef) * (1 + allStatsPct) + augDefAdd);
+
+    h.maxHp = Math.max(50, maxHp);
+    h.atk = Math.max(5, atk);
+    h.def = Math.max(0, def);
+    h.critChance = Math.min(0.85, 0.12 + getRelicVal(state, "slot_crit") + augCritAdd);
+    h.healMult = 1 + getRelicVal(state, "priest_heal") + augHealPct;
+    h.skillMult = 1 + getRelicVal(state, "skill_power") + augSkillPct;
+
+    if (h.hp === undefined || h.hp > h.maxHp) h.hp = h.maxHp;
+    if (h.hp <= 0 && !state.inBattle) h.hp = h.maxHp;
+
+    // Position on left side of 64x64 battlefield
+    h.posX = 95 + (idx % 2) * 58;
+    h.posY = 75 + idx * 58;
+  });
+}
+
+function grantHeroXp(state, hero, amount) {
+  if (!hero) return;
+  const q = QUALITIES[hero.quality] || QUALITIES.common;
+  const xpGainMult = 1 + getRelicVal(state, "xp_gain");
+  hero.xp += Math.round(amount * q.xpMult * xpGainMult);
+
+  while (hero.xp >= getXpNeeded(hero.level)) {
+    hero.xp -= getXpNeeded(hero.level);
+    hero.level += 1;
+    addLog(state, `⬆️ ${getHeroDisplayName(hero)} lên Lv.${hero.level}!`);
+
+    // Check Awakening milestones: Lv.10, Lv.20, Lv.30
+    for (const milestone of [10, 20, 30]) {
+      if (hero.level >= milestone && !hero.awakenedLevels.includes(milestone)) {
+        hero.awakenedLevels.push(milestone);
+        state.pendingAwakenings.push({ heroId: hero.uid, milestone });
       }
     }
   }
+  recalcAllHeroStats(state);
+  processAwakeningQueue(state);
+}
 
-  // Combat Visual Effects on 64x64-style pixel FX canvas
-  const fxCanvas = document.getElementById("fxCanvas");
-  const fxCtx = fxCanvas.getContext("2d");
-  const particles = [];
-  const floatingTexts = [];
+function getHeroDisplayName(hero) {
+  const cls = CLASSES[hero.classId] || CLASSES.knight;
+  const base = hero.evolved ? cls.evolvedName : cls.name;
+  return `${base} (Lv.${hero.level})`;
+}
 
-  function syncFxCanvasSize() {
-    const wrap = document.getElementById("battlefieldWrap");
-    fxCanvas.width = wrap.clientWidth;
-    fxCanvas.height = wrap.clientHeight;
+function evolveHero(heroId) {
+  const hero = G.heroes.find(h => h.uid === heroId);
+  if (!hero || hero.level < 15 || hero.evolved) return;
+  hero.evolved = true;
+  recalcAllHeroStats(G);
+  hero.hp = hero.maxHp;
+  spawnVfx(hero.posX + 32, hero.posY + 32, "magic", "#ffd166", "TIẾN HÓA!");
+  addLog(G, `🌟 ${CLASSES[hero.classId].name} đạt Lv.15 và TIẾN HÓA thành ${CLASSES[hero.classId].evolvedName}!`);
+  saveGame();
+  renderAll();
+}
+
+/* ============================================================================
+   FULLSCREEN AWAKENING OVERLAY (2 OPTIONS -> PICK 1 FOR THIS HERO ONLY)
+   ============================================================================ */
+
+let activeAwakening = null;
+
+function processAwakeningQueue(state) {
+  if (activeAwakening || state.pendingAwakenings.length === 0) return;
+  const next = state.pendingAwakenings.shift();
+  const hero = state.heroes.find(h => h.uid === next.heroId);
+  if (!hero) {
+    processAwakeningQueue(state);
+    return;
   }
 
-  function spawnCombatFx(x, y, text, color, fxKind = "slash") {
-    syncFxCanvasSize();
-    floatingTexts.push({ x, y, text, color, life: 42, maxLife: 42 });
-    const count = fxKind === "burst" ? 18 : 10;
-    for (let i = 0; i < count; i++) {
-      const angle = (Math.PI * 2 * i) / count + Math.random() * 0.4;
-      const speed = 1.5 + Math.random() * 3.2;
-      particles.push({
-        x,
-        y,
-        vx: Math.cos(angle) * speed,
-        vy: Math.sin(angle) * speed - 1,
-        size: 6,
-        color,
-        life: 24 + Math.floor(Math.random() * 12)
-      });
-    }
-  }
+  // Pick 2 distinct augments
+  const pool = [...AWAKENING_POOL].sort(() => Math.random() - 0.5);
+  const twoChoices = [pool[0], pool[1]];
+  activeAwakening = { heroId: hero.uid, milestone: next.milestone, choices: twoChoices };
 
-  function triggerHitFlash(unitId) {
-    const el = document.querySelector(`[data-unit-id="${unitId}"]`);
-    if (el) {
-      el.classList.remove("hit-flash");
-      void el.offsetWidth;
-      el.classList.add("hit-flash");
-    }
-  }
+  document.getElementById("awkTitle").textContent =
+    `${getHeroDisplayName(hero)} — Thức Tỉnh Lv.${next.milestone}`;
+  document.getElementById("awkSubtitle").textContent =
+    `Chọn 1 trong 2 Tăng Cường toàn màn hình dưới đây. Hiệu lực chỉ gắn riêng cho ${getHeroDisplayName(hero)}.`;
 
-  function stepFxLoop() {
-    syncFxCanvasSize();
-    fxCtx.imageSmoothingEnabled = false;
-    fxCtx.clearRect(0, 0, fxCanvas.width, fxCanvas.height);
+  const container = document.getElementById("awakeningChoices");
+  container.innerHTML = "";
 
-    for (let i = particles.length - 1; i >= 0; i--) {
-      const p = particles[i];
-      p.x += p.vx;
-      p.y += p.vy;
-      p.vy += 0.12;
-      p.life--;
-      fxCtx.fillStyle = p.color;
-      fxCtx.fillRect(Math.round(p.x / 2) * 2, Math.round(p.y / 2) * 2, p.size, p.size);
-      if (p.life <= 0) particles.splice(i, 1);
-    }
-
-    for (let i = floatingTexts.length - 1; i >= 0; i--) {
-      const ft = floatingTexts[i];
-      ft.y -= 0.9;
-      ft.life--;
-      fxCtx.font = "bold 13px 'Courier New', monospace";
-      fxCtx.fillStyle = "#090d16";
-      fxCtx.fillText(ft.text, Math.round(ft.x) + 1, Math.round(ft.y) + 1);
-      fxCtx.fillStyle = ft.color;
-      fxCtx.fillText(ft.text, Math.round(ft.x), Math.round(ft.y));
-      if (ft.life <= 0) floatingTexts.splice(i, 1);
-    }
-
-    requestAnimationFrame(stepFxLoop);
-  }
-
-  // Slot spin with duplicate seal prevention
-  function spinSlotsSlowly() {
-    if (state.isSpinning) return;
-    if (state.spinsLeft <= 0) {
-      addLog("Hết lượt xoay trong lượt này! Hãy Ra Đòn hoặc sang vòng mới.");
-      renderAll();
-      return;
-    }
-
-    state.isSpinning = true;
-    state.spinsLeft--;
-    addLog("Bắt đầu xoay máy 3x3...");
-    renderAll();
-
-    const cells = document.querySelectorAll(".slot-cell");
-    cells.forEach(c => c.classList.add("spinning"));
-
-    let ticks = 0;
-    const totalTicks = 12; // Slower, clearer animation (~960ms)
-    const interval = setInterval(() => {
-      ticks++;
-      for (let i = 0; i < 9; i++) {
-        const type = SLOT_TYPES[Math.floor(Math.random() * SLOT_TYPES.length)];
-        let seal = null;
-        if (type === "seal") {
-          const availableSeals = SEAL_NAMES.filter(s => !state.usedSeals.includes(s));
-          if (availableSeals.length > 0) {
-            seal = availableSeals[Math.floor(Math.random() * availableSeals.length)];
-          } else {
-            // Fallback to sword if all seals already used
-            state.slotGrid[i] = { type: "sword", seal: null, value: 10 + state.wave * 2 };
-            continue;
-          }
-        }
-        const val = type === "sword"
-          ? 8 + state.wave * 2 + Math.floor(Math.random() * 6)
-          : type === "shield"
-          ? 10 + state.wave * 2 + Math.floor(Math.random() * 6)
-          : type === "potion"
-          ? 14 + state.wave * 2 + Math.floor(Math.random() * 6)
-          : 1;
-
-        state.slotGrid[i] = { type, seal, value: val };
-      }
-      renderSlotGridOnly();
-
-      if (ticks >= totalTicks) {
-        clearInterval(interval);
-        state.isSpinning = false;
-        cells.forEach(c => c.classList.remove("spinning"));
-        addLog("Hoàn tất lượt xoay 3x3! Kéo ô vào vùng Nuốt để kích hoạt.");
-        saveState();
-        renderAll();
-      }
-    }, 80);
-  }
-
-  function swallowSlotIndex(idx) {
-    if (state.isSpinning) return;
-    const cell = state.slotGrid[idx];
-    if (!cell || !cell.type) return;
-
-    state.records.totalSwallows++;
-    const liveAllies = state.allies.filter(a => a.hp > 0);
-    const wrap = document.getElementById("battlefieldWrap");
-    const cx = wrap.clientWidth * 0.28;
-    const cy = wrap.clientHeight * 0.45;
-
-    if (cell.type === "sword") {
-      const atkGain = Math.ceil(cell.value * 0.45);
-      for (const a of liveAllies) {
-        if (a.sprite === "priest") a.healPower = (a.healPower || 26) + Math.ceil(atkGain * 1.3);
-        else a.atk += atkGain;
-      }
-      spawnCombatFx(cx, cy, `+${atkGain} Công/Hồi`, "#fbbf24", "slash");
-      addLog(`Nuốt Kiếm: Đòn đánh tăng +${atkGain} ATK, Tư Tế tăng +${Math.ceil(atkGain * 1.3)} Lực Hồi.`);
-    } else if (cell.type === "shield") {
-      for (const a of liveAllies) a.shield += cell.value;
-      spawnCombatFx(cx, cy, `+${cell.value} Khiên`, "#38bdf8", "burst");
-      addLog(`Nuốt Khiên: Toàn đội nhận +${cell.value} Khiên.`);
-    } else if (cell.type === "potion") {
-      for (const a of liveAllies) a.hp = Math.min(a.maxHp, a.hp + cell.value);
-      spawnCombatFx(cx, cy, `+${cell.value} HP`, "#34d399", "burst");
-      addLog(`Nuốt Bình Máu: Toàn đội hồi +${cell.value} HP.`);
-    } else if (cell.type === "seal" && cell.seal) {
-      if (state.usedSeals.includes(cell.seal)) {
-        addLog(`Ấn "${cell.seal}" đã được dùng trước đó (chống trùng Ấn).`);
-      } else {
-        state.usedSeals.push(cell.seal);
-        for (const a of liveAllies) {
-          if (a.sprite === "priest") a.healPower = (a.healPower || 26) + 8;
-          else a.atk += 5;
-          a.shield += 8;
-        }
-        spawnCombatFx(cx, cy, `ẤN ${cell.seal.toUpperCase()}!`, "#c084fc", "burst");
-        addLog(`Nuốt ${cell.seal} (chống trùng): Toàn đội +5 ATK & +8 Khiên!`);
-      }
-    }
-
-    if (state.cores.some(c => c.id === "c_echo") && liveAllies.length > 0) {
-      const lowest = [...liveAllies].sort((x, y) => (x.hp / x.maxHp) - (y.hp / y.maxHp))[0];
-      lowest.hp = Math.min(lowest.maxHp, lowest.hp + 10);
-    }
-
-    // Replace swallowed slot with neutral empty/relic spark
-    state.slotGrid[idx] = { type: "potion", seal: null, value: 6 };
-    saveState();
-    renderAll();
-  }
-
-  function executeTurn() {
-    if (state.isSpinning) return;
-    const liveAllies = state.allies.filter(a => a.hp > 0);
-    const liveEnemies = state.enemies.filter(e => e.hp > 0);
-    const wrap = document.getElementById("battlefieldWrap");
-
-    // Allies act with combat effects
-    liveAllies.forEach((ally, idx) => {
-      // Priest never performs normal attack on enemies: single-target heal normally, AoE heal on skill
-      if (ally.sprite === "priest") {
-        const baseHeal = ally.healPower || (26 + ally.qIdx * 8);
-        ally.skillTimer = (ally.skillTimer || 0) + 1;
-        const skillCd = ally.skillCd || 2;
-
-        if (ally.skillTimer >= skillCd) {
-          ally.skillTimer = 0;
-          const aoeHeal = Math.round(baseHeal * 0.85);
-          liveAllies.forEach(h => {
-            h.hp = Math.min(h.maxHp, h.hp + aoeHeal);
-          });
-          const ax = wrap.clientWidth * 0.25 + (idx % 2) * 24;
-          const ay = wrap.clientHeight * 0.35 + (idx % 3) * 32;
-          spawnCombatFx(ax, ay, `SKILL +${aoeHeal} ALL!`, "#6ee7b7", "burst");
-          addLog(`Tư Tế kích hoạt kỹ năng Hồi Máu Phạm Vi: toàn đội hồi +${aoeHeal} HP!`);
-        } else {
-          const singleTarget = [...liveAllies].sort((x, y) => (x.hp / x.maxHp) - (y.hp / y.maxHp))[0];
-          if (singleTarget) {
-            singleTarget.hp = Math.min(singleTarget.maxHp, singleTarget.hp + baseHeal);
-            const sx = wrap.clientWidth * 0.22 + (idx % 2) * 20;
-            const sy = wrap.clientHeight * 0.35 + (idx % 3) * 30;
-            spawnCombatFx(sx, sy, `+${baseHeal} HP`, "#34d399", "slash");
-            addLog(`Tư Tế hồi máu đơn lẻ cho ${singleTarget.name} (+${baseHeal} HP).`);
-          }
-        }
-        return;
-      }
-
-      const targets = state.enemies.filter(e => e.hp > 0);
-      if (targets.length === 0) return;
-
-      const target = targets[idx % targets.length];
-      const isCrit = Math.random() < ally.crit;
-      let dmg = Math.round(ally.atk * (isCrit ? 1.65 : 1.0));
-
-      if (ally.sprite === "mage") {
-        dmg = Math.round(dmg * 1.15);
-      } else if (ally.sprite === "knight") {
-        ally.shield += 6;
-      }
-
-      if (target.shield > 0) {
-        const absorbed = Math.min(target.shield, dmg);
-        target.shield -= absorbed;
-        dmg -= absorbed;
-      }
-      target.hp = Math.max(0, target.hp - dmg);
-
-      const ex = wrap.clientWidth * 0.72 + (idx % 2) * 24;
-      const ey = wrap.clientHeight * 0.35 + (idx % 3) * 32;
-      spawnCombatFx(
-        ex,
-        ey,
-        isCrit ? `-${dmg} CRIT!` : `-${dmg}`,
-        isCrit ? "#f97316" : "#fde047",
-        isCrit ? "burst" : "slash"
-      );
-      triggerHitFlash(target.id);
-      addLog(`${ally.name} đánh ${target.name} gây ${dmg} sát thương${isCrit ? " (Chí mạng)" : ""}.`);
-    });
-
-    // Regen from wall/passives
-    liveAllies.forEach(a => {
-      if (a.regen > 0 && a.hp > 0) {
-        a.hp = Math.min(a.maxHp, a.hp + a.regen);
-      }
-    });
-
-    // Check wave clear
-    if (state.enemies.every(e => e.hp <= 0)) {
-      state.records.totalWins++;
-      // Reduced Starlight rewards (scarce economy: +1 every wave, +1 bonus every 3 waves)
-      const starGain = 1 + (state.wave % 3 === 0 ? 1 : 0);
-      const essenceGain = 1 + Math.floor(state.wave / 4);
-      state.starlight += starGain;
-      state.essence += essenceGain;
-
-      addLog(`Thắng đợt ${state.wave}! Nhận +${starGain} Tinh Tú, +${essenceGain} Tinh Hoa.`);
-
-      // Mandatory core choice every 3 rounds through round 18
-      const shouldOfferCore = (state.wave % 3 === 0) && (state.wave <= 18) && (!state.offeredCoreWaves.includes(state.wave));
-      if (shouldOfferCore) {
-        state.offeredCoreWaves.push(state.wave);
-        openCoreChoiceModal(state.wave);
-      }
-
-      state.wave++;
-      if (state.wave > state.records.highestWave) {
-        state.records.highestWave = state.wave;
-      }
-
-      state.enemies = spawnEnemiesForWave(state.wave);
-      state.spinsLeft = 3;
-      if (state.cores.some(c => c.id === "c_aegis")) {
-        state.allies.forEach(a => { if (a.hp > 0) a.shield += 28; });
-      }
-      recalcAllies();
-      saveState();
-      renderAll();
-      return;
-    }
-
-    // Surviving enemies counter-attack heavily
-    const aliveAlliesAfter = state.allies.filter(a => a.hp > 0);
-    state.enemies.filter(e => e.hp > 0).forEach((enemy, eIdx) => {
-      if (aliveAlliesAfter.length === 0) return;
-      const target = aliveAlliesAfter[eIdx % aliveAlliesAfter.length];
-      const isCrit = Math.random() < enemy.crit;
-      let dmg = Math.round(enemy.atk * (isCrit ? 1.45 : 1.0));
-
-      if (target.shield > 0) {
-        const absorbed = Math.min(target.shield, dmg);
-        target.shield -= absorbed;
-        dmg -= absorbed;
-      }
-      target.hp = Math.max(0, target.hp - dmg);
-
-      const ax = wrap.clientWidth * 0.25 + (eIdx % 2) * 20;
-      const ay = wrap.clientHeight * 0.35 + (eIdx % 3) * 32;
-      spawnCombatFx(ax, ay, `-${dmg}`, "#f87171", "burst");
-      triggerHitFlash(target.id);
-      addLog(`${enemy.name} phản công ${target.name} gây ${dmg} sát thương!`);
-    });
-
-    // Check defeat -> auto reset to wave 1 with records preserved
-    if (state.allies.every(a => a.hp <= 0)) {
-      addLog(`Đội hình thất thủ ở vòng ${state.wave}! Khởi động lại từ Vòng 1.`);
-      const savedRecords = { ...state.records };
-      const savedName = state.accountName;
-      state = createInitialState();
-      state.records = savedRecords;
-      state.accountName = savedName;
-      state.enemies = spawnEnemiesForWave(1);
-      rollShopOffers();
-    } else {
-      state.spinsLeft = 3;
-    }
-
-    saveState();
-    renderAll();
-  }
-
-  function openCoreChoiceModal(waveNum) {
-    const modal = document.getElementById("coreModal");
-    const grid = document.getElementById("coreChoiceGrid");
-    document.getElementById("coreModalTitle").textContent = `💠 Mốc Vòng ${waveNum} — Bắt Buộc Chọn Lõi`;
-    document.getElementById("coreModalDesc").textContent = "Chọn 1 lõi để tăng sức mạnh lâu dài (áp dụng mỗi 3 vòng đến vòng 18).";
-    grid.innerHTML = "";
-
-    const shuffled = [...CORE_POOL].sort(() => Math.random() - 0.5).slice(0, 3);
-    shuffled.forEach(core => {
-      const btn = document.createElement("button");
-      btn.className = "choice-btn btn-primary";
-      btn.innerHTML = `<div style="font-size:13px;">${core.name}</div><div style="font-size:11px;font-weight:normal;color:#e0f2fe;">${core.desc}</div>`;
-      btn.onclick = () => {
-        state.cores.push(core);
-        addLog(`Đã chọn lõi: ${core.name}.`);
-        if (core.id === "c_star") state.starlight += 1;
-        recalcAllies();
-        modal.classList.remove("open");
-        saveState();
-        renderAll();
-      };
-      grid.appendChild(btn);
-    });
-
-    modal.classList.add("open");
-  }
-
-  function renderSlotGridOnly() {
-    const grid = document.getElementById("slotGrid");
-    grid.innerHTML = "";
-    state.slotGrid.forEach((cell, idx) => {
-      const el = document.createElement("div");
-      const canSwallow = Boolean(cell.type);
-      el.className = `slot-cell ${canSwallow ? "swallowable" : ""}`;
-      el.draggable = canSwallow && !state.isSpinning;
-
-      const cvs = document.createElement("canvas");
-      cvs.className = "slot-icon-canvas";
-      drawPixelSprite(cvs, cell.type || "sword");
-
-      const title = cell.type === "sword" ? "Kiếm"
-        : cell.type === "shield" ? "Khiên"
-        : cell.type === "potion" ? "Bình Máu"
-        : (cell.seal || "Ấn");
-
-      const sub = cell.type === "seal" ? "Ấn độc bản" : `Chỉ số: ${cell.value}`;
-
-      el.appendChild(cvs);
-      const lbl = document.createElement("div");
-      lbl.className = "slot-label";
-      lbl.textContent = title;
-      const val = document.createElement("div");
-      val.className = "slot-val";
-      val.textContent = sub;
-      el.appendChild(lbl);
-      el.appendChild(val);
-
-      el.addEventListener("dragstart", (e) => {
-        e.dataTransfer.setData("text/plain", String(idx));
-      });
-
-      el.addEventListener("dblclick", () => swallowSlotIndex(idx));
-      grid.appendChild(el);
-    });
-  }
-
-  function renderUnits() {
-    const allyBox = document.getElementById("allyCards");
-    const enemyBox = document.getElementById("enemyCards");
-    allyBox.innerHTML = "";
-    enemyBox.innerHTML = "";
-
-    const makeCard = (u, isEnemy) => {
-      const card = document.createElement("div");
-      card.className = `unit-card ${u.hp <= 0 ? "dead" : ""} ${state.selectedUnitId === u.id ? "selected" : ""}`;
-      card.dataset.unitId = u.id;
-      card.onclick = () => {
-        state.selectedUnitId = u.id;
-        renderInspector();
-        renderUnits();
-      };
-
-      const sBox = document.createElement("div");
-      sBox.className = "sprite-box";
-      const cvs = document.createElement("canvas");
-      drawPixelSprite(cvs, u.sprite, u.paletteIndex || 0);
-      sBox.appendChild(cvs);
-
-      const qName = !isEnemy ? ` • ${QUALITIES[u.qIdx].name}` : "";
-      const hpPct = Math.max(0, Math.min(100, (u.hp / u.maxHp) * 100));
-      const shPct = Math.max(0, Math.min(100, (u.shield / Math.max(1, u.maxHp)) * 100));
-
-      card.innerHTML = `
-        <div class="unit-name">${u.name}</div>
-        <div class="unit-sub">${u.role}${qName}</div>
-        <div class="hp-bar"><div class="hp-fill" style="width:${hpPct}%"></div></div>
-        <div class="shield-bar"><div class="shield-fill" style="width:${shPct}%"></div></div>
-        <div class="unit-mini-stats">
-          <span>HP ${u.hp}/${u.maxHp}</span>
-          <span>${u.sprite === "priest" ? `HỒI ${u.healPower || 26}` : `ATK ${u.atk}`}</span>
-        </div>
-      `;
-      card.prepend(sBox);
-      return card;
-    };
-
-    state.allies.forEach(a => allyBox.appendChild(makeCard(a, false)));
-    state.enemies.forEach(e => enemyBox.appendChild(makeCard(e, true)));
-  }
-
-  function renderInspector() {
-    const box = document.getElementById("inspectorBox");
-    const allUnits = [...state.allies, ...state.enemies];
-    const u = allUnits.find(x => x.id === state.selectedUnitId) || state.allies[0];
-    if (!u) return;
-
-    const isEnemy = u.id.startsWith("enemy_");
-    const qText = !isEnemy ? `Phẩm chất: <strong style="color:${QUALITIES[u.qIdx].color}">${QUALITIES[u.qIdx].name}</strong><br>` : "";
-    box.innerHTML = `
-      <div style="font-weight:bold;color:#fde68a;margin-bottom:4px;">🔍 ${u.name} (${u.role})</div>
-      ${qText}
-      <div>HP: <strong>${u.hp}/${u.maxHp}</strong> | Khiên: <strong style="color:var(--shield-color)">${u.shield}</strong></div>
-      ${u.sprite === "priest"
-        ? `<div>Lực Hồi: <strong style="color:#34d399">${u.healPower || 26}</strong> (Đơn lẻ) | Skill Phạm Vi: <strong>${u.skillTimer || 0}/${u.skillCd || 2} lượt</strong></div>`
-        : `<div>ATK: <strong>${u.atk}</strong> | Chí mạng: <strong>${Math.round(u.crit * 100)}%</strong></div>`
-      }
-      <div style="margin-top:4px;color:var(--text-muted);font-size:11px;">
-        ${isEnemy ? "Kẻ địch đợt này có chỉ số nặng; ưu tiên dồn sát thương hoặc tích khiên." : "Nhấp đúp vào ô slot để nuốt nhanh nếu không muốn kéo thả."}
+  twoChoices.forEach((aug, idx) => {
+    const card = document.createElement("div");
+    card.className = "aug-card";
+    card.innerHTML = `
+      <div>
+        <div style="font-size:11px;color:var(--accent-cyan);font-weight:700;margin-bottom:4px;">TĂNG CƯỜNG #${idx + 1}</div>
+        <div style="font-size:17px;font-weight:800;color:#fff;margin-bottom:6px;">${aug.name}</div>
+        <div style="font-size:13px;color:#cbd5e1;line-height:1.45;">${aug.desc}</div>
       </div>
+      <button class="primary" style="width:100%;">Chọn Tăng Cường Này</button>
     `;
+    card.onclick = () => pickAwakeningAugment(aug);
+    container.appendChild(card);
+  });
+
+  document.getElementById("awakeningOverlay").classList.add("active");
+}
+
+function pickAwakeningAugment(aug) {
+  if (!activeAwakening) return;
+  const hero = G.heroes.find(h => h.uid === activeAwakening.heroId);
+  if (hero) {
+    const powerScale = 1 + getRelicVal(G, "awk_power");
+    const scaledAug = {
+      id: aug.id,
+      name: aug.name,
+      desc: aug.desc,
+      stat: {
+        hpPct: (aug.stat.hpPct || 0) * powerScale,
+        atkPct: (aug.stat.atkPct || 0) * powerScale,
+        defAdd: Math.round((aug.stat.defAdd || 0) * powerScale),
+        critAdd: (aug.stat.critAdd || 0) * powerScale,
+        healPct: (aug.stat.healPct || 0) * powerScale,
+        skillPct: (aug.stat.skillPct || 0) * powerScale,
+        dmgRed: aug.stat.dmgRed || 0
+      }
+    };
+    hero.augments.push(scaledAug);
+    recalcAllHeroStats(G);
+    hero.hp = hero.maxHp;
+    spawnVfx(hero.posX + 32, hero.posY + 32, "heal", "#72efdd", `THỨC TỈNH: ${aug.name}`);
+    addLog(G, `⚡ ${getHeroDisplayName(hero)} nhận Tăng Cường riêng [${aug.name}].`);
   }
 
-  function renderShopAndWall() {
-    const wallList = document.getElementById("wallList");
-    wallList.innerHTML = "";
-    document.getElementById("wallCountBadge").textContent = `Tường: ${state.wallItems.length}/5`;
+  activeAwakening = null;
+  document.getElementById("awakeningOverlay").classList.remove("active");
+  saveGame();
+  renderAll();
+  processAwakeningQueue(G);
+}
 
-    for (let i = 0; i < 5; i++) {
-      const slot = document.createElement("div");
-      slot.className = "wall-slot";
-      const item = state.wallItems[i];
-      if (item) {
-        slot.innerHTML = `<div style="font-weight:bold;color:#fde68a;">${item.name}</div><div style="color:var(--text-muted);font-size:10px;">${item.desc}</div>`;
-      } else {
-        slot.innerHTML = `<div style="color:#64748b;">Ô Tường #${i + 1} (Trống)</div>`;
+/* ============================================================================
+   3x3 SLOT MACHINE & DRAG-AND-DROP SWALLOW (NO DUPLICATE SEALS)
+   ============================================================================ */
+
+const SPIN_COST_ESSENCE = 3;
+let draggedSlotIndex = null;
+
+function spinSlotMachine() {
+  if (G.inBattle) return;
+  if (G.essence < SPIN_COST_ESSENCE) {
+    addLog(G, "⚠️ Không đủ Tinh Hoa để quay Slot (cần 3 Tinh Hoa).");
+    renderAll();
+    return;
+  }
+
+  G.essence -= SPIN_COST_ESSENCE;
+  const luckBonus = getRelicVal(G, "slot_spin_luck");
+
+  // Collect currently active seals to strictly prevent duplicate seal types on the 3x3 board
+  const usedSeals = new Set(G.slotCells.map(c => c.seal).filter(Boolean));
+  const sealPool = ["Ấn Công", "Ấn Giáp", "Ấn Ma", "Ấn Hồi", "Ấn Tinh"].filter(s => !usedSeals.has(s));
+
+  G.slotCells.forEach(cell => {
+    cell.spinning = true;
+  });
+  renderSlotGrid();
+
+  // Slower, deliberate cadence per slot row
+  const delays = [450, 750, 1050];
+  G.slotCells.forEach((cell, idx) => {
+    const row = Math.floor(idx / 3);
+    setTimeout(() => {
+      let pickIdx = Math.floor(Math.random() * SLOT_SYMBOLS.length);
+      if (Math.random() < luckBonus && pickIdx < 3) {
+        pickIdx = 3 + Math.floor(Math.random() * 2);
       }
-      wallList.appendChild(slot);
+      cell.symbol = SLOT_SYMBOLS[pickIdx].key;
+
+      // Small chance to grant a non-duplicate seal if cell has none
+      if (!cell.seal && sealPool.length > 0 && Math.random() < 0.22) {
+        cell.seal = sealPool.shift();
+      }
+      cell.spinning = false;
+      renderSlotGrid();
+      if (idx === G.slotCells.length - 1) {
+        saveGame();
+        renderTopBar();
+      }
+    }, delays[row] + (idx % 3) * 90);
+  });
+}
+
+function swallowSlotCell(idx) {
+  if (G.inBattle) return;
+  const cell = G.slotCells[idx];
+  if (!cell || cell.spinning) return;
+
+  const sym = SLOT_SYMBOLS.find(s => s.key === cell.symbol) || SLOT_SYMBOLS[0];
+  const relicEssence = getRelicVal(G, "slot_essence");
+  const relicXp = getRelicVal(G, "slot_xp");
+  const starBonus = getRelicVal(G, "star_bonus");
+
+  const gainedEssence = sym.essence + relicEssence;
+  const gainedXp = sym.xp + relicXp;
+
+  G.essence += gainedEssence;
+  if (sym.key === "star") {
+    G.starlight += 1 + starBonus;
+  }
+  G.records.totalSwallows += 1;
+
+  const targetHero = G.heroes.find(h => h.uid === G.selectedHeroId) || G.heroes[0];
+  if (targetHero) {
+    targetHero.tempAtkBuff = (targetHero.tempAtkBuff || 0) + (sym.key === "sword" || sym.key === "orb" ? 4 : 1);
+    targetHero.tempDefBuff = (targetHero.tempDefBuff || 0) + (sym.key === "shield" ? 3 : 0);
+    if (sym.key === "heart") {
+      targetHero.hp = Math.min(targetHero.maxHp, targetHero.hp + Math.round(targetHero.maxHp * 0.25));
+    }
+    spawnVfx(targetHero.posX + 32, targetHero.posY + 24, "heal", sym.color, `NUỐT ${sym.name}! +${gainedEssence} TH`);
+  }
+
+  addLog(G, `🫙 Đã nuốt [${sym.name}]: +${gainedEssence} Tinh Hoa, +${gainedXp} XP cho ${targetHero ? getHeroDisplayName(targetHero) : "tướng"}.`);
+
+  // Replace swallowed cell with a fresh symbol without duplicate seal
+  const usedSeals = new Set(G.slotCells.map(c => c.seal).filter(Boolean));
+  const availSeals = ["Ấn Công", "Ấn Giáp", "Ấn Ma", "Ấn Hồi", "Ấn Tinh"].filter(s => !usedSeals.has(s));
+  cell.symbol = SLOT_SYMBOLS[Math.floor(Math.random() * SLOT_SYMBOLS.length)].key;
+  cell.seal = (!cell.seal && availSeals.length > 0 && Math.random() < 0.15) ? availSeals[0] : cell.seal;
+
+  if (targetHero) {
+    grantHeroXp(G, targetHero, gainedXp);
+  }
+  saveGame();
+  renderAll();
+}
+
+/* ============================================================================
+   SHOP (RANDOM 3 ITEMS, STARLIGHT REROLL, REDUCED STARLIGHT ECONOMY)
+   ============================================================================ */
+
+function getRerollCost() {
+  const discount = getRelicVal(G, "reroll_discount");
+  return Math.max(1, 2 + Math.floor(G.rerollCount / 4) - discount);
+}
+
+function rollShop(state, free = false) {
+  if (!free) {
+    const cost = getRerollCost();
+    if (state.starlight < cost) {
+      addLog(state, `⚠️ Không đủ Tinh Tú để làm mới cửa hàng (cần ${cost} Tinh Tú).`);
+      renderAll();
+      return;
+    }
+    state.starlight -= cost;
+    state.rerollCount += 1;
+  }
+
+  const ownedIds = new Set(state.equippedRelics.map(r => r.id));
+  const items = [];
+
+  for (let i = 0; i < 3; i++) {
+    const roll = Math.random();
+    if (roll < 0.48) {
+      // Wall Relic (Cổ vật treo thành)
+      const candidates = RELICS_POOL.filter(r => !ownedIds.has(r.id));
+      const pool = candidates.length > 0 ? candidates : RELICS_POOL;
+      const relic = pool[Math.floor(Math.random() * pool.length)];
+      items.push({
+        kind: "relic",
+        id: relic.id,
+        name: relic.name,
+        desc: relic.desc,
+        cost: 5,
+        data: relic
+      });
+    } else if (roll < 0.78) {
+      // Hero Gear (Trang bị tướng - riêng biệt với cổ vật)
+      const gear = HERO_GEAR_POOL[Math.floor(Math.random() * HERO_GEAR_POOL.length)];
+      items.push({
+        kind: "gear",
+        id: gear.id,
+        name: gear.name,
+        desc: `Trang bị tướng: ${gear.desc}`,
+        cost: 4,
+        data: gear
+      });
+    } else {
+      // Recruit a new Hero (up to 5 heroes)
+      const clsKeys = Object.keys(CLASSES);
+      const clsKey = clsKeys[Math.floor(Math.random() * clsKeys.length)];
+      const qRoll = Math.random();
+      const qKey = qRoll > 0.88 ? "epic" : qRoll > 0.55 ? "rare" : "common";
+      items.push({
+        kind: "hero",
+        id: "recruit_" + clsKey + "_" + qKey,
+        name: `Chiêu Mộ ${CLASSES[clsKey].name}`,
+        desc: `Phẩm chất: ${QUALITIES[qKey].name} • ${CLASSES[clsKey].role}`,
+        cost: 6,
+        data: { classId: clsKey, quality: qKey }
+      });
+    }
+  }
+
+  state.shopItems = items;
+  if (!free) {
+    addLog(state, `🔄 Đã làm mới Cửa Hàng (3 món ngẫu nhiên).`);
+  }
+}
+
+function buyShopItem(index) {
+  if (G.inBattle) return;
+  const item = G.shopItems[index];
+  if (!item) return;
+  if (G.starlight < item.cost) {
+    addLog(G, `⚠️ Không đủ Tinh Tú để mua [${item.name}].`);
+    renderAll();
+    return;
+  }
+
+  if (item.kind === "relic") {
+    if (G.equippedRelics.length >= 5) {
+      addLog(G, "⚠️ Đã mang tối đa 5 Cổ Vật treo thành! Hãy gỡ bớt 1 cổ vật trước.");
+      renderAll();
+      return;
+    }
+    if (G.equippedRelics.some(r => r.id === item.data.id)) {
+      addLog(G, "⚠️ Bạn đã treo cổ vật này trên thành.");
+      renderAll();
+      return;
+    }
+    G.starlight -= item.cost;
+    G.equippedRelics.push(item.data);
+    addLog(G, `🏛️ Đã treo Cổ Vật [${item.name}] lên thành (${G.equippedRelics.length}/5).`);
+  } else if (item.kind === "gear") {
+    const targetHero = G.heroes.find(h => h.uid === G.selectedHeroId) || G.heroes[0];
+    if (!targetHero) return;
+    G.starlight -= item.cost;
+    targetHero.gear = { ...item.data };
+    addLog(G, `🛡️ Đã trang bị [${item.name}] cho ${getHeroDisplayName(targetHero)}.`);
+  } else if (item.kind === "hero") {
+    if (G.heroes.length >= 5) {
+      addLog(G, "⚠️ Đội hình tối đa 5 tướng trên chiến trường.");
+      renderAll();
+      return;
+    }
+    G.starlight -= item.cost;
+    const newHero = createHero(item.data.classId, item.data.quality);
+    G.heroes.push(newHero);
+    G.selectedHeroId = newHero.uid;
+    addLog(G, `✨ Chiêu mộ thành công ${getHeroDisplayName(newHero)} (${QUALITIES[newHero.quality].name})!`);
+  }
+
+  G.shopItems[index] = null;
+  recalcAllHeroStats(G);
+  saveGame();
+  renderAll();
+}
+
+function removeRelic(relicId) {
+  if (G.inBattle) return;
+  const idx = G.equippedRelics.findIndex(r => r.id === relicId);
+  if (idx === -1) return;
+  const [removed] = G.equippedRelics.splice(idx, 1);
+  addLog(G, `📤 Đã gỡ Cổ Vật [${removed.name}] khỏi thành.`);
+  recalcAllHeroStats(G);
+  saveGame();
+  renderAll();
+}
+
+/* ============================================================================
+   ENEMY BALANCING (FEWER ENEMIES, STRONGER STATS, SCALING BY WAVE)
+   ============================================================================ */
+
+function spawnWaveEnemies(state) {
+  // Fewer enemies per wave (1 to 3 max) so each enemy is a weighty threat
+  const count = state.wave < 3 ? 1 : state.wave < 7 ? 2 : 3;
+  const waveScaleHp = Math.pow(1.24, state.wave - 1) + (state.wave - 1) * 0.15;
+  const waveScaleAtk = Math.pow(1.20, state.wave - 1) + (state.wave - 1) * 0.10;
+  const waveScaleDef = 1 + (state.wave - 1) * 0.12;
+
+  const nerfAtkPct = getRelicVal(state, "enemy_nerf");
+
+  state.enemies = [];
+  for (let i = 0; i < count; i++) {
+    const arch = ENEMY_ARCHETYPES[(state.wave + i) % ENEMY_ARCHETYPES.length];
+    const maxHp = Math.round(arch.hpBase * waveScaleHp * (1 + i * 0.12));
+    const atk = Math.round(arch.atkBase * waveScaleAtk * (1 - nerfAtkPct) * (1 + i * 0.08));
+    const def = Math.round(arch.defBase * waveScaleDef);
+
+    state.enemies.push({
+      uid: "e_" + state.wave + "_" + i + "_" + Math.random().toString(36).slice(2, 6),
+      archId: arch.id,
+      name: `${arch.name} W${state.wave}`,
+      color: arch.color,
+      ranged: arch.ranged,
+      hp: maxHp,
+      maxHp,
+      atk,
+      def,
+      posX: 540 + (i % 2) * 55,
+      posY: 95 + i * 82
+    });
+  }
+}
+
+/* ============================================================================
+   COMBAT VFX (SLASHES, MAGIC RINGS, HEALING, FLOATING TEXT)
+   ============================================================================ */
+
+function spawnVfx(x, y, type, color, label = "") {
+  G.effects.push({
+    x,
+    y,
+    type, // 'slash', 'magic', 'heal'
+    color,
+    label,
+    alpha: 1,
+    radius: 10,
+    age: 0,
+    maxAge: 34
+  });
+}
+
+function updateAndDrawVfx(ctx) {
+  for (let i = G.effects.length - 1; i >= 0; i--) {
+    const fx = G.effects[i];
+    fx.age += 1;
+    fx.radius += 1.6;
+    fx.alpha = Math.max(0, 1 - fx.age / fx.maxAge);
+
+    ctx.save();
+    ctx.globalAlpha = fx.alpha;
+
+    if (fx.type === "slash") {
+      ctx.strokeStyle = fx.color;
+      ctx.lineWidth = 5;
+      ctx.beginPath();
+      ctx.arc(fx.x, fx.y, fx.radius, -Math.PI * 0.45, Math.PI * 0.45);
+      ctx.stroke();
+    } else if (fx.type === "magic") {
+      ctx.strokeStyle = fx.color;
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.arc(fx.x, fx.y, fx.radius, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.fillStyle = fx.color;
+      ctx.fillRect(fx.x - 4, fx.y - fx.radius - 10, 8, 8);
+    } else if (fx.type === "heal") {
+      ctx.strokeStyle = fx.color;
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.arc(fx.x, fx.y - fx.age * 0.5, 14 + fx.age * 0.4, 0, Math.PI * 2);
+      ctx.stroke();
+      // Pixel cross
+      ctx.fillStyle = fx.color;
+      ctx.fillRect(fx.x - 2, fx.y - 10 - fx.age * 0.5, 4, 12);
+      ctx.fillRect(fx.x - 6, fx.y - 6 - fx.age * 0.5, 12, 4);
     }
 
-    const shopCards = document.getElementById("shopCards");
-    shopCards.innerHTML = "";
-    state.shopOffers.forEach((offer, idx) => {
-      const card = document.createElement("div");
-      card.className = "shop-card";
+    if (fx.label) {
+      ctx.font = "bold 12px Segoe UI, sans-serif";
+      ctx.textAlign = "center";
+      ctx.fillStyle = "#ffffff";
+      ctx.fillText(fx.label, fx.x, fx.y - 18 - fx.age * 0.8);
+    }
+
+    ctx.restore();
+
+    if (fx.age >= fx.maxAge) {
+      G.effects.splice(i, 1);
+    }
+  }
+}
+
+/* ============================================================================
+   TURN-BASED BATTLE ENGINE (PRIEST PURE HEALER + SKILLS + BALANCED STATS)
+   ============================================================================ */
+
+function sleep(ms) {
+  return new Promise(res => setTimeout(res, ms));
+}
+
+async function startBattle() {
+  if (G.inBattle) return;
+  if (G.enemies.length === 0) {
+    spawnWaveEnemies(G);
+  }
+  G.inBattle = true;
+  recalcAllHeroStats(G);
+  const startShield = getRelicVal(G, "start_shield");
+  G.heroes.forEach(h => {
+    if (h.hp <= 0) h.hp = Math.round(h.maxHp * 0.6);
+    h.shield = startShield;
+  });
+
+  addLog(G, `⚔️ Vòng ${G.wave} bắt đầu! Đối đầu ${G.enemies.length} kẻ địch cực mạnh.`);
+  renderAll();
+
+  let turn = 1;
+  while (G.inBattle && turn <= 20) {
+    // 1. Heroes act
+    for (const hero of G.heroes) {
+      if (!G.inBattle || hero.hp <= 0) continue;
+      const aliveEnemies = G.enemies.filter(e => e.hp > 0);
+      if (aliveEnemies.length === 0) break;
+
+      const useSkill = (turn % 2 === 0);
+
+      if (hero.classId === "priest") {
+        // Priest NEVER basic attacks enemies: basic heals single lowest-HP ally; skill heals AoE
+        if (!useSkill) {
+          const lowestAlly = [...G.heroes]
+            .filter(a => a.hp > 0)
+            .sort((a, b) => (a.hp / a.maxHp) - (b.hp / b.maxHp))[0];
+          if (lowestAlly) {
+            const healAmt = Math.round((hero.atk * 1.15 + 14) * hero.healMult);
+            lowestAlly.hp = Math.min(lowestAlly.maxHp, lowestAlly.hp + healAmt);
+            spawnVfx(lowestAlly.posX + 32, lowestAlly.posY + 28, "heal", "#72efdd", `+${healAmt} HP`);
+            addLog(G, `✚ ${getHeroDisplayName(hero)} hồi ${healAmt} HP đơn lẻ cho ${getHeroDisplayName(lowestAlly)}.`);
+          }
+        } else {
+          const aoeHeal = Math.round((hero.atk * 1.35 + 18) * hero.healMult * hero.skillMult);
+          G.heroes.filter(a => a.hp > 0).forEach(ally => {
+            ally.hp = Math.min(ally.maxHp, ally.hp + aoeHeal);
+            spawnVfx(ally.posX + 32, ally.posY + 28, "heal", "#52b788", `+${aoeHeal} AOE`);
+          });
+          addLog(G, `✨ ${getHeroDisplayName(hero)} dùng [${CLASSES.priest.skillName}] hồi ${aoeHeal} HP phạm vi cho toàn đội!`);
+        }
+      } else {
+        // Offensive classes (knight, warrior, archer, mage)
+        const target = aliveEnemies[0];
+        const isCrit = Math.random() < hero.critChance;
+        const critFactor = isCrit ? 1.5 : 1.0;
+
+        if (!useSkill) {
+          const rawDmg = Math.max(4, (hero.atk - target.def * 0.45) * critFactor);
+          const dmg = Math.round(rawDmg);
+          target.hp = Math.max(0, target.hp - dmg);
+          const fxType = hero.classId === "mage" ? "magic" : "slash";
+          const fxCol = hero.classId === "mage" ? "#c77dff" : isCrit ? "#ff6b6b" : "#4ea8de";
+          spawnVfx(target.posX + 32, target.posY + 32, fxType, fxCol, `-${dmg}${isCrit ? "!" : ""}`);
+          addLog(G, `⚔️ ${getHeroDisplayName(hero)} đánh ${target.name} gây ${dmg} sát thương${isCrit ? " (BẠO KÍCH)" : ""}.`);
+        } else {
+          const skillMult = (hero.classId === "warrior" ? 1.95 : hero.classId === "archer" ? 1.80 : hero.classId === "mage" ? 1.70 : 1.75) * hero.skillMult;
+          const dmg = Math.round(Math.max(8, (hero.atk * skillMult - target.def * 0.35) * critFactor));
+          target.hp = Math.max(0, target.hp - dmg);
+          const fxType = (hero.classId === "mage" || hero.classId === "archer") ? "magic" : "slash";
+          spawnVfx(target.posX + 32, target.posY + 32, fxType, "#72efdd", `SKILL -${dmg}`);
+          addLog(G, `🔥 ${getHeroDisplayName(hero)} kích hoạt [${CLASSES[hero.classId].skillName}] gây ${dmg} sát thương lên ${target.name}!`);
+
+          if (hero.classId === "knight") {
+            const sh = Math.round(hero.maxHp * 0.16);
+            hero.shield += sh;
+            spawnVfx(hero.posX + 32, hero.posY + 24, "heal", "#4ea8de", `+${sh} Khiên`);
+          } else if (hero.classId === "mage") {
+            target.def = Math.max(0, Math.round(target.def * 0.85));
+          } else if (hero.classId === "archer" && aliveEnemies[1]) {
+            const splash = Math.round(dmg * 0.55);
+            aliveEnemies[1].hp = Math.max(0, aliveEnemies[1].hp - splash);
+            spawnVfx(aliveEnemies[1].posX + 32, aliveEnemies[1].posY + 32, "magic", "#48bfe3", `-${splash}`);
+          }
+        }
+      }
+
+      renderAll();
+      await sleep(360);
+    }
+
+    if (G.enemies.every(e => e.hp <= 0)) {
+      break;
+    }
+
+    // 2. Enemies act
+    const aliveHeroes = G.heroes.filter(h => h.hp > 0);
+    for (const enemy of G.enemies) {
+      if (!G.inBattle || enemy.hp <= 0) continue;
+      const targets = G.heroes.filter(h => h.hp > 0);
+      if (targets.length === 0) break;
+      const victim = targets[Math.floor(Math.random() * targets.length)];
+      const augDmgRed = (victim.augments || []).reduce((s, a) => s + (a.stat.dmgRed || 0), 0);
+      let incoming = Math.max(5, Math.round((enemy.atk - victim.def * 0.55) * (1 - augDmgRed)));
+
+      if (victim.shield > 0) {
+        const absorbed = Math.min(victim.shield, incoming);
+        victim.shield -= absorbed;
+        incoming -= absorbed;
+      }
+      victim.hp = Math.max(0, victim.hp - incoming);
+
+      const thorns = getRelicVal(G, "thorns");
+      if (!enemy.ranged && thorns > 0) {
+        enemy.hp = Math.max(0, enemy.hp - thorns);
+      }
+
+      spawnVfx(victim.posX + 32, victim.posY + 32, enemy.ranged ? "magic" : "slash", "#ef476f", `-${incoming}`);
+      addLog(G, `👾 ${enemy.name} tấn công ${getHeroDisplayName(victim)} gây ${incoming} sát thương.`);
+      renderAll();
+      await sleep(360);
+    }
+
+    if (aliveHeroes.length === 0 || G.heroes.every(h => h.hp <= 0)) {
+      break;
+    }
+
+    turn += 1;
+  }
+
+  const won = G.enemies.every(e => e.hp <= 0);
+  G.inBattle = false;
+  G.heroes.forEach(h => {
+    h.tempAtkBuff = 0;
+    h.tempDefBuff = 0;
+    h.shield = 0;
+  });
+
+  if (won) {
+    // Reduced essence & starlight rewards for tighter pacing
+    const essenceReward = 2 + getRelicVal(G, "wave_essence");
+    const starReward = 1 + getRelicVal(G, "star_bonus");
+    G.essence += essenceReward;
+    G.starlight += starReward;
+    G.records.wins += 1;
+    if (G.wave > G.records.bestWave) G.records.bestWave = G.wave;
+
+    addLog(G, `🏆 Thắng Vòng ${G.wave}! Nhận +${essenceReward} Tinh Hoa và +${starReward} Tinh Tú.`);
+    G.heroes.forEach(h => {
+      if (h.hp > 0) grantHeroXp(G, h, 16 + G.wave * 3);
+    });
+
+    G.wave += 1;
+    spawnWaveEnemies(G);
+  } else {
+    addLog(G, `💀 Đội hình thất bại ở Vòng ${G.wave}. Hồi phục đội hình để thử lại!`);
+    G.heroes.forEach(h => { h.hp = h.maxHp; });
+    spawnWaveEnemies(G);
+  }
+
+  saveGame();
+  renderAll();
+}
+
+/* ============================================================================
+   RENDERING (TOP BAR, RELIC WALL, 64x64 CANVAS, SLOT 3x3, SHOP, MODALS)
+   ============================================================================ */
+
+function renderAll() {
+  renderTopBar();
+  renderRelicWall();
+  renderRosterStrip();
+  renderInspector();
+  renderSlotGrid();
+  renderShopGrid();
+  renderBattleLog();
+}
+
+function renderTopBar() {
+  document.getElementById("uiWave").textContent = G.wave;
+  document.getElementById("uiEssence").textContent = G.essence;
+  document.getElementById("uiStarlight").textContent = G.starlight;
+  document.getElementById("uiRelicCount").textContent = `${G.equippedRelics.length}/5`;
+  document.getElementById("uiAccount").textContent = G.accountName;
+
+  document.getElementById("btnSpin").disabled = G.inBattle || G.essence < SPIN_COST_ESSENCE;
+  document.getElementById("btnFight").disabled = G.inBattle;
+  document.getElementById("btnRerollShop").disabled = G.inBattle || G.starlight < getRerollCost();
+  document.getElementById("rerollCostLabel").textContent = `Làm mới: ${getRerollCost()} Tinh Tú`;
+  document.getElementById("waveDifficultyTag").textContent = `Độ khó: Vòng ${G.wave} (Quái ít, chỉ số cao)`;
+}
+
+function renderRelicWall() {
+  const container = document.getElementById("relicSlots");
+  container.innerHTML = "";
+
+  for (let i = 0; i < 5; i++) {
+    const relic = G.equippedRelics[i];
+    const slot = document.createElement("div");
+    slot.className = "relic-slot" + (relic ? " filled" : "");
+
+    if (relic) {
+      const icon = buildRelicSprite64(relic.id);
+      const canvas = document.createElement("canvas");
+      canvas.width = 32;
+      canvas.height = 32;
+      canvas.getContext("2d").drawImage(icon, 0, 0, 32, 32);
 
       const top = document.createElement("div");
-      top.className = "shop-card-top";
-      const cvs = document.createElement("canvas");
-      drawPixelSprite(cvs, "wall_relic");
-      top.appendChild(cvs);
-      top.innerHTML += `<div class="shop-name">${offer.name}</div><div class="shop-desc">${offer.desc}</div>`;
+      top.className = "relic-top";
+      top.appendChild(canvas);
+      const titleEl = document.createElement("div");
+      titleEl.className = "relic-name";
+      titleEl.textContent = relic.name;
+      top.appendChild(titleEl);
 
-      const bottom = document.createElement("div");
-      const canBuy = state.starlight >= offer.cost && state.wallItems.length < 5;
-      bottom.innerHTML = `<div class="shop-cost">✨ ${offer.cost} Tinh Tú</div>`;
-      const buyBtn = document.createElement("button");
-      buyBtn.style.width = "100%";
-      buyBtn.style.marginTop = "4px";
-      buyBtn.textContent = state.wallItems.length >= 5 ? "Tường Đầy (5/5)" : "Gắn Lên Tường";
-      buyBtn.disabled = !canBuy;
-      buyBtn.onclick = () => {
-        if (!canBuy) return;
-        state.starlight -= offer.cost;
-        state.wallItems.push(offer);
-        recalcAllies();
-        // Replenish to maintain 3 random offers in shop
-        const remainingPool = WALL_ITEMS_POOL.filter(w => !state.shopOffers.some(o => o.id === w.id));
-        const nextOffer = remainingPool[Math.floor(Math.random() * remainingPool.length)] || WALL_ITEMS_POOL[0];
-        state.shopOffers[idx] = { ...nextOffer };
-        addLog(`Đã mua & gắn "${offer.name}" lên tường.`);
-        saveState();
-        renderAll();
+      const descEl = document.createElement("div");
+      descEl.className = "relic-buff";
+      descEl.textContent = relic.desc;
+
+      const rmBtn = document.createElement("button");
+      rmBtn.className = "relic-remove-btn";
+      rmBtn.textContent = "Gỡ";
+      rmBtn.disabled = G.inBattle;
+      rmBtn.onclick = (e) => {
+        e.stopPropagation();
+        removeRelic(relic.id);
       };
-      bottom.appendChild(buyBtn);
 
-      card.appendChild(top);
-      card.appendChild(bottom);
-      shopCards.appendChild(card);
-    });
-
-    const rerollBtn = document.getElementById("rerollShopBtn");
-    rerollBtn.disabled = state.starlight < 2 || state.isSpinning;
+      slot.appendChild(top);
+      slot.appendChild(descEl);
+      slot.appendChild(rmBtn);
+    } else {
+      slot.innerHTML = `<div style="font-size:11px;color:var(--text-muted);text-align:center;margin:auto;">Ô Cổ Vật #${i + 1}<br><span style="font-size:10px;">Trống</span></div>`;
+    }
+    container.appendChild(slot);
   }
+}
 
-  function renderTopAndLog() {
-    document.getElementById("waveStat").textContent = state.wave;
-    document.getElementById("starStat").textContent = state.starlight;
-    document.getElementById("essenceStat").textContent = state.essence;
-    document.getElementById("spinStat").textContent = state.spinsLeft;
-    document.getElementById("slotHint").textContent = `Còn ${state.spinsLeft} lượt xoay`;
-    document.getElementById("spinBtn").disabled = state.spinsLeft <= 0 || state.isSpinning;
-    document.getElementById("executeTurnBtn").disabled = state.isSpinning;
+function renderRosterStrip() {
+  const strip = document.getElementById("rosterStrip");
+  strip.innerHTML = "";
 
-    const logBox = document.getElementById("logBox");
-    logBox.innerHTML = state.logs.map(l => `<div class="log-entry">${l}</div>`).join("");
-  }
+  G.heroes.forEach(h => {
+    const q = QUALITIES[h.quality] || QUALITIES.common;
+    const card = document.createElement("div");
+    card.className = "hero-mini-card" + (h.uid === G.selectedHeroId ? " selected" : "");
+    card.onclick = () => {
+      G.selectedHeroId = h.uid;
+      renderAll();
+    };
 
-  function renderAll() {
-    renderTopAndLog();
-    renderUnits();
-    renderInspector();
-    renderSlotGridOnly();
-    renderShopAndWall();
-  }
+    const sprCanvas = document.createElement("canvas");
+    sprCanvas.width = 40;
+    sprCanvas.height = 40;
+    sprCanvas.getContext("2d").drawImage(buildHeroSprite64(h.classId, h.evolved), 0, 0, 40, 40);
 
-  // Drag & Drop Swallow Zone
-  const swallowZone = document.getElementById("swallowZone");
-  swallowZone.addEventListener("dragover", (e) => {
-    e.preventDefault();
-    swallowZone.classList.add("drag-active");
-  });
-  swallowZone.addEventListener("dragleave", () => {
-    swallowZone.classList.remove("drag-active");
-  });
-  swallowZone.addEventListener("drop", (e) => {
-    e.preventDefault();
-    swallowZone.classList.remove("drag-active");
-    const idx = Number(e.dataTransfer.getData("text/plain"));
-    if (!Number.isNaN(idx)) swallowSlotIndex(idx);
-  });
+    const head = document.createElement("div");
+    head.className = "hero-mini-head";
+    head.appendChild(sprCanvas);
 
-  // Buttons & Modals
-  document.getElementById("spinBtn").onclick = spinSlotsSlowly;
-  document.getElementById("executeTurnBtn").onclick = executeTurn;
-
-  document.getElementById("rerollShopBtn").onclick = () => {
-    if (state.starlight < 2 || state.isSpinning) return;
-    state.starlight -= 2;
-    rollShopOffers();
-    addLog("Đã dùng 2 Tinh Tú để random lại cửa hàng 3 món.");
-    saveState();
-    renderAll();
-  };
-
-  document.getElementById("closeStartBtn").onclick = () => {
-    document.getElementById("startModal").classList.remove("open");
-  };
-
-  document.getElementById("charRosterBtn").onclick = () => {
-    const list = document.getElementById("rosterList");
-    list.innerHTML = "";
-    state.allies.forEach(a => {
-      const q = QUALITIES[a.qIdx];
-      const nextQ = QUALITIES[a.qIdx + 1];
-      const row = document.createElement("div");
-      row.style.cssText = "display:flex;justify-content:space-between;align-items:center;background:#131822;padding:8px;border:1px solid #3a4a66;border-radius:5px;";
-      row.innerHTML = `
-        <div>
-          <strong style="color:${q.color}">${a.name}</strong> (${a.role}) — <span>${q.name}</span><br>
-          <span style="font-size:11px;color:var(--text-muted)">HP ${a.maxHp} | ATK ${a.atk} | Chí mạng ${Math.round(a.crit * 100)}%</span>
-        </div>
-      `;
-      const btn = document.createElement("button");
-      if (nextQ) {
-        btn.textContent = `Nâng (${q.cost} Tinh Hoa)`;
-        btn.disabled = state.essence < q.cost;
-        btn.onclick = () => {
-          if (state.essence < q.cost) return;
-          state.essence -= q.cost;
-          a.qIdx++;
-          recalcAllies();
-          addLog(`Nâng phẩm chất ${a.name} lên ${QUALITIES[a.qIdx].name}!`);
-          saveState();
-          renderAll();
-          document.getElementById("charRosterBtn").click();
-        };
-      } else {
-        btn.textContent = "Tối Đa";
-        btn.disabled = true;
-      }
-      row.appendChild(btn);
-      list.appendChild(row);
-    });
-    document.getElementById("rosterModal").classList.add("open");
-  };
-  document.getElementById("closeRosterBtn").onclick = () => {
-    document.getElementById("rosterModal").classList.remove("open");
-  };
-
-  document.getElementById("recordsBtn").onclick = () => {
-    document.getElementById("recordsContent").innerHTML = `
-      <div>• Vòng cao nhất đạt được: <strong>${state.records.highestWave}</strong></div>
-      <div>• Tổng số ô đã nuốt: <strong>${state.records.totalSwallows}</strong></div>
-      <div>• Tổng số đợt đã thắng: <strong>${state.records.totalWins}</strong></div>
-      <div>• Số lõi đã mở: <strong>${state.cores.length}</strong></div>
+    const info = document.createElement("div");
+    info.innerHTML = `
+      <div style="font-size:12px;font-weight:700;color:#fff;">${getHeroDisplayName(h)}</div>
+      <span class="q-tag" style="color:${q.color};">${q.name}</span>
     `;
-    document.getElementById("recordsModal").classList.add("open");
-  };
-  document.getElementById("closeRecordsBtn").onclick = () => {
-    document.getElementById("recordsModal").classList.remove("open");
-  };
+    head.appendChild(info);
 
-  document.getElementById("accountBtn").onclick = () => {
-    document.getElementById("accountNameInput").value = state.accountName;
-    document.getElementById("accountModal").classList.add("open");
-  };
-  document.getElementById("saveAccountBtn").onclick = () => {
-    const val = document.getElementById("accountNameInput").value.trim();
-    if (val) state.accountName = val;
-    addLog(`Cập nhật tên tài khoản: ${state.accountName}.`);
-    saveState();
-    document.getElementById("accountModal").classList.remove("open");
-  };
-  document.getElementById("closeAccountBtn").onclick = () => {
-    document.getElementById("accountModal").classList.remove("open");
-  };
+    const hpBar = document.createElement("div");
+    hpBar.style.fontSize = "11px";
+    hpBar.style.color = "var(--text-muted)";
+    hpBar.textContent = `HP ${h.hp}/${h.maxHp} • Công ${h.atk} • Tăng cường: ${(h.augments || []).length}`;
 
-  document.getElementById("resetRunBtn").onclick = () => {
-    const savedRecords = { ...state.records };
-    const savedName = state.accountName;
-    state = createInitialState();
-    state.records = savedRecords;
-    state.accountName = savedName;
-    state.enemies = spawnEnemiesForWave(1);
-    rollShopOffers();
-    addLog("Đã bắt đầu lượt chơi mới (Random-Fight! 0.0.3).");
-    saveState();
-    renderAll();
-  };
+    card.appendChild(head);
+    card.appendChild(hpBar);
+    strip.appendChild(card);
+  });
+}
 
-  recalcAllies();
+function renderInspector() {
+  const hero = G.heroes.find(h => h.uid === G.selectedHeroId) || G.heroes[0];
+  const inspCanvas = document.getElementById("inspectorCanvas");
+  const ctx = inspCanvas.getContext("2d");
+  ctx.clearRect(0, 0, 64, 64);
+
+  const actionsEl = document.getElementById("inspectorActions");
+  actionsEl.innerHTML = "";
+
+  if (!hero) return;
+  ctx.drawImage(buildHeroSprite64(hero.classId, hero.evolved), 0, 0, 64, 64);
+
+  const cls = CLASSES[hero.classId] || CLASSES.knight;
+  const q = QUALITIES[hero.quality] || QUALITIES.common;
+  const augNames = (hero.augments || []).map(a => a.name).join(", ") || "Chưa có";
+  const gearName = hero.gear ? hero.gear.name : "Không có";
+
+  document.getElementById("inspTitle").textContent =
+    `${getHeroDisplayName(hero)} — [${q.name}] • XP ${hero.xp}/${getXpNeeded(hero.level)}`;
+  document.getElementById("inspDesc").textContent =
+    `HP: ${hero.hp}/${hero.maxHp} | Công: ${hero.atk} | Giáp: ${hero.def} | Trang bị tướng: ${gearName} | Tăng cường riêng: ${augNames}`;
+
+  // Evolution button unlocked at Lv.15
+  if (hero.level >= 15 && !hero.evolved) {
+    const evoBtn = document.createElement("button");
+    evoBtn.className = "accent-purple";
+    evoBtn.textContent = `🌟 Tiến Hóa -> ${cls.evolvedName}`;
+    evoBtn.disabled = G.inBattle;
+    evoBtn.onclick = () => evolveHero(hero.uid);
+    actionsEl.appendChild(evoBtn);
+  } else if (hero.level < 15 && !hero.evolved) {
+    const lockTag = document.createElement("span");
+    lockTag.className = "sub-note";
+    lockTag.textContent = `Tiến hóa mở ở Lv.15`;
+    actionsEl.appendChild(lockTag);
+  }
+}
+
+function renderSlotGrid() {
+  const grid = document.getElementById("slotGrid");
+  grid.innerHTML = "";
+
+  G.slotCells.forEach((cell, idx) => {
+    const sym = SLOT_SYMBOLS.find(s => s.key === cell.symbol) || SLOT_SYMBOLS[0];
+    const div = document.createElement("div");
+    div.className = "slot-cell" + (cell.spinning ? " spinning" : "");
+    div.draggable = !cell.spinning && !G.inBattle;
+
+    div.ondragstart = () => {
+      draggedSlotIndex = idx;
+      document.getElementById("swallowDropZone").classList.add("drag-over");
+    };
+    div.ondragend = () => {
+      draggedSlotIndex = null;
+      document.getElementById("swallowDropZone").classList.remove("drag-over");
+    };
+
+    const iconCanvas = document.createElement("canvas");
+    iconCanvas.width = 48;
+    iconCanvas.height = 48;
+    iconCanvas.getContext("2d").drawImage(buildSymbolSprite64(sym.key), 0, 0, 48, 48);
+
+    const label = document.createElement("div");
+    label.className = "slot-label";
+    label.textContent = cell.spinning ? "Đang quay..." : sym.name;
+
+    const sub = document.createElement("div");
+    sub.className = "slot-sub";
+    sub.textContent = `+${sym.essence} TH • +${sym.xp} XP`;
+
+    div.appendChild(iconCanvas);
+    div.appendChild(label);
+    div.appendChild(sub);
+
+    if (cell.seal) {
+      const badge = document.createElement("span");
+      badge.className = "seal-badge";
+      badge.textContent = `❖ ${cell.seal}`;
+      div.appendChild(badge);
+    }
+
+    grid.appendChild(div);
+  });
+}
+
+function renderShopGrid() {
+  const grid = document.getElementById("shopGrid");
+  grid.innerHTML = "";
+
+  G.shopItems.forEach((item, idx) => {
+    const card = document.createElement("div");
+    card.className = "shop-card";
+
+    if (!item) {
+      card.innerHTML = `<div style="margin:auto;font-size:12px;color:var(--text-muted);">Đã mua</div>`;
+      grid.appendChild(card);
+      return;
+    }
+
+    const iconCanvas = document.createElement("canvas");
+    iconCanvas.width = 40;
+    iconCanvas.height = 40;
+    if (item.kind === "relic") {
+      iconCanvas.getContext("2d").drawImage(buildRelicSprite64(item.id), 0, 0, 40, 40);
+    } else if (item.kind === "hero") {
+      iconCanvas.getContext("2d").drawImage(buildHeroSprite64(item.data.classId, false), 0, 0, 40, 40);
+    } else {
+      iconCanvas.getContext("2d").drawImage(buildSymbolSprite64("shield"), 0, 0, 40, 40);
+    }
+
+    const top = document.createElement("div");
+    top.className = "shop-card-top";
+    top.appendChild(iconCanvas);
+
+    const titleWrap = document.createElement("div");
+    const typeLabel = item.kind === "relic" ? "Cổ Vật Treo Thành" : item.kind === "gear" ? "Trang Bị Tướng" : "Tướng Mới";
+    titleWrap.innerHTML = `<div class="shop-card-type">${typeLabel}</div><div class="shop-card-title">${item.name}</div>`;
+    top.appendChild(titleWrap);
+
+    const desc = document.createElement("div");
+    desc.className = "shop-card-desc";
+    desc.textContent = item.desc;
+
+    const foot = document.createElement("div");
+    foot.className = "shop-card-footer";
+    const price = document.createElement("span");
+    price.className = "price-tag";
+    price.textContent = `✦ ${item.cost} Tinh Tú`;
+
+    const buyBtn = document.createElement("button");
+    buyBtn.className = "primary";
+    buyBtn.style.padding = "4px 9px";
+    buyBtn.style.fontSize = "11px";
+    buyBtn.textContent = "Mua";
+    buyBtn.disabled = G.inBattle || G.starlight < item.cost;
+    buyBtn.onclick = () => buyShopItem(idx);
+
+    foot.appendChild(price);
+    foot.appendChild(buyBtn);
+
+    card.appendChild(top);
+    card.appendChild(desc);
+    card.appendChild(foot);
+    grid.appendChild(card);
+  });
+}
+
+function renderBattleLog() {
+  const box = document.getElementById("battleLog");
+  box.innerHTML = G.logs.map(l => `<div class="log-entry"><strong>[${l.time}]</strong> ${l.text}</div>`).join("");
+}
+
+/* ============================================================================
+   BATTLEFIELD CANVAS LOOP (64x64 PIXEL ART RENDERING)
+   ============================================================================ */
+
+const battleCanvas = document.getElementById("battleCanvas");
+const bCtx = battleCanvas.getContext("2d");
+
+battleCanvas.addEventListener("click", (e) => {
+  const rect = battleCanvas.getBoundingClientRect();
+  const scaleX = battleCanvas.width / rect.width;
+  const scaleY = battleCanvas.height / rect.height;
+  const mx = (e.clientX - rect.left) * scaleX;
+  const my = (e.clientY - rect.top) * scaleY;
+
+  for (const h of G.heroes) {
+    if (mx >= h.posX && mx <= h.posX + 64 && my >= h.posY && my <= h.posY + 64) {
+      G.selectedHeroId = h.uid;
+      renderAll();
+      return;
+    }
+  }
+
+  for (const en of G.enemies) {
+    if (en.hp > 0 && mx >= en.posX && mx <= en.posX + 64 && my >= en.posY && my <= en.posY + 64) {
+      document.getElementById("inspTitle").textContent = `${en.name} — HP ${en.hp}/${en.maxHp}`;
+      document.getElementById("inspDesc").textContent = `Chỉ số kẻ địch Vòng ${G.wave}: Công ${en.atk} | Giáp ${en.def} | Tầm: ${en.ranged ? "Xa" : "Cận chiến"}`;
+      return;
+    }
+  }
+});
+
+function drawBattleScene() {
+  const w = battleCanvas.width;
+  const h = battleCanvas.height;
+  bCtx.clearRect(0, 0, w, h);
+
+  // Arena backdrop
+  bCtx.fillStyle = "#0e1524";
+  bCtx.fillRect(0, 0, w, h);
+
+  // Subtle pixel grid floor
+  bCtx.strokeStyle = "rgba(78, 168, 222, 0.08)";
+  bCtx.lineWidth = 1;
+  for (let gx = 0; gx < w; gx += 32) {
+    bCtx.beginPath();
+    bCtx.moveTo(gx, 0);
+    bCtx.lineTo(gx, h);
+    bCtx.stroke();
+  }
+  for (let gy = 0; gy < h; gy += 32) {
+    bCtx.beginPath();
+    bCtx.moveTo(0, gy);
+    bCtx.lineTo(w, gy);
+    bCtx.stroke();
+  }
+
+  // Draw Heroes (64x64)
+  for (const hero of G.heroes) {
+    const spr = buildHeroSprite64(hero.classId, hero.evolved);
+    if (hero.uid === G.selectedHeroId) {
+      bCtx.strokeStyle = "#48bfe3";
+      bCtx.lineWidth = 2;
+      bCtx.strokeRect(hero.posX - 2, hero.posY - 2, 68, 68);
+    }
+
+    bCtx.save();
+    if (hero.hp <= 0) bCtx.globalAlpha = 0.35;
+    bCtx.drawImage(spr, hero.posX, hero.posY, 64, 64);
+
+    // HP bar above 64x64 sprite
+    const ratio = Math.max(0, Math.min(1, hero.hp / hero.maxHp));
+    bCtx.fillStyle = "#1e293b";
+    bCtx.fillRect(hero.posX + 4, hero.posY - 10, 56, 6);
+    bCtx.fillStyle = hero.classId === "priest" ? "#72efdd" : "#52b788";
+    bCtx.fillRect(hero.posX + 4, hero.posY - 10, Math.round(56 * ratio), 6);
+
+    bCtx.font = "bold 10px Segoe UI, sans-serif";
+    bCtx.fillStyle = "#e2e8f0";
+    bCtx.textAlign = "center";
+    bCtx.fillText(`${CLASSES[hero.classId].name} L${hero.level}`, hero.posX + 32, hero.posY - 14);
+    bCtx.restore();
+  }
+
+  // Draw Enemies (64x64)
+  for (const en of G.enemies) {
+    if (en.hp <= 0) continue;
+    const spr = buildEnemySprite64(en.archId);
+    bCtx.drawImage(spr, en.posX, en.posY, 64, 64);
+
+    const ratio = Math.max(0, Math.min(1, en.hp / en.maxHp));
+    bCtx.fillStyle = "#1e293b";
+    bCtx.fillRect(en.posX + 4, en.posY - 10, 56, 6);
+    bCtx.fillStyle = "#ef476f";
+    bCtx.fillRect(en.posX + 4, en.posY - 10, Math.round(56 * ratio), 6);
+
+    bCtx.font = "bold 10px Segoe UI, sans-serif";
+    bCtx.fillStyle = "#ffd6e0";
+    bCtx.textAlign = "center";
+    bCtx.fillText(`${en.name} (${en.hp})`, en.posX + 32, en.posY - 14);
+  }
+
+  updateAndDrawVfx(bCtx);
+  requestAnimationFrame(drawBattleScene);
+}
+
+/* ============================================================================
+   MODALS (22 RELICS COMPENDIUM, ROSTER, ACCOUNT, RECORDS)
+   ============================================================================ */
+
+function openSubModal(title, htmlContent) {
+  document.getElementById("subModalTitle").textContent = title;
+  document.getElementById("subModalBody").innerHTML = htmlContent;
+  document.getElementById("subModalOverlay").classList.add("active");
+}
+
+function closeSubModal() {
+  document.getElementById("subModalOverlay").classList.remove("active");
+}
+
+document.getElementById("btnRelicCompendium").onclick = () => {
+  const cards = RELICS_POOL.map(r => {
+    const eq = G.equippedRelics.some(x => x.id === r.id);
+    return `<div class="comp-item" style="border-color:${eq ? "var(--accent-star)" : "var(--border-ui)"}">
+      <div style="font-weight:700;color:#fff;">${r.name} ${eq ? '<span style="color:var(--accent-star);">[Đang Treo]</span>' : ""}</div>
+      <div style="color:var(--text-muted);margin-top:3px;">${r.desc}</div>
+    </div>`;
+  }).join("");
+  openSubModal(`🏛️ Danh Sách ${RELICS_POOL.length} Cổ Vật Treo Thành (Tối đa 5)`, `<div class="compendium-grid">${cards}</div>`);
+};
+
+document.getElementById("btnRosterModal").onclick = () => {
+  const rows = G.heroes.map(h => {
+    const cls = CLASSES[h.classId];
+    const augs = (h.augments || []).map(a => `• ${a.name}: ${a.desc}`).join("<br>") || "Chưa thức tỉnh";
+    const canEvo = h.level >= 15 && !h.evolved;
+    return `<div class="comp-item" style="margin-bottom:8px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <strong>${getHeroDisplayName(h)} (${QUALITIES[h.quality].name})</strong>
+        ${canEvo ? `<button class="accent-purple" style="padding:3px 8px;font-size:11px;" onclick="evolveHero('${h.uid}');document.getElementById('btnRosterModal').click();">Tiến Hóa Lv.15</button>` : ""}
+      </div>
+      <div style="color:var(--text-muted);margin-top:4px;">HP ${h.maxHp} • Công ${h.atk} • Giáp ${h.def} • Kỹ năng: ${cls.skillName}</div>
+      <div style="color:var(--accent-cyan);margin-top:4px;font-size:11px;">Tăng cường riêng: ${augs}</div>
+    </div>`;
+  }).join("");
+  openSubModal("🛡️ Chi Tiết Đội Hình & Tiến Hóa (Lv.15)", rows);
+};
+
+document.getElementById("btnAccountModal").onclick = () => {
+  openSubModal("👤 Tài Khoản & Lưu Trữ", `
+    <p class="sub-note">Đổi tên tài khoản để lưu tiến trình vào trình duyệt.</p>
+    <div class="field-row">
+      <input type="text" id="accNameInput" value="${G.accountName}" placeholder="Nhập tên tài khoản..." />
+      <button class="primary" onclick="saveAccountName()">Lưu Tên</button>
+      <button class="danger" onclick="resetGameProgress()">Reset Game Mới</button>
+    </div>
+  `);
+};
+
+function saveAccountName() {
+  const val = document.getElementById("accNameInput").value.trim();
+  if (val) {
+    G.accountName = val.slice(0, 24);
+    saveGame();
+    renderTopBar();
+    closeSubModal();
+  }
+}
+
+function resetGameProgress() {
+  localStorage.removeItem(STORAGE_KEY);
+  G = defaultState();
+  saveGame();
+  closeSubModal();
   renderAll();
-  stepFxLoop();
-})();
+}
+
+document.getElementById("btnRecordsModal").onclick = () => {
+  openSubModal("🏆 Bảng Kỷ Lục", `
+    <div class="comp-item">
+      <div><strong>Tài khoản:</strong> ${G.accountName}</div>
+      <div><strong>Vòng cao nhất đạt được:</strong> Vòng ${G.records.bestWave}</div>
+      <div><strong>Tổng số trận thắng:</strong> ${G.records.wins}</div>
+      <div><strong>Tổng số lần nuốt Slot:</strong> ${G.records.totalSwallows}</div>
+      <div><strong>Cổ vật đã treo:</strong> ${G.equippedRelics.length}/5</div>
+    </div>
+  `);
+};
+
+/* ============================================================================
+   EVENT BINDINGS & STARTUP
+   ============================================================================ */
+
+document.getElementById("btnSpin").onclick = spinSlotMachine;
+document.getElementById("btnFight").onclick = startBattle;
+document.getElementById("btnRerollShop").onclick = () => {
+  rollShop(G, false);
+  saveGame();
+  renderAll();
+};
+
+const dropZone = document.getElementById("swallowDropZone");
+dropZone.ondragover = (e) => {
+  e.preventDefault();
+  dropZone.classList.add("drag-over");
+};
+dropZone.ondragleave = () => {
+  dropZone.classList.remove("drag-over");
+};
+dropZone.ondrop = (e) => {
+  e.preventDefault();
+  dropZone.classList.remove("drag-over");
+  if (draggedSlotIndex !== null) {
+    swallowSlotCell(draggedSlotIndex);
+    draggedSlotIndex = null;
+  }
+};
+
+renderAll();
+requestAnimationFrame(drawBattleScene);
 </script>
 </body>
 </html>
