@@ -716,7 +716,7 @@
 
   <div style="padding: 8px 16px 0; max-width: 1580px; width: 100%; margin: 0 auto;">
     <div class="notice-banner" id="startNotice">
-      <span>📢 <strong>Thông báo:</strong> Kéo biểu tượng ô Slot thả vào vùng <strong>Nuốt</strong> để nhận Tinh Hoa & XP tướng. Mốc thức tỉnh: <strong>Lv.10, Lv.20, Lv.30</strong> (chọn 1/2 Tăng Cường toàn màn hình riêng cho tướng). Tiến hóa tướng mở khóa ở <strong>Lv.15</strong>!</span>
+      <span>📢 <strong>Thông báo:</strong> Máy xèng 3x3 quay ra <strong>TƯỚNG</strong>! Bấm hoặc kéo tướng từ Slot lên đội hình để xuất trận (tối đa 5 tướng), hoặc kéo tướng trong Slot thả vào vùng <strong>Nuốt</strong> để dồn XP & Tinh Hoa cho tướng đang chọn. Thức tỉnh: <strong>Lv.10, Lv.20, Lv.30</strong> • Tiến hóa: <strong>Lv.15</strong>!</span>
       <button style="padding:3px 8px;font-size:11px;" onclick="document.getElementById('startNotice').style.display='none'">Ẩn</button>
     </div>
   </div>
@@ -768,12 +768,12 @@
     <section class="panel">
       <div class="slot-section">
         <div class="panel-header">
-          <div class="panel-title">🎰 Máy Xèng 3x3 (Slotbound)</div>
-          <span class="sub-note">Chống trùng ấn • Quay chậm rõ nhịp</span>
+          <div class="panel-title">🎰 Máy Xèng Triệu Hồi Tướng 3x3</div>
+          <span class="sub-note">Quay ra Tướng • Không trùng ấn • Nhịp quay rõ</span>
         </div>
         <div class="slot-grid" id="slotGrid"></div>
         <div class="drop-zone" id="swallowDropZone">
-          🫙 Kéo ô Slot vào đây để <strong>NUỐT</strong> (Nhận Tinh Hoa + XP cho tướng được chọn)
+          🫙 Kéo Tướng từ ô Slot thả vào đây để <strong>NUỐT</strong> (Tăng XP & Tinh Hoa cho tướng đang chọn)
         </div>
       </div>
 
@@ -816,7 +816,7 @@
    RANDOM-FIGHT! — FULL SINGLE-FILE ENGINE (64x64 PIXEL SPRITES & VFX)
    ============================================================================ */
 
-const STORAGE_KEY = "random_fight_64_save_v1";
+const STORAGE_KEY = "random_fight_64_save_v2";
 
 const QUALITIES = {
   common:    { name: "Thường",  color: "#9eb0cc", mult: 1.0,  xpMult: 1.0 },
@@ -919,12 +919,32 @@ const AWAKENING_POOL = [
   { id: "a_ward", name: "Kết Giới Nguyên Tố", desc: "Giảm 15% sát thương nhận vào và tăng +12 Giáp cho tướng này.", stat: { dmgRed: 0.15, defAdd: 12 } }
 ];
 
-const SLOT_SYMBOLS = [
-  { key: "sword",  name: "Kiếm Ấn",   color: "#4ea8de", essence: 2, xp: 18, buffText: "+Công tạm" },
-  { key: "shield", name: "Khiên Ấn",  color: "#52b788", essence: 2, xp: 18, buffText: "+Giáp tạm" },
-  { key: "orb",    name: "Ma Cầu",    color: "#c77dff", essence: 3, xp: 22, buffText: "+Ma Lực" },
-  { key: "heart",  name: "Thánh Tâm", color: "#ff6b6b", essence: 2, xp: 24, buffText: "+Hồi Phục" },
-  { key: "star",   name: "Tinh Hạch", color: "#72efdd", essence: 4, xp: 26, buffText: "+Tinh Tú" }
+const SLOT_HERO_POOL = [
+  { classId: "knight",  quality: "common",    weight: 26 },
+  { classId: "warrior", quality: "common",    weight: 26 },
+  { classId: "archer",  quality: "common",    weight: 24 },
+  { classId: "mage",    quality: "common",    weight: 24 },
+  { classId: "priest",  quality: "common",    weight: 22 },
+  { classId: "knight",  quality: "rare",      weight: 12 },
+  { classId: "warrior", quality: "rare",      weight: 12 },
+  { classId: "archer",  quality: "rare",      weight: 11 },
+  { classId: "mage",    quality: "rare",      weight: 11 },
+  { classId: "priest",  quality: "rare",      weight: 10 },
+  { classId: "knight",  quality: "epic",      weight: 5 },
+  { classId: "warrior", quality: "epic",      weight: 5 },
+  { classId: "archer",  quality: "epic",      weight: 5 },
+  { classId: "mage",    quality: "epic",      weight: 5 },
+  { classId: "priest",  quality: "epic",      weight: 4 },
+  { classId: "warrior", quality: "legendary", weight: 2 },
+  { classId: "mage",    quality: "legendary", weight: 2 }
+];
+
+const SEAL_TYPES = [
+  { id: "seal_atk",  name: "Ấn Cuồng Chiến", desc: "+12% Công cho tướng" },
+  { id: "seal_hp",   name: "Ấn Trường Sinh", desc: "+15% Máu cho tướng" },
+  { id: "seal_crit", name: "Ấn Chí Mạng",    desc: "+10% Bạo kích cho tướng" },
+  { id: "seal_heal", name: "Ấn Thánh Quang", desc: "+18% Hồi máu & Kỹ năng" },
+  { id: "seal_xp",   name: "Ấn Ngộ Đạo",     desc: "+25% XP nhận được" }
 ];
 
 const HERO_GEAR_POOL = [
@@ -1202,11 +1222,27 @@ function defaultState() {
     heroes: [h1, h2, h3],
     selectedHeroId: h1.uid,
     equippedRelics: [], // max 5
-    slotCells: Array.from({ length: 9 }, () => ({
-      symbol: "sword",
-      seal: null, // prevents duplicate seal of same type
-      spinning: false
-    })),
+    slotCells: Array.from({ length: 9 }, (_, i) => {
+      const defaults = [
+        { classId: "knight", quality: "common" },
+        { classId: "warrior", quality: "common" },
+        { classId: "archer", quality: "common" },
+        { classId: "mage", quality: "common" },
+        { classId: "priest", quality: "common" },
+        { classId: "knight", quality: "rare" },
+        { classId: "warrior", quality: "rare" },
+        { classId: "archer", quality: "rare" },
+        { classId: "priest", quality: "rare" }
+      ];
+      const pick = defaults[i % defaults.length];
+      return {
+        classId: pick.classId,
+        quality: pick.quality,
+        seal: null,
+        spinning: false,
+        empty: false
+      };
+    }),
     shopItems: [],
     enemies: [],
     effects: [], // combat VFX: slashes, magic rings, heals, floating numbers
@@ -1235,7 +1271,7 @@ function saveGame() {
       heroes: G.heroes,
       selectedHeroId: G.selectedHeroId,
       equippedRelics: G.equippedRelics,
-      slotCells: G.slotCells.map(c => ({ symbol: c.symbol, seal: c.seal, spinning: false })),
+      slotCells: G.slotCells.map(c => ({ classId: c.classId, quality: c.quality, seal: c.seal, spinning: false, empty: !!c.empty })),
       shopItems: G.shopItems
     };
     localStorage.setItem(STORAGE_KEY, JSON.stringify(slim));
@@ -1316,19 +1352,24 @@ function recalcAllHeroStats(state) {
     const gearAtk = h.gear ? (h.gear.atk || 0) : 0;
     const gearDef = h.gear ? (h.gear.def || 0) : 0;
 
+    const sealHpPct = h.seal === "Ấn Trường Sinh" ? 0.15 : 0;
+    const sealAtkPct = h.seal === "Ấn Cuồng Chiến" ? 0.12 : 0;
+    const sealCrit = h.seal === "Ấn Chí Mạng" ? 0.10 : 0;
+    const sealHeal = h.seal === "Ấn Thánh Quang" ? 0.18 : 0;
+
     const classAtkMult = 1 + getRelicVal(state, "class_atk", h.classId);
     const totalMult = q.mult * (1 + allStatsPct);
 
-    const maxHp = Math.round(((cls.baseHp * hpScale) + gearHp + teamHp) * totalMult * (1 + augHpPct));
-    const atk = Math.round(((cls.baseAtk * atkScale) + gearAtk + (h.tempAtkBuff || 0)) * totalMult * classAtkMult * (1 + augAtkPct));
+    const maxHp = Math.round(((cls.baseHp * hpScale) + gearHp + teamHp) * totalMult * (1 + augHpPct + sealHpPct));
+    const atk = Math.round(((cls.baseAtk * atkScale) + gearAtk + (h.tempAtkBuff || 0)) * totalMult * classAtkMult * (1 + augAtkPct + sealAtkPct));
     const def = Math.round(((cls.baseDef * defScale) + gearDef + (h.tempDefBuff || 0) + teamDef) * (1 + allStatsPct) + augDefAdd);
 
     h.maxHp = Math.max(50, maxHp);
     h.atk = Math.max(5, atk);
     h.def = Math.max(0, def);
-    h.critChance = Math.min(0.85, 0.12 + getRelicVal(state, "slot_crit") + augCritAdd);
-    h.healMult = 1 + getRelicVal(state, "priest_heal") + augHealPct;
-    h.skillMult = 1 + getRelicVal(state, "skill_power") + augSkillPct;
+    h.critChance = Math.min(0.85, 0.12 + getRelicVal(state, "slot_crit") + augCritAdd + sealCrit);
+    h.healMult = 1 + getRelicVal(state, "priest_heal") + augHealPct + sealHeal;
+    h.skillMult = 1 + getRelicVal(state, "skill_power") + augSkillPct + sealHeal;
 
     if (h.hp === undefined || h.hp > h.maxHp) h.hp = h.maxHp;
     if (h.hp <= 0 && !state.inBattle) h.hp = h.maxHp;
@@ -1342,7 +1383,8 @@ function recalcAllHeroStats(state) {
 function grantHeroXp(state, hero, amount) {
   if (!hero) return;
   const q = QUALITIES[hero.quality] || QUALITIES.common;
-  const xpGainMult = 1 + getRelicVal(state, "xp_gain");
+  const sealXp = hero.seal === "Ấn Ngộ Đạo" ? 0.25 : 0;
+  const xpGainMult = 1 + getRelicVal(state, "xp_gain") + sealXp;
   hero.xp += Math.round(amount * q.xpMult * xpGainMult);
 
   while (hero.xp >= getXpNeeded(hero.level)) {
@@ -1466,6 +1508,21 @@ function pickAwakeningAugment(aug) {
 const SPIN_COST_ESSENCE = 3;
 let draggedSlotIndex = null;
 
+function rollRandomSlotHero(luckBonus = 0) {
+  const weighted = SLOT_HERO_POOL.map(entry => {
+    let w = entry.weight;
+    if (entry.quality !== "common") w *= (1 + luckBonus * 2.5);
+    return { ...entry, w };
+  });
+  const totalW = weighted.reduce((s, e) => s + e.w, 0);
+  let r = Math.random() * totalW;
+  for (const item of weighted) {
+    r -= item.w;
+    if (r <= 0) return { classId: item.classId, quality: item.quality };
+  }
+  return { classId: "knight", quality: "common" };
+}
+
 function spinSlotMachine() {
   if (G.inBattle) return;
   if (G.essence < SPIN_COST_ESSENCE) {
@@ -1477,28 +1534,31 @@ function spinSlotMachine() {
   G.essence -= SPIN_COST_ESSENCE;
   const luckBonus = getRelicVal(G, "slot_spin_luck");
 
-  // Collect currently active seals to strictly prevent duplicate seal types on the 3x3 board
-  const usedSeals = new Set(G.slotCells.map(c => c.seal).filter(Boolean));
-  const sealPool = ["Ấn Công", "Ấn Giáp", "Ấn Ma", "Ấn Hồi", "Ấn Tinh"].filter(s => !usedSeals.has(s));
+  // Strictly prevent duplicate seals across all 9 slot cells and active heroes
+  const usedSeals = new Set([
+    ...G.slotCells.map(c => c.seal).filter(Boolean),
+    ...G.heroes.map(h => h.seal).filter(Boolean)
+  ]);
+  const sealPool = SEAL_TYPES.map(s => s.name).filter(name => !usedSeals.has(name));
 
   G.slotCells.forEach(cell => {
     cell.spinning = true;
+    cell.empty = false;
   });
   renderSlotGrid();
 
   // Slower, deliberate cadence per slot row
-  const delays = [450, 750, 1050];
+  const delays = [450, 760, 1080];
   G.slotCells.forEach((cell, idx) => {
     const row = Math.floor(idx / 3);
     setTimeout(() => {
-      let pickIdx = Math.floor(Math.random() * SLOT_SYMBOLS.length);
-      if (Math.random() < luckBonus && pickIdx < 3) {
-        pickIdx = 3 + Math.floor(Math.random() * 2);
-      }
-      cell.symbol = SLOT_SYMBOLS[pickIdx].key;
+      const rolled = rollRandomSlotHero(luckBonus);
+      cell.classId = rolled.classId;
+      cell.quality = rolled.quality;
+      cell.empty = false;
 
-      // Small chance to grant a non-duplicate seal if cell has none
-      if (!cell.seal && sealPool.length > 0 && Math.random() < 0.22) {
+      // Grant a non-duplicate seal occasionally
+      if (!cell.seal && sealPool.length > 0 && Math.random() < 0.24) {
         cell.seal = sealPool.shift();
       }
       cell.spinning = false;
@@ -1507,49 +1567,76 @@ function spinSlotMachine() {
         saveGame();
         renderTopBar();
       }
-    }, delays[row] + (idx % 3) * 90);
+    }, delays[row] + (idx % 3) * 95);
   });
+}
+
+function deploySlotHero(idx) {
+  if (G.inBattle) return;
+  const cell = G.slotCells[idx];
+  if (!cell || cell.spinning || cell.empty) return;
+
+  if (G.heroes.length >= 5) {
+    addLog(G, "⚠️ Đội hình tối đa 5 tướng! Hãy kéo tướng từ Slot vào vùng Nuốt để dồn XP cho tướng đang chọn.");
+    renderAll();
+    return;
+  }
+
+  const newHero = createHero(cell.classId, cell.quality);
+  if (cell.seal) {
+    const sealObj = SEAL_TYPES.find(s => s.name === cell.seal);
+    if (sealObj && !G.heroes.some(h => h.seal === sealObj.name)) {
+      newHero.seal = sealObj.name;
+    }
+  }
+
+  G.heroes.push(newHero);
+  G.selectedHeroId = newHero.uid;
+  cell.empty = true;
+  cell.seal = null;
+
+  recalcAllHeroStats(G);
+  spawnVfx(newHero.posX + 32, newHero.posY + 32, "magic", QUALITIES[newHero.quality].color, "XUẤT TRẬN!");
+  addLog(G, `⚔️ Triệu hồi ${getHeroDisplayName(newHero)} (${QUALITIES[newHero.quality].name}) từ Máy Xèng vào đội hình!`);
+  saveGame();
+  renderAll();
 }
 
 function swallowSlotCell(idx) {
   if (G.inBattle) return;
   const cell = G.slotCells[idx];
-  if (!cell || cell.spinning) return;
+  if (!cell || cell.spinning || cell.empty) return;
 
-  const sym = SLOT_SYMBOLS.find(s => s.key === cell.symbol) || SLOT_SYMBOLS[0];
+  const qMult = cell.quality === "legendary" ? 2.2 : cell.quality === "epic" ? 1.7 : cell.quality === "rare" ? 1.35 : 1.0;
   const relicEssence = getRelicVal(G, "slot_essence");
   const relicXp = getRelicVal(G, "slot_xp");
-  const starBonus = getRelicVal(G, "star_bonus");
 
-  const gainedEssence = sym.essence + relicEssence;
-  const gainedXp = sym.xp + relicXp;
+  const gainedEssence = Math.round(2 * qMult) + relicEssence;
+  const gainedXp = Math.round(22 * qMult) + relicXp;
 
   G.essence += gainedEssence;
-  if (sym.key === "star") {
-    G.starlight += 1 + starBonus;
-  }
   G.records.totalSwallows += 1;
 
   const targetHero = G.heroes.find(h => h.uid === G.selectedHeroId) || G.heroes[0];
+  const swallowedClass = CLASSES[cell.classId] || CLASSES.knight;
+  const isSameClass = targetHero && targetHero.classId === cell.classId;
+  const finalXp = isSameClass ? Math.round(gainedXp * 1.45) : gainedXp;
+
   if (targetHero) {
-    targetHero.tempAtkBuff = (targetHero.tempAtkBuff || 0) + (sym.key === "sword" || sym.key === "orb" ? 4 : 1);
-    targetHero.tempDefBuff = (targetHero.tempDefBuff || 0) + (sym.key === "shield" ? 3 : 0);
-    if (sym.key === "heart") {
-      targetHero.hp = Math.min(targetHero.maxHp, targetHero.hp + Math.round(targetHero.maxHp * 0.25));
+    if (cell.seal && !targetHero.seal && !G.heroes.some(h => h.seal === cell.seal)) {
+      targetHero.seal = cell.seal;
+      addLog(G, `❖ ${getHeroDisplayName(targetHero)} hấp thụ [${cell.seal}]!`);
     }
-    spawnVfx(targetHero.posX + 32, targetHero.posY + 24, "heal", sym.color, `NUỐT ${sym.name}! +${gainedEssence} TH`);
+    spawnVfx(targetHero.posX + 32, targetHero.posY + 24, "heal", QUALITIES[cell.quality].color, `NUỐT +${finalXp} XP`);
   }
 
-  addLog(G, `🫙 Đã nuốt [${sym.name}]: +${gainedEssence} Tinh Hoa, +${gainedXp} XP cho ${targetHero ? getHeroDisplayName(targetHero) : "tướng"}.`);
+  addLog(G, `🫙 Đã nuốt [${swallowedClass.name} - ${QUALITIES[cell.quality].name}]: +${gainedEssence} Tinh Hoa, +${finalXp} XP${isSameClass ? " (Cùng hệ +45% XP!)" : ""} cho ${targetHero ? getHeroDisplayName(targetHero) : "tướng"}.`);
 
-  // Replace swallowed cell with a fresh symbol without duplicate seal
-  const usedSeals = new Set(G.slotCells.map(c => c.seal).filter(Boolean));
-  const availSeals = ["Ấn Công", "Ấn Giáp", "Ấn Ma", "Ấn Hồi", "Ấn Tinh"].filter(s => !usedSeals.has(s));
-  cell.symbol = SLOT_SYMBOLS[Math.floor(Math.random() * SLOT_SYMBOLS.length)].key;
-  cell.seal = (!cell.seal && availSeals.length > 0 && Math.random() < 0.15) ? availSeals[0] : cell.seal;
+  cell.empty = true;
+  cell.seal = null;
 
   if (targetHero) {
-    grantHeroXp(G, targetHero, gainedXp);
+    grantHeroXp(G, targetHero, finalXp);
   }
   saveGame();
   renderAll();
@@ -2118,9 +2205,19 @@ function renderSlotGrid() {
   grid.innerHTML = "";
 
   G.slotCells.forEach((cell, idx) => {
-    const sym = SLOT_SYMBOLS.find(s => s.key === cell.symbol) || SLOT_SYMBOLS[0];
     const div = document.createElement("div");
     div.className = "slot-cell" + (cell.spinning ? " spinning" : "");
+
+    if (cell.empty && !cell.spinning) {
+      div.style.opacity = "0.45";
+      div.innerHTML = `<div class="slot-sub">Ô trống<br>(Quay tiếp)</div>`;
+      grid.appendChild(div);
+      return;
+    }
+
+    const cls = CLASSES[cell.classId] || CLASSES.knight;
+    const q = QUALITIES[cell.quality] || QUALITIES.common;
+    div.style.borderColor = cell.spinning ? "var(--accent-cyan)" : q.color;
     div.draggable = !cell.spinning && !G.inBattle;
 
     div.ondragstart = () => {
@@ -2135,25 +2232,42 @@ function renderSlotGrid() {
     const iconCanvas = document.createElement("canvas");
     iconCanvas.width = 48;
     iconCanvas.height = 48;
-    iconCanvas.getContext("2d").drawImage(buildSymbolSprite64(sym.key), 0, 0, 48, 48);
+    iconCanvas.getContext("2d").drawImage(buildHeroSprite64(cls.id, false), 0, 0, 48, 48);
 
     const label = document.createElement("div");
     label.className = "slot-label";
-    label.textContent = cell.spinning ? "Đang quay..." : sym.name;
+    label.textContent = cell.spinning ? "Đang quay..." : cls.name;
 
     const sub = document.createElement("div");
     sub.className = "slot-sub";
-    sub.textContent = `+${sym.essence} TH • +${sym.xp} XP`;
+    sub.style.color = q.color;
+    sub.style.fontWeight = "700";
+    sub.textContent = cell.spinning ? "..." : q.name;
 
     div.appendChild(iconCanvas);
     div.appendChild(label);
     div.appendChild(sub);
 
-    if (cell.seal) {
+    if (cell.seal && !cell.spinning) {
       const badge = document.createElement("span");
       badge.className = "seal-badge";
       badge.textContent = `❖ ${cell.seal}`;
       div.appendChild(badge);
+    }
+
+    if (!cell.spinning) {
+      const deployBtn = document.createElement("button");
+      deployBtn.className = "primary";
+      deployBtn.style.padding = "2px 8px";
+      deployBtn.style.fontSize = "10px";
+      deployBtn.style.marginTop = "2px";
+      deployBtn.textContent = "Ra Trận";
+      deployBtn.disabled = G.inBattle || G.heroes.length >= 5;
+      deployBtn.onclick = (e) => {
+        e.stopPropagation();
+        deploySlotHero(idx);
+      };
+      div.appendChild(deployBtn);
     }
 
     grid.appendChild(div);
@@ -2182,7 +2296,7 @@ function renderShopGrid() {
     } else if (item.kind === "hero") {
       iconCanvas.getContext("2d").drawImage(buildHeroSprite64(item.data.classId, false), 0, 0, 40, 40);
     } else {
-      iconCanvas.getContext("2d").drawImage(buildSymbolSprite64("shield"), 0, 0, 40, 40);
+      iconCanvas.getContext("2d").drawImage(buildRelicSprite64(item.id || "gear"), 0, 0, 40, 40);
     }
 
     const top = document.createElement("div");
