@@ -396,7 +396,7 @@
       <canvas id="brandIcon" width="46" height="46" class="pixel-canvas"></canvas>
       <div>
         <div class="brand-title">RANDOM-FIGHT! • VƯƠNG QUỐC TRUNG CỔ</div>
-        <div class="brand-sub">PIXEL 1080x1080 TRUNG CỔ • HỒI SINH KHI THẮNG TRẬN • KÉO THẢ NUỐT • THỨC TỈNH LV 10 / 20 / 30</div>
+        <div class="brand-sub">PIXEL 1080x1080 TRUNG CỔ • 6 BẬC TƯ CHẤT • MÀN 1 ĐƠN ĐẤU CÂN BẰNG</div>
       </div>
     </div>
     <div class="stats-row">
@@ -531,7 +531,7 @@
 <div class="modal-backdrop" id="ratesModal">
   <div class="modal-card">
     <div class="card-header">
-      <div class="card-title">📊 TỶ LỆ MÁY XÈNG HOÀNG GIA</div>
+      <div class="card-title">📊 TỶ LỆ XÈNG &amp; 6 BẬC TƯ CHẤT</div>
       <button class="btn btn-rose" onclick="closeModal('ratesModal')">✕</button>
     </div>
     <div style="font-size: 12px; color: var(--muted);" id="ratesNote"></div>
@@ -544,6 +544,27 @@
         </tr>
       </thead>
       <tbody id="ratesTableBody"></tbody>
+    </table>
+
+    <div style="font-size: 12px; font-weight: 900; color: var(--gold-bright); margin-top: 6px;">
+      ✦ TỶ LỆ &amp; HỆ SỐ 6 BẬC TƯ CHẤT TƯỚNG
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>Tư Chất</th>
+          <th>Tỷ lệ xuất hiện</th>
+          <th>Hệ số chỉ số</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td style="color:#cbd5e1;font-weight:800;">Thường</td><td><b>80%</b></td><td><b>x1.00</b></td></tr>
+        <tr><td style="color:#38bdf8;font-weight:800;">Cơ Bản</td><td><b>15.5%</b></td><td><b>x1.15</b></td></tr>
+        <tr><td style="color:#34d399;font-weight:800;">Hiếm</td><td><b>4%</b></td><td><b>x1.45</b></td></tr>
+        <tr><td style="color:#c084fc;font-weight:800;">Ưu Việt</td><td><b>0.48%</b></td><td><b>x1.75</b></td></tr>
+        <tr><td style="color:#fb7185;font-weight:800;">Sử Thi</td><td><b>0.02%</b></td><td><b>x2.00</b></td></tr>
+        <tr><td style="color:#fde047;font-weight:800;">Huyền Thoại</td><td><b>0% (Siêu cấp)</b></td><td><b>x2.25</b></td></tr>
+      </tbody>
     </table>
   </div>
 </div>
@@ -678,22 +699,6 @@ const AudioFX = (() => {
 })();
 
 // ================= 1080x1080 MEDIEVAL PIXEL MODELS =================
-// Palette codes (1..14):
-// 1: outline (#180f0a)
-// 2: steelLight (#cbd5e1)
-// 3: steelMid (#64748b)
-// 4: steelDark (#334155)
-// 5: crimson (#b91c1c)
-// 6: crimsonDark (#7f1d1d)
-// 7: royalBlue (#1d4ed8)
-// 8: royalPurple (#7e22ce)
-// 9: forestGreen (#15803d)
-// 10: ivoryGold (#fef3c7)
-// 11: goldAccent (#eab308)
-// 12: horseChestnut (#854d0e)
-// 13: horseDark (#5c330a)
-// 14: skinWarm (#eab676)
-
 const MEDIEVAL_PALETTE_1080 = [
   null,
   '#180f0a',
@@ -717,7 +722,6 @@ const MODEL_1080_CACHE = {};
 function createMedieval1080Canvas(key) {
   if (MODEL_1080_CACHE[key]) return MODEL_1080_CACHE[key];
 
-  // Build on 270x270 pixel grid and scale 4x into exact 1080x1080 crisp pixel art
   const N = 270;
   const grid = Array.from({ length: N }, () => new Uint8Array(N));
 
@@ -753,8 +757,6 @@ function createMedieval1080Canvas(key) {
   }
 
   if (key === 'warrior') {
-    // Chiến binh: 1 tay cầm khiên (trái), 1 tay cầm kiếm (phải)
-    // Plume & Great Helm
     rect(128, 18, 14, 24, 5);
     ellipse(135, 58, 28, 26, 3);
     ellipse(129, 52, 16, 10, 2);
@@ -763,13 +765,11 @@ function createMedieval1080Canvas(key) {
     rect(142, 57, 9, 4, 10);
     rect(132, 52, 6, 28, 11);
 
-    // Torso & crimson surcoat
     ellipse(135, 118, 38, 34, 3);
     rect(115, 92, 40, 56, 5);
     rect(131, 92, 8, 56, 11);
     rect(97, 142, 76, 10, 12);
 
-    // Left arm + Kite Shield (1 tay cầm khiên)
     ellipse(88, 114, 14, 14, 3);
     ellipse(74, 134, 24, 34, 5);
     ellipse(74, 134, 20, 30, 6);
@@ -777,35 +777,28 @@ function createMedieval1080Canvas(key) {
     rect(56, 131, 36, 6, 11);
     circle(74, 134, 6, 2);
 
-    // Right arm + Broadsword (1 tay cầm kiếm)
     ellipse(182, 114, 14, 14, 3);
     rect(176, 124, 14, 24, 14);
     rect(168, 142, 34, 8, 11);
     rect(180, 26, 10, 116, 2);
     rect(185, 26, 5, 116, 3);
 
-    // Legs & greaves
     rect(104, 152, 22, 74, 3);
     rect(144, 152, 22, 74, 3);
     rect(98, 220, 30, 14, 4);
     rect(142, 220, 30, 14, 4);
   } else if (key === 'lancer') {
-    // Kỵ sĩ: cưỡi ngựa, tay cầm thương
-    // Horse body, head, legs, mane & tail
     ellipse(132, 168, 56, 32, 12);
     ellipse(132, 156, 44, 16, 13);
     rect(82, 144, 18, 24, 11);
     rect(164, 144, 18, 24, 11);
 
-    // Horse head & neck (facing right toward enemies)
     ellipse(184, 134, 22, 18, 12);
     ellipse(204, 146, 18, 12, 13);
     rect(178, 112, 12, 16, 13);
     rect(156, 118, 16, 46, 13);
-    // Horse tail
     rect(66, 156, 14, 44, 13);
 
-    // Horse legs
     rect(92, 192, 16, 44, 12);
     rect(116, 192, 16, 44, 12);
     rect(152, 192, 16, 44, 12);
@@ -815,7 +808,6 @@ function createMedieval1080Canvas(key) {
     rect(150, 232, 20, 8, 4);
     rect(172, 232, 20, 8, 4);
 
-    // Mounted Knight torso, helm & pennant
     rect(120, 20, 12, 22, 7);
     ellipse(132, 64, 24, 22, 3);
     rect(112, 62, 42, 7, 1);
@@ -823,25 +815,19 @@ function createMedieval1080Canvas(key) {
     ellipse(132, 108, 30, 26, 7);
     rect(128, 84, 8, 48, 11);
 
-    // Long Cavalry Lance (tay cầm thương)
     rect(152, 116, 106, 7, 12);
-    // Spearhead tip
     for (let i = 0; i < 18; i++) {
       rect(258 + i, 119 - Math.floor(i * 0.45), 2, Math.max(1, 9 - Math.floor(i * 0.45)), 2);
     }
-    // Pennant banner on lance
     rect(210, 102, 24, 14, 7);
     rect(210, 108, 24, 4, 11);
   } else if (key === 'summoner') {
-    // Tư tế: tay cầm thánh giá
-    // Cleric circlet & hood
     ellipse(130, 34, 22, 6, 11);
     ellipse(130, 66, 28, 26, 10);
     ellipse(132, 70, 20, 16, 14);
     rect(116, 66, 8, 5, 7);
     rect(138, 66, 8, 5, 7);
 
-    // Vestment robe & gold stole
     for (let y = 94; y <= 232; y++) {
       const t = (y - 94) / 138;
       const hw = Math.round(28 + t * 24);
@@ -850,15 +836,12 @@ function createMedieval1080Canvas(key) {
     rect(122, 94, 16, 138, 7);
     rect(127, 94, 6, 138, 11);
 
-    // Right hand holding large medieval Cross (tay cầm thánh giá)
     rect(176, 126, 12, 22, 14);
     rect(194, 42, 12, 192, 11);
     rect(172, 74, 56, 12, 11);
     rect(197, 46, 6, 184, 10);
     rect(176, 77, 48, 6, 10);
   } else if (key === 'mage') {
-    // Pháp sư: cầm quyền trượng
-    // Pointed archmage hat
     for (let y = 16; y <= 66; y++) {
       const t = (y - 16) / 50;
       const hw = Math.max(3, Math.round(5 + t * 32));
@@ -866,12 +849,10 @@ function createMedieval1080Canvas(key) {
     }
     ellipse(126, 68, 48, 10, 11);
 
-    // Face & glowing eyes
     ellipse(126, 84, 22, 16, 14);
     rect(112, 80, 8, 4, 10);
     rect(132, 80, 8, 4, 10);
 
-    // Archmage robe
     for (let y = 100; y <= 232; y++) {
       const t = (y - 100) / 132;
       const hw = Math.round(30 + t * 26);
@@ -879,7 +860,6 @@ function createMedieval1080Canvas(key) {
     }
     rect(118, 102, 16, 130, 11);
 
-    // Staff / Quyền trượng with arcane orb & crown prongs
     rect(186, 64, 10, 170, 12);
     rect(178, 58, 26, 8, 11);
     circle(191, 38, 16, 8);
@@ -887,32 +867,26 @@ function createMedieval1080Canvas(key) {
     rect(175, 22, 6, 16, 11);
     rect(201, 22, 6, 16, 11);
   } else if (key === 'archer') {
-    // Cung thủ: 2 tay cầm cung
-    // Ranger hood & forest cloak
     ellipse(130, 66, 30, 28, 9);
     ellipse(134, 70, 20, 16, 14);
     rect(120, 66, 8, 5, 10);
     rect(140, 66, 8, 5, 10);
 
-    // Leather tunic & quiver
     ellipse(130, 128, 34, 34, 9);
     rect(114, 100, 32, 62, 12);
     rect(96, 154, 68, 10, 11);
     rect(104, 164, 18, 62, 13);
     rect(138, 164, 18, 62, 13);
 
-    // Two arms (both hands holding the bow: 2 tay cầm cung)
     rect(148, 114, 28, 10, 14);
     rect(148, 142, 28, 10, 14);
 
-    // Curved Bow held in front by both hands
     for (let a = -68; a <= 68; a += 2) {
       const rad = (a * Math.PI) / 180;
       const bx = 186 + Math.cos(rad) * 24;
       const by = 132 + Math.sin(rad) * 84;
       circle(bx, by, 4.5, 12);
     }
-    // Bowstring & nocked arrow
     rect(185, 48, 2, 168, 10);
     rect(164, 131, 56, 4, 11);
     rect(218, 128, 12, 10, 2);
@@ -925,7 +899,6 @@ function createMedieval1080Canvas(key) {
     rect(120, 114, 30, 36, 11);
     circle(135, 132, 5, 10);
   } else if (key === 'bandit') {
-    // Kẻ địch thường: Cướp Rừng (áo choàng đỏ sẫm & rìu/dao)
     ellipse(135, 68, 28, 26, 6);
     ellipse(132, 72, 18, 14, 5);
     rect(120, 68, 8, 5, 10);
@@ -937,7 +910,6 @@ function createMedieval1080Canvas(key) {
     rect(176, 84, 10, 124, 4);
     rect(166, 76, 28, 22, 2);
   } else if (key === 'blackguard') {
-    // Kẻ địch thường: Hắc Kỵ Sĩ (giáp tối & chùy/đao)
     rect(128, 22, 14, 22, 8);
     ellipse(135, 64, 30, 28, 4);
     rect(112, 62, 46, 8, 1);
@@ -950,7 +922,6 @@ function createMedieval1080Canvas(key) {
     rect(182, 64, 10, 148, 3);
     circle(187, 56, 14, 2);
   } else if (key === 'warlock') {
-    // Kẻ địch thường: Tà Pháp Sư (áo tím đỏ & trượng tà)
     for (let y = 20; y <= 68; y++) {
       const t = (y - 20) / 48;
       const hw = Math.max(3, Math.round(5 + t * 30));
@@ -967,7 +938,6 @@ function createMedieval1080Canvas(key) {
     rect(188, 66, 10, 166, 4);
     circle(193, 44, 15, 5);
   } else if (key === 'boss') {
-    // Boss mỗi 5 vòng: Bạo Chúa
     rect(96, 18, 14, 28, 11);
     rect(160, 18, 14, 28, 11);
     ellipse(135, 66, 36, 32, 6);
@@ -980,7 +950,6 @@ function createMedieval1080Canvas(key) {
     rect(150, 178, 26, 54, 4);
   }
 
-  // Crisp medieval outline pass around non-empty pixels
   const outlined = Array.from({ length: N }, (_, y) => Uint8Array.from(grid[y]));
   const dirs = [
     [-1, 0], [1, 0], [0, -1], [0, 1],
@@ -1064,7 +1033,7 @@ function renderSpriteToCanvas(canvas, key, targetSize = 56) {
   drawCharacterModel(ctx, key, ox, oy, size);
 }
 
-// ================= GAME DATA & CLASS SIGNATURE SKILLS =================
+// ================= GAME DATA, 6 TRAIT TIERS & CLASS SKILLS =================
 const CLASS_SKILLS = {
   warrior: {
     name: 'Chấn Địa Trảm',
@@ -1099,11 +1068,11 @@ const CLASS_SKILLS = {
 };
 
 const SYMBOL_DEFS = [
-  { id: 'warrior', name: 'Chiến Binh', faction: 'Thiết Giáp', kind: 'hero', weight: 22, hp: 165, atk: 24, spd: 1.0,  range: 52,  color: '#f3c677' },
-  { id: 'archer',  name: 'Cung Thủ',   faction: 'Rừng Sâu',   kind: 'hero', weight: 22, hp: 108, atk: 30, spd: 1.25, range: 295, color: '#d99b38' },
-  { id: 'mage',    name: 'Pháp Sư',    faction: 'Tinh Tú',    kind: 'hero', weight: 20, hp: 102, atk: 34, spd: 0.95, range: 280, color: '#f3c677' },
-  { id: 'lancer',  name: 'Kỵ Sĩ',      faction: 'Thiết Giáp', kind: 'hero', weight: 18, hp: 145, atk: 29, spd: 1.35, range: 60,  color: '#d99b38' },
-  { id: 'summoner',name: 'Tư Tế',      faction: 'Tinh Tú',    kind: 'hero', weight: 12, hp: 118, atk: 24, spd: 1.05, range: 275, color: '#f3c677' },
+  { id: 'warrior', name: 'Chiến Binh', faction: 'Thiết Giáp', kind: 'hero', weight: 22, hp: 175, atk: 26, spd: 1.0,  range: 52,  color: '#f3c677' },
+  { id: 'archer',  name: 'Cung Thủ',   faction: 'Rừng Sâu',   kind: 'hero', weight: 22, hp: 118, atk: 32, spd: 1.25, range: 295, color: '#d99b38' },
+  { id: 'mage',    name: 'Pháp Sư',    faction: 'Tinh Tú',    kind: 'hero', weight: 20, hp: 112, atk: 36, spd: 0.95, range: 280, color: '#f3c677' },
+  { id: 'lancer',  name: 'Kỵ Sĩ',      faction: 'Thiết Giáp', kind: 'hero', weight: 18, hp: 155, atk: 31, spd: 1.35, range: 60,  color: '#d99b38' },
+  { id: 'summoner',name: 'Tư Tế',      faction: 'Tinh Tú',    kind: 'hero', weight: 12, hp: 128, atk: 26, spd: 1.05, range: 275, color: '#f3c677' },
   { id: 'chest',   name: 'Rương Báu',  faction: null,         kind: 'gear', weight: 14, color: '#facc15' }
 ];
 
@@ -1113,13 +1082,27 @@ const FACTION_DEFS = {
   'Tinh Tú':    { name: 'Tinh Tú',    desc: '2+ tướng: Đòn đánh gây thêm +25% sát thương phép/bổ sung.' }
 };
 
+// 6 Tư chất: Thường, Cơ Bản, Hiếm, Ưu Việt, Sử Thi, Huyền Thoại
+// Tỷ lệ 5 bậc đầu: 80%; 15.5%; 4%; 0.48%; 0.02% — Hệ số: 1.0; 1.15; 1.45; 1.75; 2.0 (Huyền Thoại: 2.25)
 const TRAIT_POOL = [
-  { id: 'titan', name: 'Thiên Thần Giáp', rarity: 'Kim Cương', hpMult: 1.28, atkMult: 1.06, spdBonus: 0, desc: '+28% HP, +6% Công — Cốt cách trầm ổn vững như tường thành' },
-  { id: 'feral', name: 'Cuồng Chiến Sĩ', rarity: 'Chiến Ý', hpMult: 1.05, atkMult: 1.26, spdBonus: 0.04, desc: '+26% Công, +5% HP, +0.04 Tốc — Khát máu và bùng nổ sát thương' },
-  { id: 'swift', name: 'Linh Miêu Phong', rarity: 'Tốc Độ', hpMult: 1.04, atkMult: 1.08, spdBonus: 0.24, desc: '+0.24 Tốc đánh, +8% Công, +4% HP — Ra đòn thoăn thoắt như gió' },
-  { id: 'balanced', name: 'Kiên Định Cổ', rarity: 'Bền Bỉ', hpMult: 1.15, atkMult: 1.14, spdBonus: 0.08, desc: '+15% HP, +14% Công, +0.08 Tốc — Toàn diện và bền bỉ qua nhiều vòng' },
-  { id: 'lucky', name: 'Hào Quang Vương', rarity: 'Đế Vương', hpMult: 1.14, atkMult: 1.18, spdBonus: 0.12, desc: '+18% Công, +14% HP, +0.12 Tốc — Tư chất đế vương hiếm gặp' }
+  { id: 'common',    name: 'Thường',      ratePct: 80.0,  statMult: 1.00, color: '#cbd5e1', desc: 'Tư chất Thường (80%) — Hệ số chỉ số x1.00' },
+  { id: 'basic',     name: 'Cơ Bản',      ratePct: 15.5,  statMult: 1.15, color: '#38bdf8', desc: 'Tư chất Cơ Bản (15.5%) — Hệ số chỉ số x1.15' },
+  { id: 'rare',      name: 'Hiếm',        ratePct: 4.0,   statMult: 1.45, color: '#34d399', desc: 'Tư chất Hiếm (4%) — Hệ số chỉ số x1.45' },
+  { id: 'superior',  name: 'Ưu Việt',     ratePct: 0.48,  statMult: 1.75, color: '#c084fc', desc: 'Tư chất Ưu Việt (0.48%) — Hệ số chỉ số x1.75' },
+  { id: 'epic',      name: 'Sử Thi',      ratePct: 0.02,  statMult: 2.00, color: '#fb7185', desc: 'Tư chất Sử Thi (0.02%) — Hệ số chỉ số x2.00' },
+  { id: 'legendary', name: 'Huyền Thoại', ratePct: 0.0,   statMult: 2.25, color: '#fde047', desc: 'Tư chất Huyền Thoại — Hệ số chỉ số x2.25' }
 ];
+
+function rollTrait() {
+  const rollPool = TRAIT_POOL.filter(t => t.ratePct > 0);
+  const total = rollPool.reduce((s, t) => s + t.ratePct, 0);
+  let r = Math.random() * total;
+  for (const t of rollPool) {
+    r -= t.ratePct;
+    if (r <= 0) return t;
+  }
+  return rollPool[0];
+}
 
 const AWAKEN_MILESTONES = [10, 20, 30];
 
@@ -1322,7 +1305,7 @@ function getWallGearBonuses() {
   };
 }
 
-// ================= COLLISION & NON-OVERLAP ENGINE (NO PUSH-BACK STALL) =================
+// ================= COLLISION & NON-OVERLAP ENGINE =================
 const MIN_ENTITY_DIST = 44;
 
 function findNonOverlappingPos(targetX, targetY, ignoreId = null, minX = 34, maxX = 355, minY = 44, maxY = 264) {
@@ -1360,8 +1343,6 @@ function findNonOverlappingPos(targetX, targetY, ignoreId = null, minX = 34, max
 }
 
 function resolveEntityCollisions() {
-  // Separate same-side units slightly so allies don't stack on 1 pixel,
-  // while NEVER pushing hero vs enemy apart so engaged units stand still & attack normally.
   const livingHeroes = state.units.filter(u => !u.deadInCombat && u.hp > 0);
   for (let i = 0; i < livingHeroes.length; i++) {
     for (let j = i + 1; j < livingHeroes.length; j++) {
@@ -1405,7 +1386,7 @@ function resolveEntityCollisions() {
   }
 }
 
-// ================= UNIT, AWAKENING BUFFS & COMBAT =================
+// ================= UNIT, 6-TIER TRAIT, AWAKENING BUFFS & COMBAT =================
 function getDefaultSlotPos(idx) {
   const col = idx % 3;
   const row = Math.floor(idx / 3);
@@ -1417,7 +1398,7 @@ function getDefaultSlotPos(idx) {
 function createUnit(defId, star = 1) {
   const def = SYMBOL_DEFS.find(d => d.id === defId) || SYMBOL_DEFS[0];
   const sk = CLASS_SKILLS[def.id] || CLASS_SKILLS.warrior;
-  const trait = TRAIT_POOL[Math.floor(Math.random() * TRAIT_POOL.length)];
+  const trait = rollTrait();
   const mult = star === 1 ? 1 : (star === 2 ? 1.85 : 3.2);
   const startImprints = Array.from({ length: 6 }, (_, i) => {
     if (i === 0) {
@@ -1428,8 +1409,8 @@ function createUnit(defId, star = 1) {
     return null;
   });
   const pos = getDefaultSlotPos(state.units.length);
-  const hpVal = Math.round(def.hp * mult * trait.hpMult);
-  const atkVal = Math.round(def.atk * mult * trait.atkMult);
+  const hpVal = Math.round(def.hp * mult * trait.statMult);
+  const atkVal = Math.round(def.atk * mult * trait.statMult);
   return {
     id: uid('u'),
     defId: def.id,
@@ -1442,7 +1423,7 @@ function createUnit(defId, star = 1) {
     awakenBuffs: [null, null, null],
     baseHp: hpVal,
     baseAtk: atkVal,
-    baseSpd: Number((def.spd + trait.spdBonus).toFixed(2)),
+    baseSpd: def.spd,
     range: def.range,
     hp: hpVal,
     maxHp: hpVal,
@@ -1660,9 +1641,9 @@ function checkAutoPromote() {
           keeper.absorbLv += extraLv;
           keeper.gears = keptGears;
           const def = SYMBOL_DEFS.find(d => d.id === defId);
-          const tr = TRAIT_POOL.find(t => t.id === keeper.traitId) || TRAIT_POOL[3];
-          keeper.baseHp = Math.round(def.hp * (keeper.star === 2 ? 1.85 : 3.2) * tr.hpMult);
-          keeper.baseAtk = Math.round(def.atk * (keeper.star === 2 ? 1.85 : 3.2) * tr.atkMult);
+          const tr = TRAIT_POOL.find(t => t.id === keeper.traitId) || TRAIT_POOL[0];
+          keeper.baseHp = Math.round(def.hp * (keeper.star === 2 ? 1.85 : 3.2) * tr.statMult);
+          keeper.baseAtk = Math.round(def.atk * (keeper.star === 2 ? 1.85 : 3.2) * tr.statMult);
           const st = getUnitStats(keeper);
           keeper.maxHp = st.maxHp;
           keeper.hp = st.maxHp;
@@ -1688,7 +1669,7 @@ function summonHero(defId) {
   state.units.push(u);
   if (!state.selectedUnitId) state.selectedUnitId = u.id;
   spawnParticles(u.x + 24, u.y + 24, '#f3c677', 12, 70);
-  addLog(`➕ Triệu hồi ${u.name} 1★ [${u.faction}] — Tư chất: ${tr ? tr.name : ''}.`, '#f3c677');
+  addLog(`➕ Triệu hồi ${u.name} 1★ [${u.faction}] — Tư chất: ${tr ? `${tr.name} (x${tr.statMult.toFixed(2)})` : ''}.`, tr ? tr.color : '#f3c677');
   checkAutoPromote();
 }
 
@@ -2219,18 +2200,21 @@ function setupBattleCanvasMovement() {
   window.addEventListener('touchend', onPointerUp);
 }
 
-// ================= COMBAT AI & BUFFED REGULAR ENEMIES =================
+// ================= BALANCED WAVE SCALING (WAVE 1 = 1 ENEMY) =================
 function getWaveScaling(waveNum) {
   const w = Math.max(1, waveNum);
-  const hpMult = 1.65 + 0.38 * (w - 1) + 0.06 * Math.pow(w - 1, 1.7);
-  const atkMult = 1.65 + 0.24 * (w - 1) + (w % 5 === 0 ? 0.25 : 0);
-  const spdMult = Math.min(1.72, 1.12 + 0.045 * (w - 1));
+  if (w === 1) {
+    return { hpMult: 0.92, atkMult: 0.85, spdMult: 1.0 };
+  }
+  const hpMult = 1.05 + 0.24 * (w - 1) + 0.03 * Math.pow(w - 1, 1.45);
+  const atkMult = 1.02 + 0.16 * (w - 1) + (w % 5 === 0 ? 0.18 : 0);
+  const spdMult = Math.min(1.5, 1.02 + 0.035 * (w - 1));
   return { hpMult, atkMult, spdMult };
 }
 
 function spawnWaveEnemies(waveNum) {
-  const count = Math.min(11, 4 + Math.floor(waveNum * 0.95) + (waveNum % 5 === 0 ? 1 : 0));
   const isBossWave = waveNum % 5 === 0;
+  const count = waveNum === 1 ? 1 : Math.min(9, 2 + Math.floor(waveNum * 0.75) + (isBossWave ? 1 : 0));
   const sc = getWaveScaling(waveNum);
   const list = [];
 
@@ -2238,48 +2222,55 @@ function spawnWaveEnemies(waveNum) {
     const isBoss = isBossWave && i === count - 1;
     let spriteKey = 'bandit';
     let eName = 'Cướp Rừng';
-    let roleMultHp = 1.45;
-    let roleMultAtk = 1.45;
-    let baseSpd = 60;
+    let roleMultHp = 1.0;
+    let roleMultAtk = 1.0;
+    let baseSpd = 56;
     let range = 52;
     let isRanged = false;
 
-    if (isBoss) {
+    if (waveNum === 1) {
+      spriteKey = 'bandit';
+      eName = 'Cướp Rừng Đầu Đường';
+      roleMultHp = 1.0;
+      roleMultAtk = 1.0;
+      baseSpd = 54;
+      range = 52;
+    } else if (isBoss) {
       spriteKey = 'boss';
       eName = `Bạo Chúa Vòng ${waveNum}`;
-      roleMultHp = 5.6;
-      roleMultAtk = 2.05;
+      roleMultHp = 3.8;
+      roleMultAtk = 1.55;
       baseSpd = 40;
       range = 62;
-    } else if (waveNum >= 2 && i % 3 === 2) {
+    } else if (waveNum >= 3 && i % 3 === 2) {
       spriteKey = 'warlock';
       eName = 'Tà Pháp Sư';
-      roleMultHp = 1.42;
-      roleMultAtk = 1.85;
+      roleMultHp = 1.05;
+      roleMultAtk = 1.35;
       baseSpd = 48;
       range = 235;
       isRanged = true;
     } else if (i % 2 === 1) {
       spriteKey = 'blackguard';
       eName = 'Hắc Kỵ Sĩ';
-      roleMultHp = 2.15;
-      roleMultAtk = 1.65;
+      roleMultHp = 1.55;
+      roleMultAtk = 1.2;
       baseSpd = 45;
       range = 54;
     } else {
-      roleMultHp = 1.50;
-      roleMultAtk = 1.48;
-      baseSpd = 60;
+      roleMultHp = 1.12;
+      roleMultAtk = 1.1;
+      baseSpd = 56;
       range = 52;
     }
 
-    const hp = Math.round(88 * roleMultHp * sc.hpMult);
-    const atk = Math.round(17 * roleMultAtk * sc.atkMult);
+    const hp = Math.round(92 * roleMultHp * sc.hpMult);
+    const atk = Math.round(16 * roleMultAtk * sc.atkMult);
     const spd = Number((baseSpd * sc.spdMult).toFixed(1));
     const col = Math.floor(i / 3);
     const row = i % 3;
-    const rawX = 575 + col * 52;
-    const rawY = 62 + row * 84;
+    const rawX = count === 1 ? 545 : (575 + col * 52);
+    const rawY = count === 1 ? 148 : (62 + row * 84);
 
     list.push({
       id: uid('en'),
@@ -2294,8 +2285,8 @@ function spawnWaveEnemies(waveNum) {
       maxHp: hp,
       atk,
       spd,
-      atkCd: 0.95,
-      bossCd: 3.1,
+      atkCd: 1.05,
+      bossCd: 3.2,
       stunTimer: 0,
       poisonTimer: 0,
       poisonDps: 0,
@@ -2322,7 +2313,7 @@ function startWave() {
   state.particles = [];
   state.effects = [];
   reviveAllUnitsToStartPos();
-  addLog(`⚔️ Xuất trận Vòng ${state.wave}! Kẻ địch thường đã tăng mạnh sức mạnh!`, '#38bdf8');
+  addLog(`⚔️ Xuất trận Vòng ${state.wave} (${state.enemies.length} kẻ địch)!`, '#38bdf8');
   updateUI();
 }
 
@@ -2371,7 +2362,7 @@ function resetGame() {
   ];
   state.logs = [];
   initGrid();
-  addLog('🔄 Đã khởi tạo lại RANDOM-FIGHT! Model 1080x1080, hồi sinh khi thắng trận & hiệu ứng mới.', '#fde047');
+  addLog('🔄 Đã khởi tạo lại RANDOM-FIGHT! Màn 1 có 1 kẻ địch, 6 bậc tư chất mới & hồi sinh khi thắng trận.', '#fde047');
   updateUI();
 }
 
@@ -2664,7 +2655,6 @@ function updateSimulation(rawDt) {
 
     u.atkCooldown -= dt;
 
-    // Tư Tế: có đồng đội khác trên sân -> đánh thường hồi 40% Công cho đồng đội; không có đồng đội -> đánh địch 85% sát thương
     if (u.defId === 'summoner') {
       const allyTarget = selectSummonerAlly(u);
       if (allyTarget) {
@@ -2701,7 +2691,6 @@ function updateSimulation(rawDt) {
     }
 
     const dist = Math.hypot(targetEnemy.x - u.x, targetEnemy.y - u.y);
-    // When in attack range or touching, stand still and attack normally without backing away
     if (dist > st.range) {
       const speedPx = 68 * st.spd;
       const vx = ((targetEnemy.x - u.x) / (dist || 1)) * speedPx * dt;
@@ -2776,7 +2765,6 @@ function updateSimulation(rawDt) {
         const d = Math.hypot(au.x - e.x, au.y - e.y);
         if (d < bestD) { bestD = d; targetU = au; }
       }
-      // Stand still and attack normally once within range or touching
       if (bestD > e.range) {
         e.x -= ((e.x - targetU.x) / (bestD || 1)) * e.spd * dt;
         e.y -= ((e.y - targetU.y) / (bestD || 1)) * e.spd * dt;
@@ -2836,7 +2824,6 @@ function updateSimulation(rawDt) {
 
   resolveEntityCollisions();
 
-  // Mark fallen heroes without deleting them or losing gear; revive if wave is won
   state.units.forEach(u => {
     if (!u.deadInCombat && u.hp <= 0) {
       u.hp = 0;
@@ -2885,7 +2872,7 @@ function updateSimulation(rawDt) {
   }
 }
 
-// ================= BATTLE CANVAS (1080x1080 PIXEL MODELS + COMBAT VFX) =================
+// ================= BATTLE CANVAS =================
 function renderBattleCanvas() {
   const canvas = document.getElementById('battleCanvas');
   const ctx = canvas.getContext('2d');
@@ -2936,7 +2923,6 @@ function renderBattleCanvas() {
     ctx.setLineDash([]);
   }
 
-  // Castle gate wall on left
   ctx.fillStyle = '#1e293b';
   ctx.fillRect(0, 0, 28, h);
   ctx.fillStyle = '#334155';
@@ -3067,7 +3053,6 @@ function renderBattleCanvas() {
   for (const fx of state.effects) {
     const alpha = Math.max(0, fx.life / fx.maxLife);
     if (fx.kind === 'slash') {
-      // Bright white-cyan slash streak
       ctx.save();
       ctx.translate(fx.x, fx.y);
       ctx.rotate(fx.angle || 0);
@@ -3084,7 +3069,6 @@ function renderBattleCanvas() {
       ctx.stroke();
       ctx.restore();
     } else if (fx.kind === 'magic_circle') {
-      // Arcane magic circle
       ctx.save();
       ctx.globalAlpha = alpha;
       ctx.strokeStyle = fx.color || '#c084fc';
@@ -3097,7 +3081,6 @@ function renderBattleCanvas() {
       ctx.beginPath();
       ctx.arc(fx.x, fx.y, fx.radius * 0.68, 0, Math.PI * 2);
       ctx.stroke();
-      // Star/runic cross inside circle
       ctx.beginPath();
       const rIn = fx.radius * 0.68;
       ctx.moveTo(fx.x - rIn, fx.y);
@@ -3107,7 +3090,6 @@ function renderBattleCanvas() {
       ctx.stroke();
       ctx.restore();
     } else if (fx.kind === 'heal_ring') {
-      // Healing ring
       ctx.save();
       ctx.globalAlpha = alpha;
       ctx.strokeStyle = '#34d399';
@@ -3244,7 +3226,7 @@ function openHeroDetailModal(unitId) {
         <div style="font-size:20px; font-weight:900; color:var(--gold-bright);">${u.name} ${'★'.repeat(u.star)} ${u.deadInCombat ? '<span style="color:#fda4af;font-size:13px;">(Tạm ngã trong trận — sẽ hồi sinh nếu thắng)</span>' : ''}</div>
         <div style="display:flex; flex-wrap:wrap; gap:8px;">
           <span class="trait-pill">⚜️ Quân đoàn: ${u.faction} ${isFactionActive ? '(ĐÃ KÍCH HOẠT)' : '(Chưa kích hoạt)'}</span>
-          <span class="trait-pill" style="border-color:#facc15; color:#fde047;">✦ Tư chất: ${tr ? `${tr.name} [${tr.rarity}] — ${tr.desc}` : ''}</span>
+          <span class="trait-pill" style="border-color:${tr ? tr.color : '#facc15'}; color:${tr ? tr.color : '#fde047'};">✦ Tư chất: ${tr ? `${tr.name} (x${tr.statMult.toFixed(2)})` : ''}</span>
           <span class="trait-pill" style="border-color:#c084fc; color:#e9d5ff;">🩸 Cấp Hấp Thụ: LV ${u.absorbLv}</span>
         </div>
         <div style="font-size:12px; color:var(--muted);">${fDef ? fDef.desc : ''}</div>
@@ -3557,7 +3539,7 @@ function renderRoster() {
     info.innerHTML = `
       <div class="unit-name" style="color: #f3c677">${u.name} ${'★'.repeat(u.star)} <span style="font-size:10px;color:#38bdf8;">[${u.faction}]</span> ${u.deadInCombat ? '<span style="font-size:10px;color:#fda4af;">[Ngã trận]</span>' : ''}</div>
       <div class="unit-meta">LV Hấp Thụ: <b>${u.absorbLv}</b> • Công ${st.atk} • HP ${st.maxHp} • Tầm ${st.range}</div>
-      <div class="trait-pill">✦ Tư chất ${tr ? `${tr.name} (${tr.desc})` : ''}</div>
+      <div class="trait-pill" style="border-color:${tr ? tr.color : '#f3c677'}; color:${tr ? tr.color : '#f3c677'};">✦ Tư chất: ${tr ? `${tr.name} (x${tr.statMult.toFixed(2)})` : ''}</div>
       <div class="skill-pill" style="margin-top:2px;">⚡ ${sk.name} (${sk.cooldown}s)</div>
       ${buffSummary.list.length > 0 ? `<div class="buff-pill" style="margin-top:2px;">✨ Buff: ${buffSummary.list.map(b => b.name).join(', ')}</div>` : ''}
     `;
@@ -3782,7 +3764,7 @@ function updateUI() {
   document.getElementById('phaseTag').textContent = state.gameOver
     ? '💀 GAME OVER (1 MẠNG)'
     : (state.inCombat ? `⚔️ ĐANG GIAO CHIẾN — VÒNG ${state.wave}` : '🛡️ GIAI ĐOẠN DÀN TRẬN');
-  document.getElementById('enemyTag').textContent = `Quân Địch: ${state.enemies.length}`;
+  document.getElementById('enemyTag').textContent = `Quân Địch: ${state.wave === 1 && !state.inCombat ? 1 : state.enemies.length}`;
   document.getElementById('battleHint').style.display = state.inCombat ? 'none' : 'block';
   const bagEl = document.getElementById('bagCount');
   if (bagEl) bagEl.textContent = state.inventory.length;
@@ -3821,7 +3803,7 @@ document.getElementById('btnCancelAbsorb').addEventListener('click', () => {
 setupBattleCanvasMovement();
 renderSpriteToCanvas(document.getElementById('brandIcon'), 'warrior', 42);
 initGrid();
-addLog('🏰 Đã cập nhật model pixel 1080x1080 trung cổ, hồi sinh khi thắng trận, tăng sức mạnh địch thường & hiệu ứng chiến đấu.', '#f3c677');
+addLog('🏰 Đã cân bằng lại Vòng 1 (1 kẻ địch) & thêm 6 bậc tư chất (80% / 15.5% / 4% / 0.48% / 0.02% — hệ số 1.0 / 1.15 / 1.45 / 1.75 / 2.0).', '#f3c677');
 updateUI();
 requestAnimationFrame(gameLoop);
 </script>
