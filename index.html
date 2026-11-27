@@ -706,7 +706,6 @@
     </div>
 
     <div class="control-bar">
-      <button class="primary" id="btnSpin">🎰 Quay Slot (100 Vàng)</button>
       <button class="accent-green" id="btnFight">⚔️ Bắt Đầu Chiến Đấu</button>
       <button id="btnRosterModal">🛡️ Nhân Vật</button>
       <button id="btnRelicCompendium">🏛️ 22 Cổ Vật</button>
@@ -769,7 +768,7 @@
     <section class="panel">
       <div class="slot-section">
         <div class="panel-header">
-          <div class="panel-title">🎰 Máy Xèng Triệu Hồi Tướng 3x3</div>
+          <div class="panel-title" id="slotTriggerHeader" style="cursor:pointer;" title="Nhấp để quay máy xèng (100 Vàng lượt đầu, +50 mỗi lượt)">🎰 Máy Xèng Triệu Hồi Tướng 3x3 <span class="sub-note" id="slotCostBadge">(Nhấp để quay • 100 Vàng)</span></div>
           <span class="sub-note" id="slotLineStatus">Quay ra Tướng • Khớp hàng/chéo nhận thưởng • Không trùng ấn</span>
         </div>
         <div class="slot-grid" id="slotGrid"></div>
@@ -817,7 +816,7 @@
    RANDOM-FIGHT! — FULL SINGLE-FILE ENGINE (64x64 PIXEL SPRITES & VFX)
    ============================================================================ */
 
-const STORAGE_KEY = "random_fight_64_save_autochess_v3";
+const STORAGE_KEY = "random_fight_64_save_autochess_v4";
 
 const QUALITIES = {
   common:    { name: "Thường",  color: "#9eb0cc", mult: 1.0,  xpMult: 1.0 },
@@ -1215,9 +1214,6 @@ function createHero(classId, qualityKey = "common", customName = null) {
 }
 
 function defaultState() {
-  const h1 = createHero("knight", "rare");
-  const h2 = createHero("archer", "common");
-  const h3 = createHero("priest", "common");
   const state = {
     accountName: "Khách",
     records: { bestWave: 1, wins: 0, totalSwallows: 0 },
@@ -1226,9 +1222,10 @@ function defaultState() {
     essence: 0,
     starlight: 0,
     spinCount: 0,
+    isFirstEverSpin: true,
     rerollCount: 0,
-    heroes: [h1, h2, h3],
-    selectedHeroId: h1.uid,
+    heroes: [],
+    selectedHeroId: null,
     equippedRelics: [], // max 5
     slotCells: Array.from({ length: 9 }, (_, i) => {
       const defaults = [
@@ -1277,6 +1274,7 @@ function saveGame() {
       essence: G.essence,
       starlight: G.starlight,
       spinCount: G.spinCount || 0,
+      isFirstEverSpin: !!G.isFirstEverSpin,
       rerollCount: G.rerollCount,
       heroes: G.heroes,
       selectedHeroId: G.selectedHeroId,
@@ -1295,7 +1293,7 @@ function loadGame() {
     const parsed = JSON.parse(raw);
     const base = defaultState();
     Object.assign(base, parsed);
-    if (!Array.isArray(base.heroes) || base.heroes.length === 0) return null;
+    if (!Array.isArray(base.heroes)) base.heroes = [];
     recalcAllHeroStats(base);
     spawnWaveEnemies(base);
     return base;
@@ -1384,10 +1382,11 @@ function recalcAllHeroStats(state) {
     if (h.hp === undefined || h.hp > h.maxHp) h.hp = h.maxHp;
     if (h.hp <= 0 && !state.inBattle) h.hp = h.maxHp;
 
-    // Auto-chess formation on left side of 64x64 battlefield
-    const frontRow = (h.classId === "knight" || h.classId === "warrior");
-    h.homeX = frontRow ? 225 : 95;
-    h.homeY = 62 + idx * 56;
+    if (h.homeX === undefined || h.homeY === undefined) {
+      const frontRow = (h.classId === "knight" || h.classId === "warrior");
+      h.homeX = frontRow ? 225 : 95;
+      h.homeY = 62 + idx * 56;
+    }
     if (!state.inBattle) {
       h.posX = h.homeX;
       h.posY = h.homeY;
@@ -1582,6 +1581,23 @@ function rollRandomSlotHero(luckBonus = 0) {
   return { classId: "knight", quality: "common" };
 }
 
+function spawnHeroOnBattlefieldFromSlot(classId, quality, seal = null) {
+  if (G.heroes.length >= 5) {
+    return null;
+  }
+  const newHero = createHero(classId, quality);
+  if (seal && !G.heroes.some(h => h.seal === seal)) {
+    newHero.seal = seal;
+  }
+  G.heroes.push(newHero);
+  if (!G.selectedHeroId) {
+    G.selectedHeroId = newHero.uid;
+  }
+  recalcAllHeroStats(G);
+  spawnVfx(newHero.posX + 32, newHero.posY + 32, "magic", QUALITIES[newHero.quality].color, "RA SÂN!");
+  return newHero;
+}
+
 function spinSlotMachine() {
   if (G.inBattle) return;
   const goldCost = getSpinGoldCost();
@@ -1592,9 +1608,10 @@ function spinSlotMachine() {
   }
   G.gold -= goldCost;
   G.spinCount = (G.spinCount || 0) + 1;
+  const isFirstSpin = !!G.isFirstEverSpin;
+  G.isFirstEverSpin = false;
   const luckBonus = getRelicVal(G, "slot_spin_luck");
 
-  // Strictly prevent duplicate seals across all 9 slot cells and active heroes
   const usedSeals = new Set([
     ...G.slotCells.map(c => c.seal).filter(Boolean),
     ...G.heroes.map(h => h.seal).filter(Boolean)
@@ -1607,32 +1624,71 @@ function spinSlotMachine() {
   });
   renderSlotGrid();
 
-  // Slower, deliberate cadence per slot row
   const delays = [450, 760, 1080];
   G.slotCells.forEach((cell, idx) => {
     const row = Math.floor(idx / 3);
     setTimeout(() => {
-      const rolled = rollRandomSlotHero(luckBonus);
+      let rolled;
+      if (isFirstSpin) {
+        // First ever spin: 100% hit heroes (first row guarantees a matching line of knights/warriors)
+        const firstSpinPool = [
+          { classId: "knight", quality: "rare" },
+          { classId: "knight", quality: "common" },
+          { classId: "knight", quality: "common" },
+          { classId: "archer", quality: "common" },
+          { classId: "mage", quality: "rare" },
+          { classId: "priest", quality: "common" },
+          { classId: "warrior", quality: "rare" },
+          { classId: "archer", quality: "rare" },
+          { classId: "priest", quality: "rare" }
+        ];
+        rolled = firstSpinPool[idx % firstSpinPool.length];
+      } else {
+        rolled = rollRandomSlotHero(luckBonus);
+      }
+
       cell.classId = rolled.classId;
       cell.quality = rolled.quality;
       cell.empty = false;
 
-      // Grant a non-duplicate seal occasionally
       if (!cell.seal && sealPool.length > 0 && Math.random() < 0.24) {
         cell.seal = sealPool.shift();
       }
       cell.spinning = false;
       renderSlotGrid();
+
       if (idx === G.slotCells.length - 1) {
         const evalRes = evaluateSlotLines(G.slotCells);
+        let spawnedCount = 0;
+
+        if (isFirstSpin || evalRes.matchedLines > 0) {
+          // Spawn matching/winning heroes directly onto the battlefield
+          const targetIndices = isFirstSpin
+            ? [0, 1, 2, 3, 4]
+            : [...evalRes.highlightedIndices];
+
+          for (const tIdx of targetIndices) {
+            const targetCell = G.slotCells[tIdx];
+            if (!targetCell || targetCell.empty) continue;
+            const created = spawnHeroOnBattlefieldFromSlot(targetCell.classId, targetCell.quality, targetCell.seal);
+            if (created) {
+              spawnedCount += 1;
+              addLog(G, `⚔️ Máy xèng trúng ${getHeroDisplayName(created)} (${QUALITIES[created.quality].name}) -> Xuất hiện trực tiếp trên sân đấu!`);
+            }
+          }
+        }
+
         if (evalRes.matchedLines > 0) {
           G.essence += evalRes.bonusEssence;
           const anchorHero = G.heroes.find(h => h.uid === G.selectedHeroId) || G.heroes[0];
           if (anchorHero) {
             grantHeroXp(G, anchorHero, evalRes.bonusXp);
           }
-          addLog(G, `🎰 Khớp ${evalRes.matchedLines} đường 3x3! Thưởng +${evalRes.bonusEssence} Tinh Hoa & +${evalRes.bonusXp} XP cho ${anchorHero ? getHeroDisplayName(anchorHero) : "chủ lực"}.`);
+          addLog(G, `🎰 Khớp ${evalRes.matchedLines} đường 3x3! Tạo ${spawnedCount} tướng trên sân, +${evalRes.bonusEssence} Tinh Hoa & +${evalRes.bonusXp} XP.`);
+        } else if (spawnedCount > 0) {
+          addLog(G, `🎰 Lượt quay đầu 100% trúng tướng! Đã tạo ${spawnedCount} tướng trên sân đấu.`);
         }
+
         saveGame();
         renderAll();
       }
@@ -2218,9 +2274,10 @@ function renderTopBar() {
   document.getElementById("uiAccount").textContent = G.accountName;
 
   const currentSpinCost = getSpinGoldCost();
-  const btnSpinEl = document.getElementById("btnSpin");
-  btnSpinEl.textContent = `🎰 Quay Slot (${currentSpinCost} Vàng)`;
-  btnSpinEl.disabled = G.inBattle || (G.gold || 0) < currentSpinCost;
+  const slotCostBadgeEl = document.getElementById("slotCostBadge");
+  if (slotCostBadgeEl) {
+    slotCostBadgeEl.textContent = `(Nhấp để quay • ${currentSpinCost} Vàng)`;
+  }
   document.getElementById("btnFight").disabled = G.inBattle;
   document.getElementById("btnRerollShop").disabled = G.inBattle || (G.starlight < getRerollCost() && (G.gold || 0) < getRerollCost() * 10);
   document.getElementById("rerollCostLabel").textContent = `Làm mới: ${getRerollCost()} TT / ${getRerollCost() * 10} Vàng`;
@@ -2509,21 +2566,62 @@ function renderBattleLog() {
 const battleCanvas = document.getElementById("battleCanvas");
 const bCtx = battleCanvas.getContext("2d");
 
-battleCanvas.addEventListener("click", (e) => {
-  const rect = battleCanvas.getBoundingClientRect();
-  const scaleX = battleCanvas.width / rect.width;
-  const scaleY = battleCanvas.height / rect.height;
-  const mx = (e.clientX - rect.left) * scaleX;
-  const my = (e.clientY - rect.top) * scaleY;
+let draggedBattleHero = null;
+let dragOffsetX = 0;
+let dragOffsetY = 0;
+let didDragHero = false;
 
-  for (const h of G.heroes) {
+function getCanvasCoords(e) {
+  const rect = battleCanvas.getBoundingClientRect();
+  return {
+    x: (e.clientX - rect.left) * (battleCanvas.width / rect.width),
+    y: (e.clientY - rect.top) * (battleCanvas.height / rect.height)
+  };
+}
+
+battleCanvas.addEventListener("pointerdown", (e) => {
+  const { x: mx, y: my } = getCanvasCoords(e);
+  didDragHero = false;
+
+  for (let i = G.heroes.length - 1; i >= 0; i--) {
+    const h = G.heroes[i];
     if (mx >= h.posX && mx <= h.posX + 64 && my >= h.posY && my <= h.posY + 64) {
       G.selectedHeroId = h.uid;
+      draggedBattleHero = h;
+      dragOffsetX = mx - h.posX;
+      dragOffsetY = my - h.posY;
+      battleCanvas.setPointerCapture(e.pointerId);
       renderAll();
       return;
     }
   }
+});
 
+battleCanvas.addEventListener("pointermove", (e) => {
+  if (!draggedBattleHero) return;
+  const { x: mx, y: my } = getCanvasCoords(e);
+  didDragHero = true;
+  const nx = Math.max(12, Math.min(battleCanvas.width - 76, mx - dragOffsetX));
+  const ny = Math.max(24, Math.min(battleCanvas.height - 76, my - dragOffsetY));
+  draggedBattleHero.posX = nx;
+  draggedBattleHero.posY = ny;
+});
+
+battleCanvas.addEventListener("pointerup", (e) => {
+  if (draggedBattleHero) {
+    if (didDragHero) {
+      draggedBattleHero.homeX = draggedBattleHero.posX;
+      draggedBattleHero.homeY = draggedBattleHero.posY;
+      addLog(G, `📍 Đã đặt ${getHeroDisplayName(draggedBattleHero)} tại (${Math.round(draggedBattleHero.homeX)}, ${Math.round(draggedBattleHero.homeY)}).`);
+      saveGame();
+    }
+    draggedBattleHero = null;
+    try { battleCanvas.releasePointerCapture(e.pointerId); } catch (_) {}
+    renderAll();
+    return;
+  }
+
+  const { x: mx, y: my } = getCanvasCoords(e);
   for (const en of G.enemies) {
     if (en.hp > 0 && mx >= en.posX && mx <= en.posX + 64 && my >= en.posY && my <= en.posY + 64) {
       document.getElementById("inspTitle").textContent = `${en.name} — HP ${en.hp}/${en.maxHp}`;
@@ -2703,7 +2801,7 @@ document.getElementById("btnRecordsModal").onclick = () => {
    EVENT BINDINGS & STARTUP
    ============================================================================ */
 
-document.getElementById("btnSpin").onclick = spinSlotMachine;
+document.getElementById("slotTriggerHeader").onclick = spinSlotMachine;
 document.getElementById("btnFight").onclick = startBattle;
 document.getElementById("btnRerollShop").onclick = () => {
   rollShop(G, false);
