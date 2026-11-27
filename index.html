@@ -13,7 +13,6 @@
       --gold: #facc15;
       --gold-bright: #fde047;
       --skin-gold: #d99b38;
-      --skin-umber: #8a5319;
       --skin-light: #f3c677;
       --cyan: #38bdf8;
       --emerald: #34d399;
@@ -256,6 +255,7 @@
     }
     .unit-card:active { cursor: grabbing; }
     .unit-card.selected { border-color: var(--gold); box-shadow: 0 0 12px rgba(250, 204, 21, 0.25); }
+    .unit-card.fallen { border-color: #64748b; opacity: 0.72; }
     .unit-card.dragging-source { opacity: 0.45; transform: scale(0.97); border-style: dashed; border-color: var(--rose); }
     .unit-card.drop-target {
       border-color: var(--rose);
@@ -396,7 +396,7 @@
       <canvas id="brandIcon" width="46" height="46" class="pixel-canvas"></canvas>
       <div>
         <div class="brand-title">RANDOM-FIGHT! • VƯƠNG QUỐC TRUNG CỔ</div>
-        <div class="brand-sub">MODEL TƯỚNG 256x256 TRUNG CỔ • KÉO THẢ NUỐT • THỨC TỈNH LV 10 / 20 / 30</div>
+        <div class="brand-sub">PIXEL 1080x1080 TRUNG CỔ • HỒI SINH KHI THẮNG TRẬN • KÉO THẢ NUỐT • THỨC TỈNH LV 10 / 20 / 30</div>
       </div>
     </div>
     <div class="stats-row">
@@ -677,434 +677,317 @@ const AudioFX = (() => {
   };
 })();
 
-// ================= 256x256 MEDIEVAL PIXEL MODELS =================
-const HERO_PALETTE_256 = {
-  outline: '#1d1005',
-  goldLight: '#f6cf7c',
-  goldMid: '#d59634',
-  goldDark: '#965d18',
-  umber: '#61370b',
-  eye: '#fffbeb',
-  amberTrim: '#b45309',
-  brightCrest: '#fde047'
-};
+// ================= 1080x1080 MEDIEVAL PIXEL MODELS =================
+// Palette codes (1..14):
+// 1: outline (#180f0a)
+// 2: steelLight (#cbd5e1)
+// 3: steelMid (#64748b)
+// 4: steelDark (#334155)
+// 5: crimson (#b91c1c)
+// 6: crimsonDark (#7f1d1d)
+// 7: royalBlue (#1d4ed8)
+// 8: royalPurple (#7e22ce)
+// 9: forestGreen (#15803d)
+// 10: ivoryGold (#fef3c7)
+// 11: goldAccent (#eab308)
+// 12: horseChestnut (#854d0e)
+// 13: horseDark (#5c330a)
+// 14: skinWarm (#eab676)
 
-const ENEMY_PALETTE_32 = {
-  '.': null,
-  'O': '#140b16',
-  'R': '#f43f5e',
-  'V': '#9f1239',
-  'P': '#c084fc',
-  'L': '#6b21a8',
-  'I': '#fda4af',
-  'W': '#f8fafc',
-  'A': '#fbbf24'
-};
+const MEDIEVAL_PALETTE_1080 = [
+  null,
+  '#180f0a',
+  '#cbd5e1',
+  '#64748b',
+  '#334155',
+  '#b91c1c',
+  '#7f1d1d',
+  '#1d4ed8',
+  '#7e22ce',
+  '#15803d',
+  '#fef3c7',
+  '#eab308',
+  '#854d0e',
+  '#5c330a',
+  '#eab676'
+];
 
-const ENEMY_MODELS_32 = {
-  bandit: [
-    '................................',
-    '............OOOOOOOO............',
-    '..........OORRRRRRRROO..........',
-    '.........ORRRPPPPPRRRO.........',
-    '........ORRRPPPPPPPRRRO........',
-    '........OOVVVVVVVVVVVVO.........',
-    '........OOVOOIIIIIIOOVO.........',
-    '.........OOVVVVVVVVVVO..........',
-    '.........OOLLLLLLLLLLOO.........',
-    '......OOOOOOVVVVVVVVOOOOO.......',
-    '.....ORRRVVVVVVVVVVVVVRRRRO.....',
-    '....ORRRVVVVVOOIIIIOOVVVVRRRRO..',
-    '....OOVVVVVVVVVVVVVVVVVVVVVVO...',
-    '.....OOLLLLLLLLLLLLLLLLLLLOO....',
-    '.......OOVVVVVVVVVVVVVVVVO......',
-    '.......OOLLLLLLLLLLLLLLLLOO.....',
-    '.......OOVVVVOO....OOVVVVO......',
-    '......OOVVVVVVO....OOVVVVVO.....',
-    '......OOLLLLLLO....OLLLLLLO.....',
-    '.......OOOOOO........OOOOOO.....',
-    '................................',
-    '................................',
-    '................................',
-    '................................',
-    '................................',
-    '................................',
-    '................................',
-    '................................',
-    '................................',
-    '................................',
-    '................................',
-    '................................'
-  ],
-  blackguard: [
-    '...........OOOOOOOOOO...........',
-    '.........OOPPPPPPPPPPOO.....OO..',
-    '........OPPPPWWWWWWPPPPO...OPPO.',
-    '.......OPPPPPWWWWWWPPPPPO.OPPPPO',
-    '.......OOPPPPPPPPPPPPPPOO.OPPPPO',
-    '.......OOPPOOOOOOOOOOOPPOOOPPPPO',
-    '........OOPPPPPPPPPPPPPPO.OPPPPO',
-    '........OOLLLLLLLLLLLLLLOO.OPPO.',
-    '.....OOOOOOVVVVVVVVVVVVOOOOOPPO.',
-    '....OPPPPVVVVVVVVVVVVVVVVVVPPPO.',
-    '...OPPPPVVVVVVOOAAAAOOVVVVVVPPPO',
-    '...OOPPPPPVVVVVVVVVVVVVVVPPPPPOO',
-    '....OOLLLLLLLLLLLLLLLLLLLLLLOO..',
-    '......OOPPPPPPPPPPPPPPPPPPPPO...',
-    '......OOLLLLLLLLLLLLLLLLLLLLOO..',
-    '.....OOPPPPPPOO......OOPPPPPPO..',
-    '.....OOLLLLLLO........OLLLLLLO..',
-    '......OOOOOOO..........OOOOOOO..',
-    '................................',
-    '................................',
-    '................................',
-    '................................',
-    '................................',
-    '................................',
-    '................................',
-    '................................',
-    '................................',
-    '................................',
-    '................................',
-    '................................',
-    '................................',
-    '................................'
-  ],
-  warlock: [
-    '.............OOOOOO.............',
-    '...........OORRRRRRRRO..........',
-    '..........ORRRIIIIIIRRRO........',
-    '.........ORRRIIIIIIIIIRRRO......',
-    '.........OORRRRRRRRRRRRRO...OO..',
-    '..........OOVVOOOOOOOVVVO..OPPO.',
-    '...........OOVVVVVVVVVVO..OPPPPO',
-    '........OOOOOVVVVVVVVVVOOOOOPPO.',
-    '.......ORRRVVVVVVVVVVVVVVVRRRRO.',
-    '......ORRRVVVVVOOIIIIOOVVVVRRRRO',
-    '......OOVVVVVVVVVVVVVVVVVVVVVVO.',
-    '.......OOLLLLLLLLLLLLLLLLLLLOO..',
-    '.........OOVVVVVVVVVVVVVVVVO....',
-    '........OOVVVVVVOO..OOVVVVVVO...',
-    '........OOLLLLLLO....OLLLLLLO...',
-    '.........OOOOOO........OOOOOO...',
-    '................................',
-    '................................',
-    '................................',
-    '................................',
-    '................................',
-    '................................',
-    '................................',
-    '................................',
-    '................................',
-    '................................',
-    '................................',
-    '................................',
-    '................................',
-    '................................',
-    '................................',
-    '................................'
-  ],
-  boss: [
-    '......OOOO............OOOO......',
-    '.....OAAAADDOOOOOOOOOODAADDO....',
-    '....OAAARRRRRRRRRRRRRRRRRRAAAO..',
-    '....OARRRRRRWWWWWWWWWWWRRRRRRAO.',
-    '....OARRRRRRWWWWWWWWWWWRRRRRRAO.',
-    '.....OARRRRRRRRRRRRRRRRRRRRRAO..',
-    '....OOOOORRRRRROOAAAAOORRRRRROOO',
-    '...OAAARRRRRRRRRRRRRRRRRRRRRRAAO',
-    '..OAAARRRRRRRRROOIIIIOORRRRRRRRAAO',
-    '..OARRRRRRRRRRRRRRRRRRRRRRRRRRRAO',
-    '...OOLLLLLLLLLLLLLLLLLLLLLLLLLOO',
-    '.....OOVVVVVVVVVVVVVVVVVVVVVVO..',
-    '....OOVVVVVVVVOO......OOVVVVVVVO',
-    '....OOVVVVVVVVO........OOVVVVVVO',
-    '....OOLLLLLLLLO........OLLLLLLLO',
-    '.....OOOOOOOO..........OOOOOOOO.',
-    '................................',
-    '................................',
-    '................................',
-    '................................',
-    '................................',
-    '................................',
-    '................................',
-    '................................',
-    '................................',
-    '................................',
-    '................................',
-    '................................',
-    '................................',
-    '................................',
-    '................................',
-    '................................'
-  ]
-};
+const MODEL_1080_CACHE = {};
 
-const HERO_256_CACHE = {};
+function createMedieval1080Canvas(key) {
+  if (MODEL_1080_CACHE[key]) return MODEL_1080_CACHE[key];
 
-function createMedievalHero256Canvas(key) {
-  if (HERO_256_CACHE[key]) return HERO_256_CACHE[key];
-
-  const cnv = document.createElement('canvas');
-  cnv.width = 256;
-  cnv.height = 256;
-  const ctx = cnv.getContext('2d');
-  ctx.imageSmoothingEnabled = false;
-
-  const p = HERO_PALETTE_256;
-  const grid = Array.from({ length: 256 }, () => new Uint8Array(256));
-  // 0 = empty, 1 = outline, 2 = goldLight, 3 = goldMid, 4 = goldDark, 5 = umber, 6 = eye, 7 = amberTrim, 8 = brightCrest
-  const codeMap = [
-    null,
-    p.outline,
-    p.goldLight,
-    p.goldMid,
-    p.goldDark,
-    p.umber,
-    p.eye,
-    p.amberTrim,
-    p.brightCrest
-  ];
+  // Build on 270x270 pixel grid and scale 4x into exact 1080x1080 crisp pixel art
+  const N = 270;
+  const grid = Array.from({ length: N }, () => new Uint8Array(N));
 
   function px(x, y, c) {
     const ix = Math.round(x);
     const iy = Math.round(y);
-    if (ix >= 0 && ix < 256 && iy >= 0 && iy < 256) {
-      grid[iy][ix] = c;
-    }
+    if (ix >= 0 && ix < N && iy >= 0 && iy < N) grid[iy][ix] = c;
   }
 
-  function fillRectP(x, y, w, h, c) {
-    const x0 = Math.round(x);
-    const y0 = Math.round(y);
-    const x1 = Math.round(x + w);
-    const y1 = Math.round(y + h);
+  function rect(x, y, w, h, c) {
+    const x0 = Math.round(x), y0 = Math.round(y), x1 = Math.round(x + w), y1 = Math.round(y + h);
     for (let yy = y0; yy < y1; yy++) {
-      for (let xx = x0; xx < x1; xx++) {
-        px(xx, yy, c);
-      }
+      for (let xx = x0; xx < x1; xx++) px(xx, yy, c);
     }
   }
 
-  function fillCircleP(cx, cy, r, c) {
+  function circle(cx, cy, r, c) {
     const ir = Math.ceil(r);
     for (let dy = -ir; dy <= ir; dy++) {
       for (let dx = -ir; dx <= ir; dx++) {
-        if (dx * dx + dy * dy <= r * r) {
-          px(cx + dx, cy + dy, c);
-        }
+        if (dx * dx + dy * dy <= r * r) px(cx + dx, cy + dy, c);
       }
     }
   }
 
-  function fillEllipseP(cx, cy, rx, ry, c) {
-    const irx = Math.ceil(rx);
-    const iry = Math.ceil(ry);
+  function ellipse(cx, cy, rx, ry, c) {
+    const irx = Math.ceil(rx), iry = Math.ceil(ry);
     for (let dy = -iry; dy <= iry; dy++) {
       for (let dx = -irx; dx <= irx; dx++) {
-        const nx = dx / rx;
-        const ny = dy / ry;
-        if (nx * nx + ny * ny <= 1) {
-          px(cx + dx, cy + dy, c);
-        }
+        if ((dx * dx) / (rx * rx) + (dy * dy) / (ry * ry) <= 1) px(cx + dx, cy + dy, c);
       }
     }
-  }
-
-  function shadeGold(x, y, base = 3) {
-    if (y % 4 === 0 && x % 4 === 0) return 2;
-    if ((x + y) % 7 === 0) return 4;
-    return base;
   }
 
   if (key === 'warrior') {
-    // 1. Greatsword on left/back-right
-    fillRectP(176, 16, 14, 152, 2);
-    fillRectP(182, 16, 8, 152, 4);
-    fillRectP(160, 158, 44, 12, 8);
-    fillRectP(176, 170, 12, 26, 5);
-    fillCircleP(182, 198, 8, 8);
+    // Chiến binh: 1 tay cầm khiên (trái), 1 tay cầm kiếm (phải)
+    // Plume & Great Helm
+    rect(128, 18, 14, 24, 5);
+    ellipse(135, 58, 28, 26, 3);
+    ellipse(129, 52, 16, 10, 2);
+    rect(113, 55, 44, 8, 1);
+    rect(118, 57, 9, 4, 10);
+    rect(142, 57, 9, 4, 10);
+    rect(132, 52, 6, 28, 11);
 
-    // 2. Plumed medieval great helm
-    for (let i = 0; i < 16; i++) {
-      fillEllipseP(122 - i * 1.4, 28 + Math.sin(i * 0.25) * 10, 9 - i * 0.25, 7, 8);
-    }
-    fillEllipseP(124, 66, 36, 34, 3);
-    fillEllipseP(116, 58, 22, 14, 2);
-    fillRectP(96, 62, 54, 10, 1);
-    fillRectP(102, 65, 12, 4, 6);
-    fillRectP(130, 65, 12, 4, 6);
-    fillRectP(120, 60, 8, 34, 8);
-    fillRectP(94, 84, 60, 8, 4);
+    // Torso & crimson surcoat
+    ellipse(135, 118, 38, 34, 3);
+    rect(115, 92, 40, 56, 5);
+    rect(131, 92, 8, 56, 11);
+    rect(97, 142, 76, 10, 12);
 
-    // 3. Heavy plate torso & medieval tabard
-    fillEllipseP(124, 134, 48, 40, 3);
-    fillEllipseP(124, 122, 38, 16, 2);
-    fillRectP(104, 102, 40, 68, 7);
-    fillRectP(118, 102, 12, 68, 8);
-    fillRectP(82, 162, 84, 14, 8);
-    fillRectP(114, 160, 20, 18, 2);
+    // Left arm + Kite Shield (1 tay cầm khiên)
+    ellipse(88, 114, 14, 14, 3);
+    ellipse(74, 134, 24, 34, 5);
+    ellipse(74, 134, 20, 30, 6);
+    rect(71, 108, 6, 52, 11);
+    rect(56, 131, 36, 6, 11);
+    circle(74, 134, 6, 2);
 
-    // 4. Heavy pauldrons & gauntlets
-    fillEllipseP(70, 124, 22, 20, 3);
-    fillCircleP(70, 118, 9, 8);
-    fillRectP(58, 140, 22, 34, 4);
-    fillEllipseP(176, 124, 20, 18, 3);
-    fillRectP(164, 140, 20, 30, 4);
+    // Right arm + Broadsword (1 tay cầm kiếm)
+    ellipse(182, 114, 14, 14, 3);
+    rect(176, 124, 14, 24, 14);
+    rect(168, 142, 34, 8, 11);
+    rect(180, 26, 10, 116, 2);
+    rect(185, 26, 5, 116, 3);
 
-    // 5. Greaves & sabatons
-    fillRectP(88, 176, 26, 50, 3);
-    fillRectP(134, 176, 26, 50, 3);
-    fillRectP(82, 220, 36, 16, 4);
-    fillRectP(130, 220, 36, 16, 4);
-  } else if (key === 'archer') {
-    // 1. Quiver & fletched arrows behind shoulder
-    fillRectP(156, 34, 22, 86, 5);
-    fillRectP(156, 42, 22, 8, 8);
-    fillRectP(156, 104, 22, 8, 8);
-    for (const ax of [162, 171]) {
-      fillRectP(ax, 12, 4, 24, 2);
-      fillRectP(ax - 2, 10, 8, 6, 8);
-    }
-
-    // 2. Ranger hood & cowl
-    fillEllipseP(120, 68, 34, 34, 4);
-    fillEllipseP(116, 62, 24, 22, 3);
-    fillEllipseP(124, 70, 24, 18, 5);
-    fillRectP(108, 66, 10, 5, 6);
-    fillRectP(130, 66, 10, 5, 6);
-    for (let s = 0; s < 14; s++) {
-      fillEllipseP(148 + s * 2.2, 46 + s * 3.2, 12 - s * 0.5, 9 - s * 0.4, 3);
-    }
-
-    // 3. Leather tunic, belt & boots
-    fillEllipseP(120, 134, 38, 38, 3);
-    fillRectP(104, 104, 32, 64, 5);
-    fillRectP(82, 160, 76, 12, 8);
-    fillRectP(90, 172, 22, 52, 4);
-    fillRectP(130, 172, 22, 52, 4);
-    fillRectP(84, 220, 32, 15, 5);
-    fillRectP(128, 220, 32, 15, 5);
-
-    // 4. Curved medieval longbow & bowstring on right
-    for (let a = -65; a <= 65; a += 2) {
-      const rad = (a * Math.PI) / 180;
-      const bx = 186 + Math.cos(rad) * 28;
-      const by = 132 + Math.sin(rad) * 96;
-      fillCircleP(bx, by, 5, 3);
-    }
-    fillRectP(185, 38, 2, 188, 2);
-  } else if (key === 'mage') {
-    // 1. Tall pointed wizard/scholar hat
-    for (let y = 14; y <= 66; y++) {
-      const t = (y - 14) / 52;
-      const halfW = Math.max(4, Math.round(6 + t * 34));
-      fillRectP(120 - halfW, y, halfW * 2, 2, y < 32 ? 2 : 3);
-    }
-    fillEllipseP(120, 68, 54, 12, 4);
-    fillRectP(76, 62, 88, 7, 8);
-
-    // 2. Hooded face & glowing eyes
-    fillEllipseP(120, 86, 26, 20, 5);
-    fillRectP(102, 82, 10, 5, 6);
-    fillRectP(128, 82, 10, 5, 6);
-
-    // 3. Flowing ceremonial robe & golden trim
-    for (let y = 104; y <= 232; y++) {
-      const t = (y - 104) / 128;
-      const halfW = Math.round(32 + t * 30);
-      fillRectP(120 - halfW, y, halfW * 2, 2, shadeGold(120, y, 3));
-    }
-    fillRectP(112, 106, 16, 126, 8);
-    fillRectP(78, 166, 84, 10, 8);
-
-    // 4. Mage staff & radiant crystal orb on right
-    fillRectP(190, 64, 10, 170, 5);
-    fillRectP(182, 60, 26, 8, 8);
-    fillCircleP(195, 42, 16, 8);
-    fillCircleP(192, 38, 7, 6);
+    // Legs & greaves
+    rect(104, 152, 22, 74, 3);
+    rect(144, 152, 22, 74, 3);
+    rect(98, 220, 30, 14, 4);
+    rect(142, 220, 30, 14, 4);
   } else if (key === 'lancer') {
-    // 1. Cavalry lance & fluttering pennant on right
-    fillRectP(194, 24, 9, 212, 4);
-    fillRectP(190, 14, 17, 16, 8);
-    for (let x = 203; x <= 242; x++) {
-      const waveY = 24 + Math.sin((x - 203) * 0.16) * 8;
-      fillRectP(x, waveY, 2, 18 - (x - 203) * 0.25, 3);
-    }
+    // Kỵ sĩ: cưỡi ngựa, tay cầm thương
+    // Horse body, head, legs, mane & tail
+    ellipse(132, 168, 56, 32, 12);
+    ellipse(132, 156, 44, 16, 13);
+    rect(82, 144, 18, 24, 11);
+    rect(164, 144, 18, 24, 11);
 
-    // 2. Knight-errant helm with twin crests
-    fillEllipseP(122, 68, 34, 32, 3);
-    fillEllipseP(114, 58, 20, 12, 2);
-    fillRectP(96, 64, 52, 9, 1);
-    fillRectP(102, 66, 10, 4, 6);
-    fillRectP(130, 66, 10, 4, 6);
-    fillRectP(102, 20, 10, 20, 8);
-    fillRectP(132, 20, 10, 20, 8);
+    // Horse head & neck (facing right toward enemies)
+    ellipse(184, 134, 22, 18, 12);
+    ellipse(204, 146, 18, 12, 13);
+    rect(178, 112, 12, 16, 13);
+    rect(156, 118, 16, 46, 13);
+    // Horse tail
+    rect(66, 156, 14, 44, 13);
 
-    // 3. Agile brigandine / scale cuirass & cape
-    fillEllipseP(122, 132, 42, 38, 3);
-    for (let sy = 108; sy <= 156; sy += 10) {
-      for (let sx = 94; sx <= 150; sx += 12) {
-        fillEllipseP(sx, sy, 6, 5, 2);
-      }
+    // Horse legs
+    rect(92, 192, 16, 44, 12);
+    rect(116, 192, 16, 44, 12);
+    rect(152, 192, 16, 44, 12);
+    rect(174, 192, 16, 44, 12);
+    rect(90, 232, 20, 8, 4);
+    rect(114, 232, 20, 8, 4);
+    rect(150, 232, 20, 8, 4);
+    rect(172, 232, 20, 8, 4);
+
+    // Mounted Knight torso, helm & pennant
+    rect(120, 20, 12, 22, 7);
+    ellipse(132, 64, 24, 22, 3);
+    rect(112, 62, 42, 7, 1);
+    rect(134, 64, 12, 4, 10);
+    ellipse(132, 108, 30, 26, 7);
+    rect(128, 84, 8, 48, 11);
+
+    // Long Cavalry Lance (tay cầm thương)
+    rect(152, 116, 106, 7, 12);
+    // Spearhead tip
+    for (let i = 0; i < 18; i++) {
+      rect(258 + i, 119 - Math.floor(i * 0.45), 2, Math.max(1, 9 - Math.floor(i * 0.45)), 2);
     }
-    fillRectP(86, 160, 72, 12, 8);
-    fillRectP(92, 172, 22, 54, 4);
-    fillRectP(130, 172, 22, 54, 4);
-    fillRectP(86, 222, 34, 14, 3);
-    fillRectP(126, 222, 34, 14, 3);
+    // Pennant banner on lance
+    rect(210, 102, 24, 14, 7);
+    rect(210, 108, 24, 4, 11);
   } else if (key === 'summoner') {
-    // 1. Cleric mitre / halo crown
-    fillEllipseP(120, 28, 26, 7, 8);
-    fillRectP(102, 22, 36, 24, 2);
-    fillRectP(116, 16, 8, 34, 8);
-    fillRectP(106, 28, 28, 7, 8);
+    // Tư tế: tay cầm thánh giá
+    // Cleric circlet & hood
+    ellipse(130, 34, 22, 6, 11);
+    ellipse(130, 66, 28, 26, 10);
+    ellipse(132, 70, 20, 16, 14);
+    rect(116, 66, 8, 5, 7);
+    rect(138, 66, 8, 5, 7);
 
-    // 2. Serene face & golden circlet hood
-    fillEllipseP(120, 68, 30, 28, 3);
-    fillEllipseP(120, 72, 22, 18, 5);
-    fillRectP(104, 68, 9, 5, 6);
-    fillRectP(127, 68, 9, 5, 6);
-
-    // 3. Priest vestment & stole
-    for (let y = 98; y <= 232; y++) {
-      const t = (y - 98) / 134;
-      const halfW = Math.round(30 + t * 24);
-      fillRectP(120 - halfW, y, halfW * 2, 2, shadeGold(120, y, 3));
+    // Vestment robe & gold stole
+    for (let y = 94; y <= 232; y++) {
+      const t = (y - 94) / 138;
+      const hw = Math.round(28 + t * 24);
+      rect(130 - hw, y, hw * 2, 2, y % 12 === 0 ? 11 : 10);
     }
-    fillRectP(110, 98, 20, 134, 2);
-    fillRectP(116, 98, 8, 134, 8);
-    fillRectP(84, 162, 72, 10, 8);
+    rect(122, 94, 16, 138, 7);
+    rect(127, 94, 6, 138, 11);
 
-    // 4. Sacred reliquary crozier on right
-    fillRectP(192, 56, 9, 178, 4);
-    fillCircleP(196, 42, 15, 8);
-    fillRectP(193, 30, 6, 24, 2);
-    fillRectP(184, 39, 24, 6, 2);
+    // Right hand holding large medieval Cross (tay cầm thánh giá)
+    rect(176, 126, 12, 22, 14);
+    rect(194, 42, 12, 192, 11);
+    rect(172, 74, 56, 12, 11);
+    rect(197, 46, 6, 184, 10);
+    rect(176, 77, 48, 6, 10);
+  } else if (key === 'mage') {
+    // Pháp sư: cầm quyền trượng
+    // Pointed archmage hat
+    for (let y = 16; y <= 66; y++) {
+      const t = (y - 16) / 50;
+      const hw = Math.max(3, Math.round(5 + t * 32));
+      rect(126 - hw, y, hw * 2, 2, y < 34 ? 8 : 7);
+    }
+    ellipse(126, 68, 48, 10, 11);
+
+    // Face & glowing eyes
+    ellipse(126, 84, 22, 16, 14);
+    rect(112, 80, 8, 4, 10);
+    rect(132, 80, 8, 4, 10);
+
+    // Archmage robe
+    for (let y = 100; y <= 232; y++) {
+      const t = (y - 100) / 132;
+      const hw = Math.round(30 + t * 26);
+      rect(126 - hw, y, hw * 2, 2, y % 10 === 0 ? 7 : 8);
+    }
+    rect(118, 102, 16, 130, 11);
+
+    // Staff / Quyền trượng with arcane orb & crown prongs
+    rect(186, 64, 10, 170, 12);
+    rect(178, 58, 26, 8, 11);
+    circle(191, 38, 16, 8);
+    circle(188, 35, 7, 10);
+    rect(175, 22, 6, 16, 11);
+    rect(201, 22, 6, 16, 11);
+  } else if (key === 'archer') {
+    // Cung thủ: 2 tay cầm cung
+    // Ranger hood & forest cloak
+    ellipse(130, 66, 30, 28, 9);
+    ellipse(134, 70, 20, 16, 14);
+    rect(120, 66, 8, 5, 10);
+    rect(140, 66, 8, 5, 10);
+
+    // Leather tunic & quiver
+    ellipse(130, 128, 34, 34, 9);
+    rect(114, 100, 32, 62, 12);
+    rect(96, 154, 68, 10, 11);
+    rect(104, 164, 18, 62, 13);
+    rect(138, 164, 18, 62, 13);
+
+    // Two arms (both hands holding the bow: 2 tay cầm cung)
+    rect(148, 114, 28, 10, 14);
+    rect(148, 142, 28, 10, 14);
+
+    // Curved Bow held in front by both hands
+    for (let a = -68; a <= 68; a += 2) {
+      const rad = (a * Math.PI) / 180;
+      const bx = 186 + Math.cos(rad) * 24;
+      const by = 132 + Math.sin(rad) * 84;
+      circle(bx, by, 4.5, 12);
+    }
+    // Bowstring & nocked arrow
+    rect(185, 48, 2, 168, 10);
+    rect(164, 131, 56, 4, 11);
+    rect(218, 128, 12, 10, 2);
   } else if (key === 'chest') {
-    // Medieval gilded treasure chest
-    fillRectP(28, 58, 200, 144, 3);
-    fillEllipseP(128, 82, 100, 28, 2);
-    fillRectP(28, 114, 200, 16, 8);
-    fillRectP(28, 56, 18, 146, 8);
-    fillRectP(210, 56, 18, 146, 8);
-    fillRectP(110, 102, 36, 42, 8);
-    fillCircleP(128, 122, 6, 5);
+    rect(36, 72, 198, 134, 12);
+    ellipse(135, 94, 99, 26, 13);
+    rect(36, 124, 198, 14, 11);
+    rect(36, 70, 16, 136, 11);
+    rect(218, 70, 16, 136, 11);
+    rect(120, 114, 30, 36, 11);
+    circle(135, 132, 5, 10);
+  } else if (key === 'bandit') {
+    // Kẻ địch thường: Cướp Rừng (áo choàng đỏ sẫm & rìu/dao)
+    ellipse(135, 68, 28, 26, 6);
+    ellipse(132, 72, 18, 14, 5);
+    rect(120, 68, 8, 5, 10);
+    rect(140, 68, 8, 5, 10);
+    ellipse(135, 130, 36, 34, 5);
+    rect(100, 156, 70, 10, 4);
+    rect(106, 166, 20, 60, 6);
+    rect(144, 166, 20, 60, 6);
+    rect(176, 84, 10, 124, 4);
+    rect(166, 76, 28, 22, 2);
+  } else if (key === 'blackguard') {
+    // Kẻ địch thường: Hắc Kỵ Sĩ (giáp tối & chùy/đao)
+    rect(128, 22, 14, 22, 8);
+    ellipse(135, 64, 30, 28, 4);
+    rect(112, 62, 46, 8, 1);
+    rect(120, 64, 9, 4, 5);
+    rect(142, 64, 9, 4, 5);
+    ellipse(135, 128, 42, 38, 4);
+    rect(116, 98, 38, 58, 6);
+    rect(100, 166, 22, 60, 3);
+    rect(148, 166, 22, 60, 3);
+    rect(182, 64, 10, 148, 3);
+    circle(187, 56, 14, 2);
+  } else if (key === 'warlock') {
+    // Kẻ địch thường: Tà Pháp Sư (áo tím đỏ & trượng tà)
+    for (let y = 20; y <= 68; y++) {
+      const t = (y - 20) / 48;
+      const hw = Math.max(3, Math.round(5 + t * 30));
+      rect(132 - hw, y, hw * 2, 2, 6);
+    }
+    ellipse(132, 86, 22, 16, 8);
+    rect(118, 82, 8, 4, 10);
+    rect(138, 82, 8, 4, 10);
+    for (let y = 102; y <= 230; y++) {
+      const t = (y - 102) / 128;
+      const hw = Math.round(30 + t * 24);
+      rect(132 - hw, y, hw * 2, 2, y % 10 === 0 ? 6 : 8);
+    }
+    rect(188, 66, 10, 166, 4);
+    circle(193, 44, 15, 5);
+  } else if (key === 'boss') {
+    // Boss mỗi 5 vòng: Bạo Chúa
+    rect(96, 18, 14, 28, 11);
+    rect(160, 18, 14, 28, 11);
+    ellipse(135, 66, 36, 32, 6);
+    rect(108, 62, 54, 9, 1);
+    rect(116, 64, 10, 5, 11);
+    rect(144, 64, 10, 5, 11);
+    ellipse(135, 134, 48, 44, 6);
+    rect(118, 96, 34, 72, 11);
+    rect(94, 178, 26, 54, 4);
+    rect(150, 178, 26, 54, 4);
   }
 
-  // Pass 2: crisp medieval outline around non-empty pixels
-  const outlined = Array.from({ length: 256 }, () => new Uint8Array(256));
-  for (let y = 0; y < 256; y++) {
-    for (let x = 0; x < 256; x++) {
-      outlined[y][x] = grid[y][x];
-    }
-  }
+  // Crisp medieval outline pass around non-empty pixels
+  const outlined = Array.from({ length: N }, (_, y) => Uint8Array.from(grid[y]));
   const dirs = [
     [-1, 0], [1, 0], [0, -1], [0, 1],
     [-1, -1], [1, -1], [-1, 1], [1, 1]
   ];
-  for (let y = 1; y < 255; y++) {
-    for (let x = 1; x < 255; x++) {
+  for (let y = 1; y < N - 1; y++) {
+    for (let x = 1; x < N - 1; x++) {
       if (grid[y][x] === 0) {
         for (const [dx, dy] of dirs) {
           if (grid[y + dy][x + dx] >= 2) {
@@ -1116,81 +999,64 @@ function createMedievalHero256Canvas(key) {
     }
   }
 
-  for (let y = 0; y < 256; y++) {
-    for (let x = 0; x < 256; x++) {
+  const cnv1080 = document.createElement('canvas');
+  cnv1080.width = 1080;
+  cnv1080.height = 1080;
+  const ctx = cnv1080.getContext('2d');
+  ctx.imageSmoothingEnabled = false;
+
+  for (let y = 0; y < N; y++) {
+    for (let x = 0; x < N; x++) {
       const code = outlined[y][x];
-      if (code > 0 && codeMap[code]) {
-        ctx.fillStyle = codeMap[code];
-        ctx.fillRect(x, y, 1, 1);
+      if (code > 0 && MEDIEVAL_PALETTE_1080[code]) {
+        ctx.fillStyle = MEDIEVAL_PALETTE_1080[code];
+        ctx.fillRect(x * 4, y * 4, 4, 4);
       }
     }
   }
 
-  HERO_256_CACHE[key] = cnv;
-  return cnv;
+  MODEL_1080_CACHE[key] = cnv1080;
+  return cnv1080;
 }
 
 function drawCharacterModel(ctx, key, dx, dy, targetSize, flipX = false, flashWhite = false) {
-  const isEnemy = key === 'bandit' || key === 'blackguard' || key === 'warlock' || key === 'boss';
+  const src1080 = createMedieval1080Canvas(key);
   ctx.save();
   ctx.imageSmoothingEnabled = false;
 
-  if (!isEnemy) {
-    const src256 = createMedievalHero256Canvas(key);
-    if (flashWhite) {
-      const tmp = document.createElement('canvas');
-      tmp.width = 256;
-      tmp.height = 256;
-      const tctx = tmp.getContext('2d');
-      tctx.imageSmoothingEnabled = false;
-      tctx.drawImage(src256, 0, 0);
-      tctx.globalCompositeOperation = 'source-atop';
-      tctx.fillStyle = '#ffffff';
-      tctx.fillRect(0, 0, 256, 256);
+  if (flashWhite) {
+    const tmp = document.createElement('canvas');
+    tmp.width = 270;
+    tmp.height = 270;
+    const tctx = tmp.getContext('2d');
+    tctx.imageSmoothingEnabled = false;
+    tctx.drawImage(src1080, 0, 0, 270, 270);
+    tctx.globalCompositeOperation = 'source-atop';
+    tctx.fillStyle = '#ffffff';
+    tctx.fillRect(0, 0, 270, 270);
 
-      if (flipX) {
-        ctx.translate(Math.round(dx + targetSize), Math.round(dy));
-        ctx.scale(-1, 1);
-        ctx.drawImage(tmp, 0, 0, Math.round(targetSize), Math.round(targetSize));
-      } else {
-        ctx.drawImage(tmp, Math.round(dx), Math.round(dy), Math.round(targetSize), Math.round(targetSize));
-      }
-    } else if (flipX) {
+    if (flipX) {
       ctx.translate(Math.round(dx + targetSize), Math.round(dy));
       ctx.scale(-1, 1);
-      ctx.drawImage(src256, 0, 0, Math.round(targetSize), Math.round(targetSize));
+      ctx.drawImage(tmp, 0, 0, Math.round(targetSize), Math.round(targetSize));
     } else {
-      ctx.drawImage(src256, Math.round(dx), Math.round(dy), Math.round(targetSize), Math.round(targetSize));
+      ctx.drawImage(tmp, Math.round(dx), Math.round(dy), Math.round(targetSize), Math.round(targetSize));
     }
-    ctx.restore();
-    return;
+  } else if (flipX) {
+    ctx.translate(Math.round(dx + targetSize), Math.round(dy));
+    ctx.scale(-1, 1);
+    ctx.drawImage(src1080, 0, 0, Math.round(targetSize), Math.round(targetSize));
+  } else {
+    ctx.drawImage(src1080, Math.round(dx), Math.round(dy), Math.round(targetSize), Math.round(targetSize));
   }
 
-  const matrix = ENEMY_MODELS_32[key] || ENEMY_MODELS_32.bandit;
-  const h = matrix.length;
-  const w = matrix[0].length;
-  const cellScale = targetSize / w;
-  for (let y = 0; y < h; y++) {
-    const row = matrix[y];
-    for (let x = 0; x < w; x++) {
-      const ch = row[flipX ? (w - 1 - x) : x];
-      const col = ENEMY_PALETTE_32[ch];
-      if (!col) continue;
-      ctx.fillStyle = flashWhite ? '#ffffff' : col;
-      ctx.fillRect(
-        Math.round(dx + x * cellScale),
-        Math.round(dy + y * cellScale),
-        Math.ceil(cellScale),
-        Math.ceil(cellScale)
-      );
-    }
-  }
   ctx.restore();
 }
 
-function renderSpriteToCanvas(canvas, key, targetSize = 54) {
+function renderSpriteToCanvas(canvas, key, targetSize = 56) {
   if (!canvas) return;
   const ctx = canvas.getContext('2d');
+  ctx.imageSmoothingEnabled = false;
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   const size = Math.min(targetSize, canvas.width - 4, canvas.height - 4);
   const ox = Math.floor((canvas.width - size) / 2);
@@ -1203,42 +1069,42 @@ const CLASS_SKILLS = {
   warrior: {
     name: 'Chấn Địa Trảm',
     cooldown: 4.5,
-    color: '#facc15',
-    desc: 'Giữ tuyến đầu, tạo sóng kiếm 115px quanh thân gây 165% Công và làm choáng địch 1.1s.'
+    color: '#38bdf8',
+    desc: 'Giữ tuyến đầu, tung vệt chém sáng trắng-xanh & sóng kiếm 115px gây 165% Công, làm choáng địch 1.1s.'
   },
   archer: {
     name: 'Loạt Tiễn Xuyên Tâm',
     cooldown: 3.8,
     color: '#34d399',
-    desc: 'Tầm xa 285px, bắn chùm 3 tiễn sáng xuyên mục tiêu gây 150% Công.'
+    desc: 'Tầm xa 295px, bắn chùm 3 tiễn sáng xuyên mục tiêu gây 150% Công.'
   },
   mage: {
     name: 'Thiên Thạch Hủy Diệt',
     cooldown: 5.0,
     color: '#c084fc',
-    desc: 'Tầm xa 270px, nhắm cụm địch đông nhất, giáng vụ nổ ma pháp 95px gây 180% Công diện rộng.'
+    desc: 'Tầm xa 280px, mở vòng tròn ma pháp & giáng nổ 95px gây 180% Công diện rộng.'
   },
   lancer: {
     name: 'Đột Kích Thiết Kỵ',
     cooldown: 4.2,
     color: '#38bdf8',
-    desc: 'Xé tuyến lao tới địch thấp máu, gây 175% Công và tăng nhanh đòn kế.'
+    desc: 'Kỵ sĩ xung phong lao tới địch thấp máu, gây 175% Công và tăng nhanh đòn kế.'
   },
   summoner: {
     name: 'Thánh Quang Hộ Trì',
     cooldown: 4.8,
     color: '#fde047',
-    desc: 'Tầm xa 260px. Đánh thường: có đồng đội hồi 40% Công cho đồng đội; không có đồng đội đánh địch 85% sát thương. Kỹ năng hồi 28% HP tối đa cho đồng minh yếu nhất.'
+    desc: 'Tầm xa 275px. Đánh thường: có đồng đội hồi 40% Công cho đồng đội; không có đồng đội đánh địch 85% sát thương. Kỹ năng mở vòng hồi máu 28% HP tối đa.'
   }
 };
 
 const SYMBOL_DEFS = [
-  { id: 'warrior', name: 'Hiệp Sĩ',   faction: 'Thiết Giáp', kind: 'hero', weight: 22, hp: 165, atk: 24, spd: 1.0,  range: 48,  color: '#f3c677' },
-  { id: 'archer',  name: 'Cung Thủ',  faction: 'Rừng Sâu',   kind: 'hero', weight: 22, hp: 108, atk: 30, spd: 1.25, range: 285, color: '#d99b38' },
-  { id: 'mage',    name: 'Pháp Sư',   faction: 'Tinh Tú',    kind: 'hero', weight: 20, hp: 102, atk: 34, spd: 0.95, range: 270, color: '#f3c677' },
-  { id: 'lancer',  name: 'Kỵ Binh',   faction: 'Thiết Giáp', kind: 'hero', weight: 18, hp: 138, atk: 28, spd: 1.35, range: 56,  color: '#d99b38' },
-  { id: 'summoner',name: 'Tư Tế',     faction: 'Tinh Tú',    kind: 'hero', weight: 12, hp: 118, atk: 24, spd: 1.05, range: 260, color: '#f3c677' },
-  { id: 'chest',   name: 'Rương Báu', faction: null,         kind: 'gear', weight: 14, color: '#facc15' }
+  { id: 'warrior', name: 'Chiến Binh', faction: 'Thiết Giáp', kind: 'hero', weight: 22, hp: 165, atk: 24, spd: 1.0,  range: 52,  color: '#f3c677' },
+  { id: 'archer',  name: 'Cung Thủ',   faction: 'Rừng Sâu',   kind: 'hero', weight: 22, hp: 108, atk: 30, spd: 1.25, range: 295, color: '#d99b38' },
+  { id: 'mage',    name: 'Pháp Sư',    faction: 'Tinh Tú',    kind: 'hero', weight: 20, hp: 102, atk: 34, spd: 0.95, range: 280, color: '#f3c677' },
+  { id: 'lancer',  name: 'Kỵ Sĩ',      faction: 'Thiết Giáp', kind: 'hero', weight: 18, hp: 145, atk: 29, spd: 1.35, range: 60,  color: '#d99b38' },
+  { id: 'summoner',name: 'Tư Tế',      faction: 'Tinh Tú',    kind: 'hero', weight: 12, hp: 118, atk: 24, spd: 1.05, range: 275, color: '#f3c677' },
+  { id: 'chest',   name: 'Rương Báu',  faction: null,         kind: 'gear', weight: 14, color: '#facc15' }
 ];
 
 const FACTION_DEFS = {
@@ -1361,6 +1227,38 @@ function spawnParticles(x, y, color, count = 10, speed = 75) {
   }
 }
 
+function spawnSlashEffect(x, y, angle = 0) {
+  state.effects.push({
+    kind: 'slash',
+    x, y, angle,
+    life: 0.24,
+    maxLife: 0.24
+  });
+}
+
+function spawnMagicCircleEffect(x, y, maxRadius = 62, color = '#c084fc') {
+  state.effects.push({
+    kind: 'magic_circle',
+    x, y,
+    radius: 10,
+    maxRadius,
+    color,
+    life: 0.48,
+    maxLife: 0.48
+  });
+}
+
+function spawnHealRingEffect(x, y, maxRadius = 46) {
+  state.effects.push({
+    kind: 'heal_ring',
+    x, y,
+    radius: 8,
+    maxRadius,
+    life: 0.45,
+    maxLife: 0.45
+  });
+}
+
 function getInterestGold() {
   return Math.min(80, Math.floor(state.gold / 100) * 15 + 10);
 }
@@ -1424,14 +1322,14 @@ function getWallGearBonuses() {
   };
 }
 
-// ================= COLLISION & NON-OVERLAP ENGINE =================
-const MIN_ENTITY_DIST = 48;
+// ================= COLLISION & NON-OVERLAP ENGINE (NO PUSH-BACK STALL) =================
+const MIN_ENTITY_DIST = 44;
 
 function findNonOverlappingPos(targetX, targetY, ignoreId = null, minX = 34, maxX = 355, minY = 44, maxY = 264) {
   let cx = Math.max(minX, Math.min(maxX, targetX));
   let cy = Math.max(minY, Math.min(maxY, targetY));
   const others = [
-    ...state.units.filter(u => u.id !== ignoreId && u.hp > 0),
+    ...state.units.filter(u => u.id !== ignoreId && !u.deadInCombat && u.hp > 0),
     ...state.enemies.filter(e => e.id !== ignoreId && e.hp > 0)
   ];
 
@@ -1462,39 +1360,46 @@ function findNonOverlappingPos(targetX, targetY, ignoreId = null, minX = 34, max
 }
 
 function resolveEntityCollisions() {
-  const entities = [
-    ...state.units.filter(u => u.hp > 0).map(u => ({ obj: u, type: 'hero', r: 23 })),
-    ...state.enemies.filter(e => e.hp > 0).map(e => ({ obj: e, type: 'enemy', r: e.isBoss ? 28 : 22 }))
-  ];
+  // Separate same-side units slightly so allies don't stack on 1 pixel,
+  // while NEVER pushing hero vs enemy apart so engaged units stand still & attack normally.
+  const livingHeroes = state.units.filter(u => !u.deadInCombat && u.hp > 0);
+  for (let i = 0; i < livingHeroes.length; i++) {
+    for (let j = i + 1; j < livingHeroes.length; j++) {
+      const a = livingHeroes[i];
+      const b = livingHeroes[j];
+      let dx = b.x - a.x;
+      let dy = b.y - a.y;
+      let dist = Math.hypot(dx, dy);
+      const minDist = 42;
+      if (dist < minDist) {
+        if (dist < 0.01) { dx = 0.8; dy = (i % 2 === 0 ? 0.6 : -0.6); dist = 1; }
+        const push = (minDist - dist) * 0.45;
+        const nx = dx / dist, ny = dy / dist;
+        a.x = Math.max(30, Math.min(710, a.x - nx * push));
+        a.y = Math.max(40, Math.min(270, a.y - ny * push));
+        b.x = Math.max(30, Math.min(710, b.x + nx * push));
+        b.y = Math.max(40, Math.min(270, b.y + ny * push));
+      }
+    }
+  }
 
-  for (let pass = 0; pass < 3; pass++) {
-    for (let i = 0; i < entities.length; i++) {
-      for (let j = i + 1; j < entities.length; j++) {
-        const a = entities[i];
-        const b = entities[j];
-        let dx = b.obj.x - a.obj.x;
-        let dy = b.obj.y - a.obj.y;
-        let dist = Math.hypot(dx, dy);
-        const minDist = a.r + b.r;
-        if (dist < minDist) {
-          if (dist < 0.01) {
-            dx = (i % 2 === 0 ? 1 : -1) * 0.7;
-            dy = (j % 2 === 0 ? 1 : -1) * 0.7;
-            dist = Math.hypot(dx, dy);
-          }
-          const overlap = (minDist - dist) * 0.52;
-          const nx = dx / dist;
-          const ny = dy / dist;
-          a.obj.x -= nx * overlap;
-          a.obj.y -= ny * overlap;
-          b.obj.x += nx * overlap;
-          b.obj.y += ny * overlap;
-
-          a.obj.x = Math.max(30, Math.min(710, a.obj.x));
-          a.obj.y = Math.max(40, Math.min(270, a.obj.y));
-          b.obj.x = Math.max(30, Math.min(710, b.obj.x));
-          b.obj.y = Math.max(40, Math.min(270, b.obj.y));
-        }
+  const livingEnemies = state.enemies.filter(e => e.hp > 0);
+  for (let i = 0; i < livingEnemies.length; i++) {
+    for (let j = i + 1; j < livingEnemies.length; j++) {
+      const a = livingEnemies[i];
+      const b = livingEnemies[j];
+      let dx = b.x - a.x;
+      let dy = b.y - a.y;
+      let dist = Math.hypot(dx, dy);
+      const minDist = (a.isBoss || b.isBoss) ? 48 : 40;
+      if (dist < minDist) {
+        if (dist < 0.01) { dx = -0.8; dy = (i % 2 === 0 ? 0.6 : -0.6); dist = 1; }
+        const push = (minDist - dist) * 0.45;
+        const nx = dx / dist, ny = dy / dist;
+        a.x = Math.max(30, Math.min(710, a.x - nx * push));
+        a.y = Math.max(40, Math.min(270, a.y - ny * push));
+        b.x = Math.max(30, Math.min(710, b.x + nx * push));
+        b.y = Math.max(40, Math.min(270, b.y + ny * push));
       }
     }
   }
@@ -1541,11 +1446,12 @@ function createUnit(defId, star = 1) {
     range: def.range,
     hp: hpVal,
     maxHp: hpVal,
+    deadInCombat: false,
     x: pos.x,
     y: pos.y,
     homeX: pos.x,
     homeY: pos.y,
-    atkCooldown: 0.4,
+    atkCooldown: 0.35,
     skillCooldown: sk.cooldown * 0.75,
     maxSkillCooldown: sk.cooldown,
     stunTimer: 0,
@@ -1609,7 +1515,7 @@ function getUnitStats(u) {
   const maxHp = Math.max(20, Math.round(u.baseHp + bonusHp));
   const atk = Math.max(5, Math.round(u.baseAtk + bonusAtk));
   const spd = Math.max(0.35, Number((u.baseSpd + bonusSpd).toFixed(2)));
-  return { maxHp, atk, spd, range: def.range || 50, dmgMult: buffBon.dmgMult };
+  return { maxHp, atk, spd, range: def.range || 52, dmgMult: buffBon.dmgMult };
 }
 
 function refreshAllUnitsStats() {
@@ -1617,8 +1523,28 @@ function refreshAllUnitsStats() {
     const st = getUnitStats(u);
     const oldMax = u.maxHp || st.maxHp;
     u.maxHp = st.maxHp;
-    u.hp = Math.min(u.maxHp, Math.max(1, u.hp + Math.max(0, st.maxHp - oldMax)));
+    if (!u.deadInCombat) {
+      u.hp = Math.min(u.maxHp, Math.max(1, u.hp + Math.max(0, st.maxHp - oldMax)));
+    }
   });
+}
+
+function reviveAllUnitsToStartPos() {
+  state.units.forEach((u) => {
+    u.deadInCombat = false;
+    u.x = u.homeX;
+    u.y = u.homeY;
+    const st = getUnitStats(u);
+    const sk = CLASS_SKILLS[u.defId] || CLASS_SKILLS.warrior;
+    u.maxHp = st.maxHp;
+    u.hp = st.maxHp;
+    u.stunTimer = 0;
+    u.flashTimer = 0;
+    u.atkCooldown = 0.35;
+    u.maxSkillCooldown = sk.cooldown;
+    u.skillCooldown = sk.cooldown * 0.65;
+  });
+  resolveEntityCollisions();
 }
 
 function getEffectiveImprintLv(u, impId) {
@@ -1697,7 +1623,7 @@ function confirmAwakenBuff(buff) {
     const st = getUnitStats(u);
     u.maxHp = st.maxHp;
     u.hp = st.maxHp;
-    spawnParticles(u.x + 22, u.y + 22, '#facc15', 18, 95);
+    spawnParticles(u.x + 24, u.y + 24, '#facc15', 18, 95);
     addLog(`✨ ${u.name} Thức Tỉnh LV ${prompt.milestone} chọn buff [${buff.name}] (${buff.desc})!`, '#fde047');
   }
   updateUI();
@@ -1740,7 +1666,7 @@ function checkAutoPromote() {
           const st = getUnitStats(keeper);
           keeper.maxHp = st.maxHp;
           keeper.hp = st.maxHp;
-          spawnParticles(keeper.x + 22, keeper.y + 22, '#facc15', 22, 105);
+          spawnParticles(keeper.x + 24, keeper.y + 24, '#facc15', 22, 105);
           addLog(`🌟 Thăng hạng ${keeper.name} lên ${keeper.star}★!`, '#fde047');
           enqueueAwakenBuffs(keeper);
           promoted = true;
@@ -1761,7 +1687,7 @@ function summonHero(defId) {
   const tr = TRAIT_POOL.find(t => t.id === u.traitId);
   state.units.push(u);
   if (!state.selectedUnitId) state.selectedUnitId = u.id;
-  spawnParticles(u.x + 20, u.y + 20, '#f3c677', 12, 70);
+  spawnParticles(u.x + 24, u.y + 24, '#f3c677', 12, 70);
   addLog(`➕ Triệu hồi ${u.name} 1★ [${u.faction}] — Tư chất: ${tr ? tr.name : ''}.`, '#f3c677');
   checkAutoPromote();
 }
@@ -2013,7 +1939,7 @@ function finalizeDonorConsumption(donor, recipient) {
   const st = getUnitStats(recipient);
   recipient.maxHp = st.maxHp;
   recipient.hp = st.maxHp;
-  spawnParticles(recipient.x + 22, recipient.y + 22, '#facc15', 18, 90);
+  spawnParticles(recipient.x + 24, recipient.y + 24, '#facc15', 18, 90);
   AudioFX.absorb();
   enqueueAwakenBuffs(recipient);
   checkAutoPromote();
@@ -2109,7 +2035,7 @@ function equipGearToUnit(gearUid, unitId, slotIdx) {
   u.gears[slotIdx] = gearObj;
   const st = getUnitStats(u);
   u.maxHp = st.maxHp;
-  u.hp = Math.min(u.maxHp, u.hp + 25);
+  if (!u.deadInCombat) u.hp = Math.min(u.maxHp, u.hp + 25);
   addLog(`🛡️ Đã trang bị [${GEAR_DEFS.find(d => d.id === gearObj.defId).name}] cho ${u.name} (ô #${slotIdx + 1}).`, '#38bdf8');
   updateUI();
 }
@@ -2217,8 +2143,8 @@ function clampHeroPosition(u, nx, ny) {
 function findHeroAtCanvasPt(px, py, excludeId = null) {
   for (let i = state.units.length - 1; i >= 0; i--) {
     const u = state.units[i];
-    if (u.id === excludeId || u.hp <= 0) continue;
-    const sz = u.star >= 3 ? 62 : (u.star === 2 ? 56 : 52);
+    if (u.id === excludeId || u.deadInCombat || u.hp <= 0) continue;
+    const sz = u.star >= 3 ? 64 : (u.star === 2 ? 58 : 54);
     if (px >= u.x - 8 && px <= u.x + sz + 8 && py >= u.y - 14 && py <= u.y + sz + 8) {
       return u;
     }
@@ -2293,12 +2219,12 @@ function setupBattleCanvasMovement() {
   window.addEventListener('touchend', onPointerUp);
 }
 
-// ================= COMBAT AI & STRONGER WAVE SPAWNER =================
+// ================= COMBAT AI & BUFFED REGULAR ENEMIES =================
 function getWaveScaling(waveNum) {
   const w = Math.max(1, waveNum);
-  const hpMult = 1.35 + 0.30 * (w - 1) + 0.045 * Math.pow(w - 1, 1.65);
-  const atkMult = 1.40 + 0.18 * (w - 1) + (w % 5 === 0 ? 0.22 : 0);
-  const spdMult = Math.min(1.65, 1.08 + 0.04 * (w - 1));
+  const hpMult = 1.65 + 0.38 * (w - 1) + 0.06 * Math.pow(w - 1, 1.7);
+  const atkMult = 1.65 + 0.24 * (w - 1) + (w % 5 === 0 ? 0.25 : 0);
+  const spdMult = Math.min(1.72, 1.12 + 0.045 * (w - 1));
   return { hpMult, atkMult, spdMult };
 }
 
@@ -2312,41 +2238,43 @@ function spawnWaveEnemies(waveNum) {
     const isBoss = isBossWave && i === count - 1;
     let spriteKey = 'bandit';
     let eName = 'Cướp Rừng';
-    let roleMultHp = 1.15;
-    let roleMultAtk = 1.15;
-    let baseSpd = 56;
-    let range = 48;
+    let roleMultHp = 1.45;
+    let roleMultAtk = 1.45;
+    let baseSpd = 60;
+    let range = 52;
     let isRanged = false;
 
     if (isBoss) {
       spriteKey = 'boss';
       eName = `Bạo Chúa Vòng ${waveNum}`;
-      roleMultHp = 5.2;
-      roleMultAtk = 1.9;
-      baseSpd = 38;
-      range = 60;
-    } else if (waveNum >= 3 && i % 3 === 2) {
+      roleMultHp = 5.6;
+      roleMultAtk = 2.05;
+      baseSpd = 40;
+      range = 62;
+    } else if (waveNum >= 2 && i % 3 === 2) {
       spriteKey = 'warlock';
       eName = 'Tà Pháp Sư';
-      roleMultHp = 1.05;
-      roleMultAtk = 1.55;
-      baseSpd = 45;
-      range = 215;
+      roleMultHp = 1.42;
+      roleMultAtk = 1.85;
+      baseSpd = 48;
+      range = 235;
       isRanged = true;
-    } else if (waveNum >= 2 && i % 2 === 1) {
+    } else if (i % 2 === 1) {
       spriteKey = 'blackguard';
       eName = 'Hắc Kỵ Sĩ';
-      roleMultHp = 1.75;
-      roleMultAtk = 1.35;
-      baseSpd = 42;
-      range = 50;
+      roleMultHp = 2.15;
+      roleMultAtk = 1.65;
+      baseSpd = 45;
+      range = 54;
     } else {
-      baseSpd = 56;
-      range = 48;
+      roleMultHp = 1.50;
+      roleMultAtk = 1.48;
+      baseSpd = 60;
+      range = 52;
     }
 
-    const hp = Math.round(78 * roleMultHp * sc.hpMult);
-    const atk = Math.round(14 * roleMultAtk * sc.atkMult);
+    const hp = Math.round(88 * roleMultHp * sc.hpMult);
+    const atk = Math.round(17 * roleMultAtk * sc.atkMult);
     const spd = Number((baseSpd * sc.spdMult).toFixed(1));
     const col = Math.floor(i / 3);
     const row = i % 3;
@@ -2366,8 +2294,8 @@ function spawnWaveEnemies(waveNum) {
       maxHp: hp,
       atk,
       spd,
-      atkCd: 1.0,
-      bossCd: 3.2,
+      atkCd: 0.95,
+      bossCd: 3.1,
       stunTimer: 0,
       poisonTimer: 0,
       poisonDps: 0,
@@ -2393,20 +2321,8 @@ function startWave() {
   state.projectiles = [];
   state.particles = [];
   state.effects = [];
-  state.units.forEach((u) => {
-    const sk = CLASS_SKILLS[u.defId] || CLASS_SKILLS.warrior;
-    const st = getUnitStats(u);
-    u.maxHp = st.maxHp;
-    u.hp = st.maxHp;
-    u.x = u.homeX;
-    u.y = u.homeY;
-    u.atkCooldown = 0.25;
-    u.maxSkillCooldown = sk.cooldown;
-    u.skillCooldown = sk.cooldown * 0.65;
-    u.stunTimer = 0;
-  });
-  resolveEntityCollisions();
-  addLog(`⚔️ Xuất trận Vòng ${state.wave}! Quân địch đã được tăng cường sức mạnh!`, '#38bdf8');
+  reviveAllUnitsToStartPos();
+  addLog(`⚔️ Xuất trận Vòng ${state.wave}! Kẻ địch thường đã tăng mạnh sức mạnh!`, '#38bdf8');
   updateUI();
 }
 
@@ -2455,11 +2371,15 @@ function resetGame() {
   ];
   state.logs = [];
   initGrid();
-  addLog('🔄 Đã khởi tạo lại RANDOM-FIGHT! Model tướng 256x256, tầm xa nâng cấp & cơ chế Tư Tế mới.', '#fde047');
+  addLog('🔄 Đã khởi tạo lại RANDOM-FIGHT! Model 1080x1080, hồi sinh khi thắng trận & hiệu ứng mới.', '#fde047');
   updateUI();
 }
 
 // ================= CLASS-SPECIFIC AI TARGETING & SIGNATURE SKILLS =================
+function getAliveUnits() {
+  return state.units.filter(u => !u.deadInCombat && u.hp > 0);
+}
+
 function selectHeroTarget(u, aliveEnemies) {
   if (u.defId === 'archer' || u.defId === 'mage') {
     const rangedOrTank = aliveEnemies.find(e => e.isRanged || e.isBoss);
@@ -2482,7 +2402,7 @@ function selectHeroTarget(u, aliveEnemies) {
 }
 
 function selectSummonerAlly(u) {
-  const otherAllies = state.units.filter(a => a.hp > 0 && a.id !== u.id);
+  const otherAllies = getAliveUnits().filter(a => a.id !== u.id);
   if (otherAllies.length === 0) return null;
   let best = otherAllies[0];
   let bestRatio = best.hp / best.maxHp;
@@ -2527,19 +2447,20 @@ function castClassSkill(u, nearestEnemy, aliveEnemies) {
   if (u.defId === 'warrior') {
     const radius = 115;
     const dmg = Math.round(st.atk * 1.65 * st.dmgMult);
-    spawnParticles(u.x + 24, u.y + 24, '#facc15', 16, 85);
+    spawnSlashEffect(u.x + 36, u.y + 24, -0.2);
+    spawnParticles(u.x + 26, u.y + 26, '#7dd3fc', 16, 85);
     state.effects.push({
-      kind: 'ring', x: u.x + 24, y: u.y + 24,
-      radius: 14, maxRadius: radius, color: '#facc15', life: 0.35, maxLife: 0.35
+      kind: 'ring', x: u.x + 26, y: u.y + 26,
+      radius: 14, maxRadius: radius, color: '#38bdf8', life: 0.35, maxLife: 0.35
     });
     state.enemies.forEach(e => {
       if (e.hp <= 0) return;
-      if (Math.hypot((e.x + 20) - (u.x + 24), (e.y + 20) - (u.y + 24)) <= radius) {
+      if (Math.hypot((e.x + 22) - (u.x + 26), (e.y + 22) - (u.y + 26)) <= radius) {
         e.hp -= dmg;
         state.combatStats.dmgDealt += dmg;
         e.stunTimer = Math.max(e.stunTimer, 1.1);
         e.flashTimer = 0.14;
-        spawnParticles(e.x + 20, e.y + 20, '#facc15', 7, 65);
+        spawnSlashEffect(e.x + 24, e.y + 24, 0.35);
         state.effects.push({ x: e.x + 16, y: e.y + 4, text: `-${dmg}⚡`, color: '#fde047', life: 0.7 });
       }
     });
@@ -2547,26 +2468,23 @@ function castClassSkill(u, nearestEnemy, aliveEnemies) {
     const dmg = Math.round(st.atk * 1.5 * st.dmgMult);
     [-10, 0, 10].forEach((offsetY, idx) => {
       state.projectiles.push({
-        x: u.x + 28, y: u.y + 20 + offsetY,
+        x: u.x + 30, y: u.y + 22 + offsetY,
         targetId: nearestEnemy.id, unitId: u.id,
         color: idx === 1 ? '#34d399' : '#a7f3d0',
-        isArrow: true, speed: 410, customDmg: dmg
+        isArrow: true, speed: 420, customDmg: dmg
       });
     });
   } else if (u.defId === 'mage') {
     const centerEnemy = findClusterCenter(aliveEnemies) || nearestEnemy;
-    const tx = centerEnemy.x + 20;
-    const ty = centerEnemy.y + 20;
+    const tx = centerEnemy.x + 24;
+    const ty = centerEnemy.y + 24;
     const radius = 95;
     const dmg = Math.round(st.atk * 1.8 * st.dmgMult);
+    spawnMagicCircleEffect(tx, ty, radius, '#c084fc');
     spawnParticles(tx, ty, '#c084fc', 20, 95);
-    state.effects.push({
-      kind: 'ring', x: tx, y: ty,
-      radius: 10, maxRadius: radius, color: '#c084fc', life: 0.4, maxLife: 0.4
-    });
     state.enemies.forEach(e => {
       if (e.hp <= 0) return;
-      if (Math.hypot((e.x + 20) - tx, (e.y + 20) - ty) <= radius) {
+      if (Math.hypot((e.x + 22) - tx, (e.y + 22) - ty) <= radius) {
         e.hp -= dmg;
         state.combatStats.dmgDealt += dmg;
         e.flashTimer = 0.14;
@@ -2577,12 +2495,13 @@ function castClassSkill(u, nearestEnemy, aliveEnemies) {
     const dmg = Math.round(st.atk * 1.75 * st.dmgMult);
     const prevX = u.x;
     const prevY = u.y;
-    const dashPos = findNonOverlappingPos(nearestEnemy.x - 28, nearestEnemy.y, u.id, 34, 680, 44, 264);
+    const dashPos = findNonOverlappingPos(nearestEnemy.x - 32, nearestEnemy.y, u.id, 34, 680, 44, 264);
     u.x = dashPos.x;
     u.y = dashPos.y;
-    spawnParticles(u.x + 22, u.y + 22, '#38bdf8', 14, 80);
+    spawnSlashEffect(u.x + 28, u.y + 24, 0);
+    spawnParticles(u.x + 24, u.y + 24, '#38bdf8', 14, 80);
     state.effects.push({
-      kind: 'beam', x1: prevX + 22, y1: prevY + 22, x2: u.x + 22, y2: u.y + 22,
+      kind: 'beam', x1: prevX + 24, y1: prevY + 24, x2: u.x + 24, y2: u.y + 24,
       color: '#38bdf8', life: 0.28, maxLife: 0.28
     });
     nearestEnemy.hp -= dmg;
@@ -2591,7 +2510,7 @@ function castClassSkill(u, nearestEnemy, aliveEnemies) {
     u.atkCooldown = 0.15;
     state.effects.push({ x: nearestEnemy.x + 14, y: nearestEnemy.y + 4, text: `-${dmg}⚔️`, color: '#7dd3fc', life: 0.7 });
   } else if (u.defId === 'summoner') {
-    const aliveAllies = state.units.filter(a => a.hp > 0);
+    const aliveAllies = getAliveUnits();
     let lowest = u;
     let lowestRatio = u.hp / u.maxHp;
     for (const a of aliveAllies) {
@@ -2602,11 +2521,8 @@ function castClassSkill(u, nearestEnemy, aliveEnemies) {
     const actualHeal = Math.min(lowest.maxHp - lowest.hp, healAmt);
     lowest.hp = Math.min(lowest.maxHp, lowest.hp + healAmt);
     state.combatStats.healed += Math.max(0, actualHeal);
-    spawnParticles(lowest.x + 24, lowest.y + 24, '#34d399', 14, 65);
-    state.effects.push({
-      kind: 'ring', x: lowest.x + 24, y: lowest.y + 24,
-      radius: 10, maxRadius: 68, color: '#34d399', life: 0.38, maxLife: 0.38
-    });
+    spawnHealRingEffect(lowest.x + 26, lowest.y + 26, 56);
+    spawnParticles(lowest.x + 26, lowest.y + 26, '#34d399', 14, 65);
     state.effects.push({ x: lowest.x + 10, y: lowest.y - 6, text: `+${healAmt}💚`, color: '#6ee7b7', life: 0.75 });
   }
 }
@@ -2621,7 +2537,8 @@ function applySummonerAllyHeal(u, ally) {
   ally.hp = Math.min(ally.maxHp, ally.hp + healAmt);
   state.combatStats.healed += Math.max(0, actualHeal);
   AudioFX.skill();
-  spawnParticles(ally.x + 24, ally.y + 24, '#34d399', 8, 55);
+  spawnHealRingEffect(ally.x + 26, ally.y + 26, 44);
+  spawnParticles(ally.x + 26, ally.y + 26, '#34d399', 8, 55);
   state.effects.push({
     x: ally.x + 12,
     y: ally.y - 4,
@@ -2645,7 +2562,8 @@ function applyHeroAttack(u, target, forcedDmg = null) {
   state.combatStats.dmgDealt += dmg;
   target.flashTimer = 0.1;
   AudioFX.hit();
-  spawnParticles(target.x + 20, target.y + 20, isCrit ? '#facc15' : '#f8fafc', isCrit ? 9 : 5, 65);
+  spawnSlashEffect(target.x + 24, target.y + 24, (Math.random() - 0.5) * 0.7);
+  spawnParticles(target.x + 22, target.y + 22, isCrit ? '#facc15' : '#e0f2fe', isCrit ? 9 : 5, 65);
   state.effects.push({
     x: target.x + 18,
     y: target.y + 8,
@@ -2660,6 +2578,7 @@ function applyHeroAttack(u, target, forcedDmg = null) {
     const actual = Math.min(u.maxHp - u.hp, heal);
     u.hp = Math.min(u.maxHp, u.hp + heal);
     state.combatStats.healed += Math.max(0, actual);
+    if (actual > 0) spawnHealRingEffect(u.x + 26, u.y + 26, 36);
   }
   const psLv = getEffectiveImprintLv(u, 'poison');
   if (psLv > 0) {
@@ -2679,7 +2598,7 @@ function applyHeroAttack(u, target, forcedDmg = null) {
       state.combatStats.dmgDealt += chainDmg;
       other.flashTimer = 0.1;
       state.effects.push({
-        kind: 'beam', x1: target.x + 20, y1: target.y + 20, x2: other.x + 20, y2: other.y + 20,
+        kind: 'beam', x1: target.x + 22, y1: target.y + 22, x2: other.x + 22, y2: other.y + 22,
         color: '#38bdf8', life: 0.22, maxLife: 0.22
       });
     }
@@ -2712,9 +2631,9 @@ function updateSimulation(rawDt) {
   state.particles = state.particles.filter(pt => pt.life > 0);
 
   state.effects.forEach(fx => {
-    if (fx.kind === 'ring') {
+    if (fx.kind === 'ring' || fx.kind === 'magic_circle' || fx.kind === 'heal_ring') {
       const progress = 1 - Math.max(0, fx.life / fx.maxLife);
-      fx.radius = 12 + (fx.maxRadius - 12) * progress;
+      fx.radius = 10 + ((fx.maxRadius || 50) - 10) * progress;
     } else if (!fx.kind) {
       fx.y -= 24 * dt;
     }
@@ -2729,8 +2648,9 @@ function updateSimulation(rawDt) {
     return;
   }
 
-  for (const u of state.units) {
-    if (u.hp <= 0) continue;
+  const aliveUnitsBeforeStep = getAliveUnits();
+  for (const u of aliveUnitsBeforeStep) {
+    if (u.deadInCombat || u.hp <= 0) continue;
     const aliveEnemies = state.enemies.filter(e => e.hp > 0);
     if (aliveEnemies.length === 0) break;
 
@@ -2744,7 +2664,7 @@ function updateSimulation(rawDt) {
 
     u.atkCooldown -= dt;
 
-    // Special normal attack behavior for Tư Tế (summoner)
+    // Tư Tế: có đồng đội khác trên sân -> đánh thường hồi 40% Công cho đồng đội; không có đồng đội -> đánh địch 85% sát thương
     if (u.defId === 'summoner') {
       const allyTarget = selectSummonerAlly(u);
       if (allyTarget) {
@@ -2759,11 +2679,9 @@ function updateSimulation(rawDt) {
         }
         continue;
       }
-      // No other teammates on the field -> attack enemy for 85% damage
+
       const eDist = Math.hypot(targetEnemy.x - u.x, targetEnemy.y - u.y);
-      if (eDist < 95 && u.x > 65) {
-        u.x = Math.max(45, u.x - 42 * st.spd * dt);
-      } else if (eDist > st.range) {
+      if (eDist > st.range) {
         const speedPx = 68 * st.spd;
         u.x += ((targetEnemy.x - u.x) / (eDist || 1)) * speedPx * dt;
         u.y += ((targetEnemy.y - u.y) / (eDist || 1)) * speedPx * dt;
@@ -2771,7 +2689,7 @@ function updateSimulation(rawDt) {
         u.atkCooldown = 1 / st.spd;
         const dmg85 = Math.round(st.atk * 0.85 * st.dmgMult);
         state.projectiles.push({
-          x: u.x + 26, y: u.y + 20,
+          x: u.x + 28, y: u.y + 22,
           targetId: targetEnemy.id, unitId: u.id,
           color: '#fde047',
           isArrow: false,
@@ -2783,12 +2701,8 @@ function updateSimulation(rawDt) {
     }
 
     const dist = Math.hypot(targetEnemy.x - u.x, targetEnemy.y - u.y);
-    const isBackliner = u.defId === 'archer' || u.defId === 'mage';
-    const minKiteDist = isBackliner && dist < 95 && u.x > 65;
-
-    if (minKiteDist) {
-      u.x = Math.max(45, u.x - 42 * st.spd * dt);
-    } else if (dist > st.range) {
+    // When in attack range or touching, stand still and attack normally without backing away
+    if (dist > st.range) {
       const speedPx = 68 * st.spd;
       const vx = ((targetEnemy.x - u.x) / (dist || 1)) * speedPx * dt;
       const vy = ((targetEnemy.y - u.y) / (dist || 1)) * speedPx * dt;
@@ -2796,9 +2710,12 @@ function updateSimulation(rawDt) {
       u.y += vy;
     } else if (u.atkCooldown <= 0) {
       u.atkCooldown = 1 / st.spd;
-      if (st.range > 90) {
+      if (st.range > 95) {
+        if (u.defId === 'mage') {
+          spawnMagicCircleEffect(targetEnemy.x + 24, targetEnemy.y + 24, 48, '#c084fc');
+        }
         state.projectiles.push({
-          x: u.x + 26, y: u.y + 20,
+          x: u.x + 28, y: u.y + 22,
           targetId: targetEnemy.id, unitId: u.id,
           color: u.defId === 'archer' ? '#34d399' : '#c084fc',
           isArrow: u.defId === 'archer',
@@ -2814,12 +2731,12 @@ function updateSimulation(rawDt) {
     const target = state.enemies.find(e => e.id === p.targetId && e.hp > 0);
     const shooter = state.units.find(u => u.id === p.unitId);
     if (!target || !shooter) { p.done = true; continue; }
-    const tx = target.x + 20;
-    const ty = target.y + 20;
+    const tx = target.x + 22;
+    const ty = target.y + 22;
     const dx = tx - p.x;
     const dy = ty - p.y;
     const dist = Math.hypot(dx, dy);
-    if (dist < 15) {
+    if (dist < 16) {
       applyHeroAttack(shooter, target, p.customDmg ?? null);
       p.done = true;
     } else {
@@ -2829,7 +2746,7 @@ function updateSimulation(rawDt) {
   }
   state.projectiles = state.projectiles.filter(p => !p.done);
 
-  const aliveUnits = state.units.filter(u => u.hp > 0);
+  const aliveUnits = getAliveUnits();
   for (const e of state.enemies) {
     if (e.hp <= 0) continue;
     if (e.stunTimer > 0) continue;
@@ -2837,16 +2754,13 @@ function updateSimulation(rawDt) {
     if (e.isBoss) {
       e.bossCd -= dt;
       if (e.bossCd <= 0 && aliveUnits.length > 0) {
-        e.bossCd = 3.2;
+        e.bossCd = 3.1;
         const slamRadius = 115;
         const slamDmg = Math.round(e.atk * 1.55);
-        state.effects.push({
-          kind: 'ring', x: e.x + 24, y: e.y + 24,
-          radius: 14, maxRadius: slamRadius, color: '#fb7185', life: 0.36, maxLife: 0.36
-        });
-        spawnParticles(e.x + 24, e.y + 24, '#fb7185', 14, 80);
+        spawnMagicCircleEffect(e.x + 26, e.y + 26, slamRadius, '#fb7185');
+        spawnParticles(e.x + 26, e.y + 26, '#fb7185', 14, 80);
         aliveUnits.forEach(au => {
-          if (Math.hypot((au.x + 20) - (e.x + 24), (au.y + 20) - (e.y + 24)) <= slamRadius) {
+          if (Math.hypot((au.x + 22) - (e.x + 26), (au.y + 22) - (e.y + 26)) <= slamRadius) {
             au.hp -= slamDmg;
             au.flashTimer = 0.14;
             state.effects.push({ x: au.x + 12, y: au.y - 6, text: `-${slamDmg}💥`, color: '#fda4af', life: 0.7 });
@@ -2862,6 +2776,7 @@ function updateSimulation(rawDt) {
         const d = Math.hypot(au.x - e.x, au.y - e.y);
         if (d < bestD) { bestD = d; targetU = au; }
       }
+      // Stand still and attack normally once within range or touching
       if (bestD > e.range) {
         e.x -= ((e.x - targetU.x) / (bestD || 1)) * e.spd * dt;
         e.y -= ((e.y - targetU.y) / (bestD || 1)) * e.spd * dt;
@@ -2871,7 +2786,7 @@ function updateSimulation(rawDt) {
           e.atkCd = 1.05;
           if (e.isRanged) {
             state.projectiles.push({
-              x: e.x - 6, y: e.y + 18,
+              x: e.x - 6, y: e.y + 20,
               fromEnemy: true,
               targetUnitId: targetU.id,
               dmg: e.atk,
@@ -2881,6 +2796,7 @@ function updateSimulation(rawDt) {
           } else {
             targetU.hp -= e.atk;
             targetU.flashTimer = 0.1;
+            spawnSlashEffect(targetU.x + 22, targetU.y + 22, Math.PI);
             state.effects.push({
               x: targetU.x + 14, y: targetU.y + 6,
               text: `-${e.atk}`, color: '#fb7185', life: 0.6
@@ -2899,14 +2815,14 @@ function updateSimulation(rawDt) {
 
   for (const p of state.projectiles) {
     if (!p.fromEnemy || p.done) continue;
-    const targetU = state.units.find(u => u.id === p.targetUnitId && u.hp > 0);
+    const targetU = state.units.find(u => u.id === p.targetUnitId && !u.deadInCombat && u.hp > 0);
     if (!targetU) { p.done = true; continue; }
-    const tx = targetU.x + 20;
-    const ty = targetU.y + 20;
+    const tx = targetU.x + 22;
+    const ty = targetU.y + 22;
     const dx = tx - p.x;
     const dy = ty - p.y;
     const dist = Math.hypot(dx, dy);
-    if (dist < 14) {
+    if (dist < 15) {
       targetU.hp -= p.dmg;
       targetU.flashTimer = 0.1;
       state.effects.push({ x: targetU.x + 14, y: targetU.y + 6, text: `-${p.dmg}`, color: '#fb7185', life: 0.6 });
@@ -2920,11 +2836,17 @@ function updateSimulation(rawDt) {
 
   resolveEntityCollisions();
 
-  state.units = state.units.filter(u => u.hp > 0);
-  if (state.selectedUnitId && !state.units.some(u => u.id === state.selectedUnitId)) {
-    state.selectedUnitId = state.units[0] ? state.units[0].id : null;
-  }
-  if (state.units.length === 0) {
+  // Mark fallen heroes without deleting them or losing gear; revive if wave is won
+  state.units.forEach(u => {
+    if (!u.deadInCombat && u.hp <= 0) {
+      u.hp = 0;
+      u.deadInCombat = true;
+      spawnParticles(u.x + 24, u.y + 24, '#94a3b8', 10, 50);
+    }
+  });
+
+  const remainingLiving = getAliveUnits();
+  if (remainingLiving.length === 0) {
     triggerGameOver('Toàn bộ chiến binh trên sân đã tử trận trong Vòng!');
     return;
   }
@@ -2957,20 +2879,13 @@ function updateSimulation(rawDt) {
     state.wave += 1;
     state.spinCountInWave = 0;
     state.nudges = [1, 1, 1];
-    state.units.forEach((u) => {
-      u.x = u.homeX;
-      u.y = u.homeY;
-      const st = getUnitStats(u);
-      u.maxHp = st.maxHp;
-      u.hp = st.maxHp;
-    });
-    resolveEntityCollisions();
-    addLog(`🏆 Chiến thắng Vòng ${clearedWave}! Nhận +${rewardGold} 🪙 (gồm +${interest} 🪙 lãi) và +${rewardEss} ✦ Tinh Tú.`, '#34d399');
+    reviveAllUnitsToStartPos();
+    addLog(`🏆 Chiến thắng Vòng ${clearedWave}! Toàn bộ tướng đã hồi sinh về vị trí ban đầu, giữ nguyên trang bị & nhận +${rewardGold} 🪙, +${rewardEss} ✦.`, '#34d399');
     updateUI();
   }
 }
 
-// ================= BATTLE CANVAS (NO FLOATING/BREATHING OFFSET, 256x256 HERO MODELS) =================
+// ================= BATTLE CANVAS (1080x1080 PIXEL MODELS + COMBAT VFX) =================
 function renderBattleCanvas() {
   const canvas = document.getElementById('battleCanvas');
   const ctx = canvas.getContext('2d');
@@ -3008,15 +2923,6 @@ function renderBattleCanvas() {
       ctx.fillStyle = 'rgba(2, 6, 23, 0.45)';
       ctx.fillRect(gx, gy + tileSize - 4, tileSize - 2, 2);
       ctx.fillRect(gx + tileSize - 4, gy, 2, tileSize - 2);
-
-      ctx.fillStyle = 'rgba(255, 255, 255, 0.03)';
-      ctx.fillRect(gx + 8, gy + 22, tileSize - 18, 2);
-
-      if ((colIdx * 7 + rowIdx * 13) % 5 === 0) {
-        ctx.fillStyle = isBossWave ? '#4c1d38' : '#1e3a5f';
-        ctx.fillRect(gx + 10, gy + 14, 4, 4);
-        ctx.fillRect(gx + 14, gy + 16, 4, 2);
-      }
     }
   }
 
@@ -3030,30 +2936,21 @@ function renderBattleCanvas() {
     ctx.setLineDash([]);
   }
 
+  // Castle gate wall on left
   ctx.fillStyle = '#1e293b';
   ctx.fillRect(0, 0, 28, h);
   ctx.fillStyle = '#334155';
   for (let by = 6; by < h; by += 26) {
     ctx.fillRect(2, by, 22, 18);
-    ctx.fillStyle = '#475569';
-    ctx.fillRect(2, by, 22, 2);
-    ctx.fillStyle = '#334155';
   }
   ctx.fillStyle = '#0f172a';
   ctx.fillRect(6, h / 2 - 30, 16, 60);
   ctx.fillStyle = '#38bdf8';
   ctx.fillRect(10, h / 2 - 22, 8, 44);
-  ctx.fillStyle = '#f97316';
-  ctx.fillRect(10, 44, 6, 8);
-  ctx.fillStyle = '#fde047';
-  ctx.fillRect(11, 42, 4, 5);
-  ctx.fillStyle = '#f97316';
-  ctx.fillRect(10, h - 52, 6, 8);
-  ctx.fillStyle = '#fde047';
-  ctx.fillRect(11, h - 54, 4, 5);
 
+  const visibleUnits = state.units.filter(u => !u.deadInCombat && u.hp > 0);
   const drawList = [
-    ...state.units.map(u => ({ kind: 'hero', y: u.y, data: u })),
+    ...visibleUnits.map(u => ({ kind: 'hero', y: u.y, data: u })),
     ...state.enemies.map(e => ({ kind: 'enemy', y: e.y, data: e }))
   ].sort((a, b) => a.y - b.y);
 
@@ -3063,7 +2960,7 @@ function renderBattleCanvas() {
       const isDraggingThis = state.draggingUnitId === u.id && state.dragSourceOrigin === 'canvas';
       const isAbsorbHoverTarget = state.hoverAbsorbTargetId === u.id;
       const drawY = isDraggingThis ? u.y - 5 : u.y;
-      const sizePx = u.star >= 3 ? 62 : (u.star === 2 ? 56 : 52);
+      const sizePx = u.star >= 3 ? 66 : (u.star === 2 ? 60 : 54);
       const cx = u.x + sizePx * 0.5;
       const cy = drawY + sizePx * 0.88;
 
@@ -3121,7 +3018,7 @@ function renderBattleCanvas() {
       ctx.fillText(`${'★'.repeat(u.star)} L${u.absorbLv}`, u.x, drawY - 13);
     } else {
       const e = item.data;
-      const sizePx = e.isBoss ? 68 : 50;
+      const sizePx = e.isBoss ? 70 : 52;
 
       ctx.fillStyle = 'rgba(0, 0, 0, 0.55)';
       ctx.beginPath();
@@ -3152,7 +3049,7 @@ function renderBattleCanvas() {
       ctx.fillStyle = '#f8fafc';
       ctx.fillRect(p.x + 5, p.y - 2, 4, 5);
     } else {
-      ctx.fillStyle = p.color || 'rgba(192, 132, 252, 0.65)';
+      ctx.fillStyle = p.color || 'rgba(192, 132, 252, 0.75)';
       ctx.fillRect(p.x - 8, p.y - 4, 14, 8);
       ctx.fillStyle = '#f8fafc';
       ctx.fillRect(p.x - 3, p.y - 3, 6, 6);
@@ -3168,10 +3065,66 @@ function renderBattleCanvas() {
   }
 
   for (const fx of state.effects) {
-    if (fx.kind === 'ring') {
+    const alpha = Math.max(0, fx.life / fx.maxLife);
+    if (fx.kind === 'slash') {
+      // Bright white-cyan slash streak
+      ctx.save();
+      ctx.translate(fx.x, fx.y);
+      ctx.rotate(fx.angle || 0);
+      ctx.globalAlpha = alpha;
+      ctx.strokeStyle = '#38bdf8';
+      ctx.lineWidth = 7;
+      ctx.beginPath();
+      ctx.arc(0, 0, 26, -0.95, 0.95);
+      ctx.stroke();
+      ctx.strokeStyle = '#ffffff';
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.arc(0, 0, 26, -0.8, 0.8);
+      ctx.stroke();
+      ctx.restore();
+    } else if (fx.kind === 'magic_circle') {
+      // Arcane magic circle
+      ctx.save();
+      ctx.globalAlpha = alpha;
+      ctx.strokeStyle = fx.color || '#c084fc';
+      ctx.lineWidth = 2.5;
+      ctx.beginPath();
+      ctx.arc(fx.x, fx.y, fx.radius, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.strokeStyle = '#67e8f9';
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.arc(fx.x, fx.y, fx.radius * 0.68, 0, Math.PI * 2);
+      ctx.stroke();
+      // Star/runic cross inside circle
+      ctx.beginPath();
+      const rIn = fx.radius * 0.68;
+      ctx.moveTo(fx.x - rIn, fx.y);
+      ctx.lineTo(fx.x + rIn, fx.y);
+      ctx.moveTo(fx.x, fx.y - rIn);
+      ctx.lineTo(fx.x, fx.y + rIn);
+      ctx.stroke();
+      ctx.restore();
+    } else if (fx.kind === 'heal_ring') {
+      // Healing ring
+      ctx.save();
+      ctx.globalAlpha = alpha;
+      ctx.strokeStyle = '#34d399';
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.arc(fx.x, fx.y, fx.radius, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.strokeStyle = '#a7f3d0';
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.arc(fx.x, fx.y, fx.radius * 0.72, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.restore();
+    } else if (fx.kind === 'ring') {
       ctx.save();
       ctx.strokeStyle = fx.color;
-      ctx.globalAlpha = Math.max(0, fx.life / fx.maxLife);
+      ctx.globalAlpha = alpha;
       ctx.lineWidth = 3;
       ctx.beginPath();
       ctx.arc(fx.x, fx.y, fx.radius, 0, Math.PI * 2);
@@ -3180,7 +3133,7 @@ function renderBattleCanvas() {
     } else if (fx.kind === 'beam') {
       ctx.save();
       ctx.strokeStyle = fx.color;
-      ctx.globalAlpha = Math.max(0, fx.life / fx.maxLife);
+      ctx.globalAlpha = alpha;
       ctx.lineWidth = 4;
       ctx.beginPath();
       ctx.moveTo(fx.x1, fx.y1);
@@ -3286,9 +3239,9 @@ function openHeroDetailModal(unitId) {
   const content = document.getElementById('heroDetailContent');
   content.innerHTML = `
     <div style="display:flex; flex-wrap:wrap; gap:16px; align-items:center; background:#0b1222; border:1.5px solid #334155; border-radius:12px; padding:14px;">
-      <canvas id="heroDetailCanvas" width="104" height="104" class="pixel-canvas" style="background:#070d19; border:2px solid #f3c677; border-radius:10px;"></canvas>
+      <canvas id="heroDetailCanvas" width="108" height="108" class="pixel-canvas" style="background:#070d19; border:2px solid #f3c677; border-radius:10px;"></canvas>
       <div style="flex:1; min-width:220px; display:flex; flex-direction:column; gap:6px;">
-        <div style="font-size:20px; font-weight:900; color:var(--gold-bright);">${u.name} ${'★'.repeat(u.star)}</div>
+        <div style="font-size:20px; font-weight:900; color:var(--gold-bright);">${u.name} ${'★'.repeat(u.star)} ${u.deadInCombat ? '<span style="color:#fda4af;font-size:13px;">(Tạm ngã trong trận — sẽ hồi sinh nếu thắng)</span>' : ''}</div>
         <div style="display:flex; flex-wrap:wrap; gap:8px;">
           <span class="trait-pill">⚜️ Quân đoàn: ${u.faction} ${isFactionActive ? '(ĐÃ KÍCH HOẠT)' : '(Chưa kích hoạt)'}</span>
           <span class="trait-pill" style="border-color:#facc15; color:#fde047;">✦ Tư chất: ${tr ? `${tr.name} [${tr.rarity}] — ${tr.desc}` : ''}</span>
@@ -3332,7 +3285,7 @@ function openHeroDetailModal(unitId) {
     </div>
   `;
 
-  renderSpriteToCanvas(document.getElementById('heroDetailCanvas'), u.defId, 96);
+  renderSpriteToCanvas(document.getElementById('heroDetailCanvas'), u.defId, 100);
 
   const gearGrid = document.getElementById('heroDetailGearGrid');
   u.gears.forEach((g, idx) => {
@@ -3533,6 +3486,7 @@ function renderRoster() {
     const card = document.createElement('div');
     card.className = 'unit-card';
     if (u.id === state.selectedUnitId) card.classList.add('selected');
+    if (u.deadInCombat) card.classList.add('fallen');
     if (state.draggingUnitId === u.id && state.dragSourceOrigin === 'roster') {
       card.classList.add('dragging-source');
     }
@@ -3601,7 +3555,7 @@ function renderRoster() {
     const buffSummary = getAwakenBuffSummary(u);
     const info = document.createElement('div');
     info.innerHTML = `
-      <div class="unit-name" style="color: #f3c677">${u.name} ${'★'.repeat(u.star)} <span style="font-size:10px;color:#38bdf8;">[${u.faction}]</span></div>
+      <div class="unit-name" style="color: #f3c677">${u.name} ${'★'.repeat(u.star)} <span style="font-size:10px;color:#38bdf8;">[${u.faction}]</span> ${u.deadInCombat ? '<span style="font-size:10px;color:#fda4af;">[Ngã trận]</span>' : ''}</div>
       <div class="unit-meta">LV Hấp Thụ: <b>${u.absorbLv}</b> • Công ${st.atk} • HP ${st.maxHp} • Tầm ${st.range}</div>
       <div class="trait-pill">✦ Tư chất ${tr ? `${tr.name} (${tr.desc})` : ''}</div>
       <div class="skill-pill" style="margin-top:2px;">⚡ ${sk.name} (${sk.cooldown}s)</div>
@@ -3867,7 +3821,7 @@ document.getElementById('btnCancelAbsorb').addEventListener('click', () => {
 setupBattleCanvasMovement();
 renderSpriteToCanvas(document.getElementById('brandIcon'), 'warrior', 42);
 initGrid();
-addLog('🏰 Đã cập nhật model tướng 256x256 trung cổ, bỏ hiệu ứng nhấp nhô, tăng tầm đánh xa, tăng sức mạnh địch và đổi đánh thường Tư Tế.', '#f3c677');
+addLog('🏰 Đã cập nhật model pixel 1080x1080 trung cổ, hồi sinh khi thắng trận, tăng sức mạnh địch thường & hiệu ứng chiến đấu.', '#f3c677');
 updateUI();
 requestAnimationFrame(gameLoop);
 </script>
